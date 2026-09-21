@@ -31,7 +31,14 @@ export default function SplashScreen({ onFinish, isPreview = false, onClose }) {
       tension: 40,
       useNativeDriver: true,
     }).start();
-  }, []);
+
+    if (!isPreview) {
+      const timer = setTimeout(() => {
+        handleNextScreen();
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [isPreview]);
 
   const handleNextScreen = () => {
     if (onFinish) {
