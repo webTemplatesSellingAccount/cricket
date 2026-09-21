@@ -26,18 +26,22 @@ export default function PointsTableScreen({ onBack }) {
   const [selectedYear, setSelectedYear] = useState('2024');
   const [yearDrawerVisible, setYearDrawerVisible] = useState(false);
 
-  const allYears = [
-    '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015',
-    '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'
-  ];
+  const [allYears, setAllYears] = useState([
+    '2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018',
+    '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', '2009', '2008'
+  ]);
 
-  const loadPointsTable = useCallback(async (yearToFetch = selectedYear, isSilent = false) => {
+  const loadPointsTable = useCallback(async (yearToFetch, isSilent = false) => {
+    const yr = yearToFetch || selectedYear;
     if (!isSilent) setLoading(true);
     try {
-      const res = await getIplPointTable(yearToFetch);
+      const res = await getIplPointTable(yr);
       setPointsTable(res.pointsTable || []);
       if (res.year) {
         setSelectedYear(res.year);
+      }
+      if (res.allYears && Array.isArray(res.allYears) && res.allYears.length > 0) {
+        setAllYears(res.allYears);
       }
     } catch (err) {
       console.warn('Points Table fetch err:', err.message);
@@ -53,7 +57,7 @@ export default function PointsTableScreen({ onBack }) {
       loadPointsTable(selectedYear, true);
     }, 45000);
     return () => clearInterval(timer);
-  }, [loadPointsTable, selectedYear]);
+  }, [selectedYear]);
 
   const onRefresh = () => {
     setRefreshing(true);
