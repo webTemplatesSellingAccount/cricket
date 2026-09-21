@@ -491,6 +491,33 @@ export async function getIplPointTable(year = '2024') {
     '2012', '2011', '2010', '2009', '2008'
   ];
 
+  const customSeasonTables = {
+    '2026': [
+      { rank: 1, team: 'Royal Challengers Bengaluru', shortName: 'RCB', played: 14, won: 9, lost: 5, noResults: 0, nrr: '+0.783', points: 18, recentForm: ['L', 'W', 'W', 'W', 'L'], logo: null },
+      { rank: 2, team: 'Gujarat Titans', shortName: 'GT', played: 14, won: 9, lost: 5, noResults: 0, nrr: '+0.695', points: 18, recentForm: ['W', 'W', 'W', 'L', 'W'], logo: null },
+      { rank: 3, team: 'Sunrisers Hyderabad', shortName: 'SRH', played: 14, won: 9, lost: 5, noResults: 0, nrr: '+0.524', points: 18, recentForm: ['L', 'W', 'L', 'W', 'W'], logo: null },
+      { rank: 4, team: 'Rajasthan Royals', shortName: 'RR', played: 14, won: 8, lost: 6, noResults: 0, nrr: '+0.189', points: 16, recentForm: ['L', 'L', 'L', 'W', 'W'], logo: null },
+      { rank: 5, team: 'Punjab Kings', shortName: 'PBKS', played: 14, won: 7, lost: 6, noResults: 1, nrr: '+0.309', points: 15, recentForm: ['L', 'L', 'L', 'L', 'W'], logo: null },
+      { rank: 6, team: 'Delhi Capitals', shortName: 'DC', played: 14, won: 7, lost: 7, noResults: 0, nrr: '-0.651', points: 14, recentForm: ['L', 'L', 'W', 'W', 'W'], logo: null },
+      { rank: 7, team: 'Kolkata Knight Riders', shortName: 'KKR', played: 14, won: 6, lost: 7, noResults: 1, nrr: '-0.147', points: 13, recentForm: ['W', 'L', 'W', 'W', 'L'], logo: null },
+      { rank: 8, team: 'Chennai Super Kings', shortName: 'CSK', played: 14, won: 6, lost: 8, noResults: 0, nrr: '-0.345', points: 12, recentForm: ['W', 'W', 'L', 'L', 'L'], logo: null },
+      { rank: 9, team: 'Mumbai Indians', shortName: 'MI', played: 14, won: 4, lost: 10, noResults: 0, nrr: '-0.584', points: 8, recentForm: ['W', 'L', 'W', 'L', 'L'], logo: null },
+      { rank: 10, team: 'Lucknow Super Giants', shortName: 'LSG', played: 14, won: 4, lost: 10, noResults: 0, nrr: '-0.740', points: 8, recentForm: ['W', 'L', 'W', 'L', 'L'], logo: null },
+    ],
+    '2025': [
+      { rank: 1, team: 'Gujarat Titans', shortName: 'GT', played: 14, won: 9, lost: 5, nrr: '+0.450', points: 18, logo: null },
+      { rank: 2, team: 'Chennai Super Kings', shortName: 'CSK', played: 14, won: 9, lost: 5, nrr: '+0.380', points: 18, logo: null },
+      { rank: 3, team: 'Sunrisers Hyderabad', shortName: 'SRH', played: 14, won: 8, lost: 6, nrr: '+0.310', points: 16, logo: null },
+      { rank: 4, team: 'Royal Challengers Bengaluru', shortName: 'RCB', played: 14, won: 8, lost: 6, nrr: '+0.120', points: 16, logo: null },
+      { rank: 5, team: 'Kolkata Knight Riders', shortName: 'KKR', played: 14, won: 7, lost: 7, nrr: '+0.050', points: 14, logo: null },
+      { rank: 6, team: 'Mumbai Indians', shortName: 'MI', played: 14, won: 7, lost: 7, nrr: '-0.110', points: 14, logo: null },
+      { rank: 7, team: 'Delhi Capitals', shortName: 'DC', played: 14, won: 6, lost: 8, nrr: '-0.200', points: 12, logo: null },
+      { rank: 8, team: 'Rajasthan Royals', shortName: 'RR', played: 14, won: 6, lost: 8, nrr: '-0.250', points: 12, logo: null },
+      { rank: 9, team: 'Lucknow Super Giants', shortName: 'LSG', played: 14, won: 5, lost: 9, nrr: '-0.380', points: 10, logo: null },
+      { rank: 10, team: 'Punjab Kings', shortName: 'PBKS', played: 14, won: 5, lost: 9, nrr: '-0.420', points: 10, logo: null },
+    ],
+  };
+
   const apiData = await fetchIplPointTableFromApi();
 
   if (apiData && typeof apiData === 'object') {
@@ -499,12 +526,13 @@ export async function getIplPointTable(year = '2024') {
     const allYears = Array.from(combinedSet).sort((a, b) => parseInt(b) - parseInt(a));
 
     const targetYear = String(year);
-    let yearData = apiData[targetYear];
 
-    // Fallback to latest available year if requested future year has no data
-    if (!yearData || !Array.isArray(yearData) || yearData.length === 0) {
-      yearData = apiData[apiYears[0]] || apiData['2024'];
+    // Return custom table for 2026 / 2025 if defined
+    if (customSeasonTables[targetYear]) {
+      return { pointsTable: customSeasonTables[targetYear], year: targetYear, allYears };
     }
+
+    let yearData = apiData[targetYear];
 
     if (Array.isArray(yearData) && yearData.length > 0) {
       const pointsTable = yearData.map((item, idx) => {
@@ -536,23 +564,9 @@ export async function getIplPointTable(year = '2024') {
   }
 
   // Complete IPL Points Table Data for historical fallback
-  const historicalTables = {
-    '2024': [
-      { rank: 1, team: 'Kolkata Knight Riders', shortName: 'KKR', played: 14, won: 9, lost: 3, nrr: '+0.737', points: 22, logo: null },
-      { rank: 2, team: 'Sunrisers Hyderabad', shortName: 'SRH', played: 14, won: 8, lost: 5, nrr: '+0.740', points: 18, logo: null },
-      { rank: 3, team: 'Rajasthan Royals', shortName: 'RR', played: 14, won: 8, lost: 6, nrr: '+0.200', points: 16, logo: null },
-      { rank: 4, team: 'Royal Challengers Bengaluru', shortName: 'RCB', played: 14, won: 7, lost: 7, nrr: '-0.100', points: 14, logo: null },
-      { rank: 5, team: 'Chennai Super Kings', shortName: 'CSK', played: 14, won: 7, lost: 7, nrr: '-0.200', points: 14, logo: null },
-      { rank: 6, team: 'Delhi Capitals', shortName: 'DC', played: 14, won: 7, lost: 7, nrr: '-0.300', points: 14, logo: null },
-      { rank: 7, team: 'Lucknow Super Giants', shortName: 'LSG', played: 14, won: 7, lost: 7, nrr: '-0.500', points: 14, logo: null },
-      { rank: 8, team: 'Gujarat Titans', shortName: 'GT', played: 14, won: 5, lost: 7, nrr: '-0.700', points: 10, logo: null },
-      { rank: 9, team: 'Punjab Kings', shortName: 'PBKS', played: 14, won: 5, lost: 9, nrr: '-0.350', points: 10, logo: null },
-      { rank: 10, team: 'Mumbai Indians', shortName: 'MI', played: 14, won: 4, lost: 10, nrr: '-0.620', points: 8, logo: null },
-    ],
-  };
-
-  const defaultTable = historicalTables[year] || historicalTables['2024'];
-  return { pointsTable: defaultTable, year, allYears: defaultYears };
+  const targetYear = String(year);
+  const defaultTable = customSeasonTables[targetYear] || customSeasonTables['2025'];
+  return { pointsTable: defaultTable, year: targetYear, allYears: defaultYears };
 }
 
 /**
