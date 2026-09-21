@@ -129,8 +129,13 @@ export default function PlayoffsScreen({ onBack }) {
               {/* Green Year Header Banner */}
               <View style={styles.yearHeaderBanner}>
                 <View style={styles.yearHeaderLeft}>
-                  <Ionicons name="trophy" size={14} color="#FFD700" style={{ marginRight: 6 }} />
-                  <Text style={styles.yearHeaderText}>TATA IPL {item.year} PLAYOFFS</Text>
+
+                  <Image
+                    source={require('../../assets/ipl_batsman_icon.jpg')}
+                    style={styles.batsmanHeaderIcon}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.yearHeaderText}>IPL {item.year} PLAYOFFS</Text>
                 </View>
                 <View style={styles.tapBadge}>
                   <Ionicons name="expand-outline" size={11} color="#008000" style={{ marginRight: 3 }} />
@@ -369,6 +374,13 @@ const styles = StyleSheet.create({
   yearHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  batsmanHeaderIcon: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    marginRight: 6,
+    backgroundColor: '#FFFFFF',
   },
   yearHeaderText: {
     color: '#FFFFFF',

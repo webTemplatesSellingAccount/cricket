@@ -519,7 +519,11 @@ export default function IplHubScreen() {
                     >
                       <View style={{ backgroundColor: theme.accent }} className="px-3.5 py-2 flex-row justify-between items-center">
                         <View className="flex-row items-center">
-                          <Ionicons name="trophy" size={14} color="#FFD700" style={{ marginRight: 5 }} />
+                          <Image
+                            source={require('../../assets/ipl_batsman_icon.jpg')}
+                            style={{ width: 22, height: 22, borderRadius: 11, marginRight: 6, backgroundColor: '#FFFFFF' }}
+                            resizeMode="contain"
+                          />
                           <Text style={{ color: '#FFFFFF' }} className="text-xs font-black tracking-wide">
                             TATA IPL {img.year} PLAYOFFS
                           </Text>
