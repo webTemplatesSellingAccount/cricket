@@ -20,6 +20,7 @@ import PlayoffsScreen from './PlayoffsScreen';
 import AllRecordsScreen from './AllRecordsScreen';
 import T20WorldCupScreen from './T20WorldCupScreen';
 import OdiWorldCupScreen from './OdiWorldCupScreen';
+import WorldTestChampionshipScreen from './WorldTestChampionshipScreen';
 import {
   VENUES_DATA,
   COUNTRY_FILTERS,
@@ -317,6 +318,10 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
 
   if (currentSubScreen === 'odiwc') {
     return <OdiWorldCupScreen onBack={() => setCurrentSubScreen(null)} />;
+  }
+
+  if (currentSubScreen === 'wtc') {
+    return <WorldTestChampionshipScreen onBack={() => setCurrentSubScreen(null)} />;
   }
 
   return (
