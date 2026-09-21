@@ -18,6 +18,8 @@ import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-ico
 import MatchesHistoryScreen from './MatchesHistoryScreen';
 import PlayoffsScreen from './PlayoffsScreen';
 import AllRecordsScreen from './AllRecordsScreen';
+import T20WorldCupScreen from './T20WorldCupScreen';
+import OdiWorldCupScreen from './OdiWorldCupScreen';
 import {
   VENUES_DATA,
   COUNTRY_FILTERS,
@@ -309,6 +311,14 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
     return <PlayoffsScreen onBack={() => setCurrentSubScreen(null)} />;
   }
 
+  if (currentSubScreen === 't20wc') {
+    return <T20WorldCupScreen onBack={() => setCurrentSubScreen(null)} />;
+  }
+
+  if (currentSubScreen === 'odiwc') {
+    return <OdiWorldCupScreen onBack={() => setCurrentSubScreen(null)} />;
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -459,7 +469,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
 
           {/* Grid Item 3: World Cup Hub */}
           <TouchableOpacity
-            onPress={() => onNavigateToTab && onNavigateToTab('series', 'table')}
+            onPress={() => setCurrentSubScreen('t20wc')}
             style={styles.gridCard}
             activeOpacity={0.85}
           >
