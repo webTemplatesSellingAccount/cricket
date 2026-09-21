@@ -317,19 +317,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
   }
 
   if (currentSubScreen === 'playoffs') {
-    return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-        <View style={styles.topHeaderBar}>
-          <TouchableOpacity onPress={() => setCurrentSubScreen(null)} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#000000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Playoff History</Text>
-          <View style={{ width: 36 }} />
-        </View>
-        <PlayoffsScreen />
-      </SafeAreaView>
-    );
+    return <PlayoffsScreen onBack={() => setCurrentSubScreen(null)} />;
   }
 
   return (

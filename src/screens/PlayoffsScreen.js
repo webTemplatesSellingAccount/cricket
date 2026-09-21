@@ -50,7 +50,10 @@ export default function PlayoffsScreen({ onBack }) {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+    <SafeAreaView
+      style={styles.container}
+      edges={onBack ? ['top', 'left', 'right', 'bottom'] : ['bottom', 'left', 'right']}
+    >
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* 1. Header (Only render top bar if onBack is provided, preventing 2x PlayOff History title) */}
@@ -278,7 +281,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginHorizontal: 16,
     marginTop: 4,
-    marginBottom: 12,
+    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
@@ -355,7 +358,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#008000',
-    marginBottom: 16,
+    marginBottom: 12,
     overflow: 'hidden',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
@@ -365,8 +368,8 @@ const styles = StyleSheet.create({
   },
   yearHeaderBanner: {
     backgroundColor: '#008000',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
