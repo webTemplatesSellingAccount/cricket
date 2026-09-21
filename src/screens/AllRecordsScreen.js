@@ -16,6 +16,8 @@ import { ALL_RECORDS_CATEGORIES } from '../data/allRecordsData';
 // Folder Graphic Component to match Screenshot 1 & 3
 const FolderGraphic = () => (
   <View style={styles.folderArtBox}>
+
+
     {/* Back tab of folder */}
     <View style={styles.folderTabBack} />
     {/* Paper sheet inside folder */}

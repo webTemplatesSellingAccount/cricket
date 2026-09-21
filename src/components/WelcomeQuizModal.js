@@ -116,7 +116,7 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
 
   return (
     <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
         {/* Top Header Bar matching exact screenshot */}
@@ -566,7 +566,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 14,
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
   },
