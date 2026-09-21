@@ -820,11 +820,11 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
                   {/* Stadium Image with Badges */}
                   <View style={venueCardStyles.imageWrapper}>
                     <Image
-                      source={{
-                        uri: imageErrorMap[item.id]
-                          ? 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop'
-                          : item.image,
-                      }}
+                      source={
+                        imageErrorMap[item.id]
+                          ? (typeof item.imageUri === 'string' ? { uri: item.imageUri } : item.image)
+                          : (typeof item.image === 'string' ? { uri: item.image } : item.image)
+                      }
                       style={venueCardStyles.stadiumImage}
                       resizeMode="cover"
                       onError={() => handleImageError(item.id)}
@@ -990,11 +990,11 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
                 {/* Detail Header Image */}
                 <View style={{ height: 200, width: '100%', position: 'relative' }}>
                   <Image
-                    source={{
-                      uri: imageErrorMap[selectedVenueDetail.id]
-                        ? 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop'
-                        : selectedVenueDetail.image,
-                    }}
+                    source={
+                      imageErrorMap[selectedVenueDetail.id]
+                        ? (typeof selectedVenueDetail.imageUri === 'string' ? { uri: selectedVenueDetail.imageUri } : selectedVenueDetail.image)
+                        : (typeof selectedVenueDetail.image === 'string' ? { uri: selectedVenueDetail.image } : selectedVenueDetail.image)
+                    }
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                     onError={() => handleImageError(selectedVenueDetail.id)}
