@@ -19,6 +19,7 @@ import {
 } from '../services/cricketApi';
 import MatchCenterModal from '../components/MatchCenterModal';
 import { TeamFlag } from '../utils/flagHelper';
+import { MatchCardSkeleton } from '../components/ShimmerSkeleton';
 import EmptyStateView from '../components/EmptyStateView';
 
 export default function MatchesScreen({ onBack }) {
@@ -168,12 +169,18 @@ export default function MatchesScreen({ onBack }) {
 
       {/* 4. Content Area */}
       {loading ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color="#008000" />
-          <Text style={{ marginTop: 12, fontSize: 13, color: '#64748B', fontWeight: '700' }}>
-            Loading Matches...
-          </Text>
-        </View>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollInner} showsVerticalScrollIndicator={false}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
+            <ActivityIndicator size="small" color="#008000" style={{ marginRight: 8 }} />
+            <Text style={{ fontSize: 13, color: '#008000', fontWeight: '700' }}>
+              Loading Matches...
+            </Text>
+          </View>
+          <MatchCardSkeleton />
+          <MatchCardSkeleton />
+          <MatchCardSkeleton />
+          <MatchCardSkeleton />
+        </ScrollView>
       ) : (
         <ScrollView
           style={styles.scrollContent}

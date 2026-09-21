@@ -13,6 +13,7 @@ import { useTheme } from '../context/ThemeContext';
 import { getCricketNews } from '../services/cricketApi';
 import EmptyStateView from '../components/EmptyStateView';
 import ArticleWebViewModal from '../components/ArticleWebViewModal';
+import { NewsArticleSkeleton } from '../components/ShimmerSkeleton';
 
 export default function NewsScreen() {
   const { theme } = useTheme();
@@ -87,12 +88,15 @@ export default function NewsScreen() {
       )}
 
       {loading ? (
-        <View className="flex-1 items-center justify-center py-16">
-          <ActivityIndicator size="large" color={theme.accent} />
-          <Text style={{ color: theme.textMuted }} className="text-xs font-semibold mt-3">
-            Loading Cricket News...
-          </Text>
-        </View>
+        <ScrollView className="flex-1 px-4 pt-3" showsVerticalScrollIndicator={false}>
+          <View className="flex-row items-center justify-center py-3">
+            <ActivityIndicator size="small" color={theme.accent} style={{ marginRight: 8 }} />
+            <Text style={{ color: theme.textMuted }} className="text-xs font-semibold">
+              Loading Cricket News...
+            </Text>
+          </View>
+          <NewsArticleSkeleton count={6} />
+        </ScrollView>
       ) : (
         <ScrollView
           className="flex-1 px-4 pt-3"

@@ -23,6 +23,7 @@ import MatchCenterModal from '../components/MatchCenterModal';
 import VideoPlayerModal from '../components/VideoPlayerModal';
 import ArticleWebViewModal from '../components/ArticleWebViewModal';
 import { TeamFlag } from '../utils/flagHelper';
+import { FeaturedCarouselSkeleton } from '../components/ShimmerSkeleton';
 
 const { width } = Dimensions.get('window');
 
@@ -124,11 +125,14 @@ export default function CricbuzzHomeScreen({ onNavigateToTab }) {
         {/* 1. TOP MATCH CARDS HORIZONTAL CAROUSEL (EXACT CRICBUZZ LAYOUT) */}
         <View className="pt-3 pb-2">
           {loading ? (
-            <View className="py-8 items-center justify-center">
-              <ActivityIndicator size="small" color={theme.accent} />
-              <Text style={{ color: theme.accent }} className="text-xs font-bold mt-2">
-                LOADING LIVE SCORES...
-              </Text>
+            <View className="px-4 py-2">
+              <View className="flex-row items-center justify-center py-2 mb-2">
+                <ActivityIndicator size="small" color={theme.accent} style={{ marginRight: 8 }} />
+                <Text style={{ color: theme.accent }} className="text-xs font-bold">
+                  LOADING LIVE SCORES...
+                </Text>
+              </View>
+              <FeaturedCarouselSkeleton />
             </View>
           ) : (
             <ScrollView

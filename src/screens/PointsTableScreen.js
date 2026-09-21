@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getIplPointTable } from '../services/cricketApi';
 import { TeamFlag } from '../utils/flagHelper';
-import { SkeletonBox } from '../components/ShimmerSkeleton';
+import { TableSkeleton } from '../components/ShimmerSkeleton';
 import EmptyStateView from '../components/EmptyStateView';
 
 export default function PointsTableScreen({ onBack }) {
@@ -144,7 +144,7 @@ export default function PointsTableScreen({ onBack }) {
               FETCHING IPL {selectedYear} STANDINGS...
             </Text>
           </View>
-          <SkeletonBox width={'100%'} height={300} borderRadius={12} />
+          <TableSkeleton rows={10} />
         </ScrollView>
       ) : (
         <ScrollView

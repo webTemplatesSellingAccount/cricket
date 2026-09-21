@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getIplPlayoff } from '../services/cricketApi';
+import { RecordListSkeleton } from '../components/ShimmerSkeleton';
 
 export default function PlayoffsScreen({ onBack }) {
   const { theme } = useTheme();
@@ -104,10 +105,15 @@ export default function PlayoffsScreen({ onBack }) {
 
       {/* 3. PlayOff History Year Cards List from API */}
       {loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#008000" />
-          <Text style={styles.loadingText}>Fetching IPL Playoff History...</Text>
-        </View>
+        <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
+            <ActivityIndicator size="small" color="#008000" style={{ marginRight: 8 }} />
+            <Text style={{ fontSize: 13, color: '#008000', fontWeight: '700' }}>
+              Fetching IPL Playoff History...
+            </Text>
+          </View>
+          <RecordListSkeleton count={6} />
+        </ScrollView>
       ) : (
         <ScrollView
           style={styles.scrollContent}

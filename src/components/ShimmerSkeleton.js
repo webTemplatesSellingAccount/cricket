@@ -1,22 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 
 export function SkeletonBox({ width = '100%', height = 16, borderRadius = 8, style }) {
   const { theme, isDarkMode } = useTheme();
-  const opacityAnim = useRef(new Animated.Value(0.3)).current;
+  const opacityAnim = useRef(new Animated.Value(0.35)).current;
 
   useEffect(() => {
     const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(opacityAnim, {
-          toValue: 0.75,
-          duration: 750,
+          toValue: 0.9,
+          duration: 700,
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {
-          toValue: 0.3,
-          duration: 750,
+          toValue: 0.35,
+          duration: 700,
           useNativeDriver: true,
         }),
       ])
@@ -123,6 +123,94 @@ export function FeaturedCarouselSkeleton() {
           <SkeletonBox width={70} height={20} borderRadius={6} />
         </View>
       </View>
+    </View>
+  );
+}
+
+export function TableSkeleton({ rows = 8 }) {
+  return (
+    <View style={{ paddingVertical: 8 }}>
+      {/* Table header bar */}
+      <SkeletonBox width="100%" height={44} borderRadius={12} style={{ marginBottom: 12 }} />
+      {/* Rows */}
+      {Array.from({ length: rows }).map((_, i) => (
+        <View
+          key={i}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: '#F8FAFC',
+            borderRadius: 14,
+            borderWidth: 1,
+            borderColor: '#E2E8F0',
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            marginBottom: 10,
+          }}
+        >
+          <SkeletonBox width="10%" height={16} borderRadius={4} />
+          <SkeletonBox width="50%" height={16} borderRadius={4} />
+          <SkeletonBox width="20%" height={16} borderRadius={4} />
+        </View>
+      ))}
+    </View>
+  );
+}
+
+export function RecordListSkeleton({ count = 8 }) {
+  return (
+    <View style={{ paddingVertical: 8 }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <View
+          key={i}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#ECFDF3',
+            borderWidth: 1,
+            borderColor: '#A7F3D0',
+            borderRadius: 16,
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            marginBottom: 12,
+          }}
+        >
+          <SkeletonBox width={44} height={38} borderRadius={8} style={{ marginRight: 14 }} />
+          <SkeletonBox width="55%" height={18} borderRadius={6} style={{ flex: 1 }} />
+          <SkeletonBox width={40} height={30} borderRadius={10} style={{ marginLeft: 12 }} />
+        </View>
+      ))}
+    </View>
+  );
+}
+
+export function NewsArticleSkeleton({ count = 5 }) {
+  return (
+    <View style={{ paddingVertical: 8 }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <View
+          key={i}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#FFFFFF',
+            borderRadius: 16,
+            borderWidth: 1,
+            borderColor: '#E2E8F0',
+            padding: 12,
+            marginBottom: 12,
+          }}
+        >
+          <SkeletonBox width={90} height={70} borderRadius={12} style={{ marginRight: 12 }} />
+          <View style={{ flex: 1 }}>
+            <SkeletonBox width="90%" height={16} borderRadius={4} style={{ marginBottom: 6 }} />
+            <SkeletonBox width="70%" height={14} borderRadius={4} style={{ marginBottom: 8 }} />
+            <SkeletonBox width="30%" height={10} borderRadius={4} />
+          </View>
+        </View>
+      ))}
     </View>
   );
 }
