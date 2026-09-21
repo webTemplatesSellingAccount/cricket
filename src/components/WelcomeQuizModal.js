@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -46,6 +46,7 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
   const [questionIndex, setQuestionIndex] = useState(1);
   const [selectedOption, setSelectedOption] = useState('A');
   const [selectedTeam, setSelectedTeam] = useState('MI');
+  const scrollViewRef = useRef(null);
 
   if (!visible) return null;
 
@@ -90,6 +91,7 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
       } else {
         setSelectedOption('A');
       }
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
     } else {
       onClose();
     }
@@ -98,9 +100,20 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
   const handleBack = () => {
     if (questionIndex > 1) {
       setQuestionIndex(questionIndex - 1);
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
     } else {
       onClose();
     }
+  };
+
+  const handleSelectOption = (id) => {
+    setSelectedOption(id);
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+  };
+
+  const handleSelectTeam = (code) => {
+    setSelectedTeam(code);
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   return (
@@ -125,7 +138,12 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
           </View>
         </View>
 
-        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollInner} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.scrollContent}
+          contentContainerStyle={styles.scrollInner}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Top Ad Banner Card */}
           <View style={styles.adBannerCard}>
             <View style={styles.adIconBox}>
@@ -170,7 +188,7 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
                 return (
                   <TouchableOpacity
                     key={opt.id}
-                    onPress={() => setSelectedOption(opt.id)}
+                    onPress={() => handleSelectOption(opt.id)}
                     style={[
                       styles.optionItem,
                       isSelected && styles.optionItemSelected,
@@ -194,7 +212,7 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
                 return (
                   <TouchableOpacity
                     key={team.code}
-                    onPress={() => setSelectedTeam(team.code)}
+                    onPress={() => handleSelectTeam(team.code)}
                     style={[
                       styles.teamGridCard,
                       isSelected && styles.teamGridCardSelected,
@@ -216,23 +234,25 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
               })}
             </View>
           )}
-
-          {/* Next Button (Matching Green Image 1, 4 & 5) */}
-          <View style={styles.nextButtonContainer}>
-            <TouchableOpacity
-              onPress={handleNextQuiz}
-              style={styles.nextButton}
-              activeOpacity={0.85}
-            >
-              <View style={{ width: 32 }} />
-              <Text style={styles.nextButtonText}>Next</Text>
-              <View style={styles.nextIconCircle}>
-                <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -1 }} />
-                <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -8 }} />
-              </View>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
+
+        {/* Fixed Pinned Bottom Action Button (Always Visible Without Scrolling) */}
+        <View style={styles.fixedBottomContainer}>
+          <TouchableOpacity
+            onPress={handleNextQuiz}
+            style={styles.nextButton}
+            activeOpacity={0.85}
+          >
+            <View style={{ width: 32 }} />
+            <Text style={styles.nextButtonText}>
+              {questionIndex === quizQuestions.length ? 'Submit' : 'Next'}
+            </Text>
+            <View style={styles.nextIconCircle}>
+              <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -1 }} />
+              <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -8 }} />
+            </View>
+          </TouchableOpacity>
+        </View>
 
         {/* Bottom Ad Banner */}
         <View style={styles.bottomAdBanner}>
@@ -439,31 +459,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 12,
   },
   teamGridCard: {
     width: '48%',
-    height: 115,
+    height: 96,
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
     borderColor: '#000000',
-    borderRadius: 20,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
-    padding: 8,
+    marginBottom: 10,
+    padding: 6,
   },
   teamGridCardSelected: {
     borderColor: '#008000',
     backgroundColor: '#E6F4EA',
   },
   teamLogoWrapper: {
-    width: 80,
-    height: 56,
+    width: 70,
+    height: 48,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   teamLogoImage: {
     width: '100%',
@@ -471,7 +491,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   teamCodeText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
     color: '#000000',
   },
@@ -479,6 +499,19 @@ const styles = StyleSheet.create({
     color: '#008000',
   },
 
+  fixedBottomContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 4,
+  },
   nextButtonContainer: {
     alignItems: 'center',
     marginTop: 4,

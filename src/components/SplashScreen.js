@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,27 +9,85 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function SplashScreen({ onFinish, isPreview = false, onClose }) {
+  const [showInitialSplash, setShowInitialSplash] = useState(!isPreview);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const logoScaleAnim = useRef(new Animated.Value(0.75)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 600,
       useNativeDriver: true,
     }).start();
-  }, []);
+
+    Animated.spring(logoScaleAnim, {
+      toValue: 1,
+      friction: 5,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+
+    if (!isPreview) {
+      const timer = setTimeout(() => {
+        setShowInitialSplash(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPreview]);
 
   const handleGetStarted = () => {
     if (onClose) onClose();
     if (onFinish) onFinish();
   };
+
+  // 1. Initial Centered App Icon Splash Screen
+  if (showInitialSplash) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setShowInitialSplash(false)}
+          style={styles.initialSplashContainer}
+        >
+          <Animated.View
+            style={[
+              styles.centeredLogoBox,
+              { opacity: fadeAnim, transform: [{ scale: logoScaleAnim }] },
+            ]}
+          >
+            {/* Centered App Logo Card */}
+            <View style={styles.logoCircleWrapper}>
+              <Image
+                source={require('../../assets/icon.png')}
+                style={styles.logoImage}
+                resizeMode="cover"
+              />
+            </View>
+
+            {/* App Name & Branding */}
+            <Text style={styles.splashAppTitle}>Live Cricket TV HD</Text>
+            <Text style={styles.splashAppSubtitle}>
+              Ball-By-Ball Commentary & Real-Time Scores
+            </Text>
+
+            {/* Spinner indicator */}
+            <View style={styles.splashSpinnerBox}>
+              <ActivityIndicator size="small" color="#008000" />
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
@@ -327,6 +385,57 @@ const styles = StyleSheet.create({
   batsmanIconImage: {
     width: '90%',
     height: '90%',
+  },
+  /* Initial Centered Logo Splash Screen Styles */
+  initialSplashContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centeredLogoBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  logoCircleWrapper: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: '#007A3B',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    borderWidth: 3,
+    borderColor: '#007A3B',
+    marginBottom: 24,
+    overflow: 'hidden',
+  },
+  logoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  splashAppTitle: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#000000',
+    letterSpacing: -0.3,
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  splashAppSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#4B5563',
+    textAlign: 'center',
+    marginBottom: 28,
+  },
+  splashSpinnerBox: {
+    marginTop: 8,
   },
 });
 

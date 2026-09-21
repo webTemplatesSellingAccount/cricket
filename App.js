@@ -18,38 +18,36 @@ import NewsScreen from './src/screens/NewsScreen';
 import PointsTableScreen from './src/screens/PointsTableScreen';
 
 function MainApp() {
-  const [quizVisible, setQuizVisible] = useState(true);
-  const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [quizVisible, setQuizVisible] = useState(false);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [currentView, setCurrentView] = useState('liveScoreHub'); // 'liveScoreHub' | 'schedule' | 'matches' | 'table'
 
-  const handleQuizClose = () => {
-    setQuizVisible(false);
-    if (!hasCompletedOnboarding) {
-      setShowSplash(true);
-    }
-  };
-
   const handleSplashFinish = () => {
     setShowSplash(false);
+    setQuizVisible(true);
+  };
+
+  const handleQuizClose = () => {
+    setQuizVisible(false);
     setHasCompletedOnboarding(true);
     setCurrentView('liveScoreHub');
   };
-
-  if (!hasCompletedOnboarding && quizVisible) {
-    return (
-      <WelcomeQuizModal
-        visible={true}
-        onClose={handleQuizClose}
-      />
-    );
-  }
 
   if (showSplash) {
     return (
       <SplashScreen
         onFinish={handleSplashFinish}
         onClose={handleSplashFinish}
+      />
+    );
+  }
+
+  if (!hasCompletedOnboarding && quizVisible) {
+    return (
+      <WelcomeQuizModal
+        visible={true}
+        onClose={handleQuizClose}
       />
     );
   }
