@@ -444,35 +444,29 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
             </View>
           </TouchableOpacity>
 
-          {/* Grid Item 2: Play Game (AD) */}
+          {/* Grid Item 2: Video Highlights */}
           <TouchableOpacity
-            onPress={handlePlayGame}
+            onPress={() => onNavigateToTab && onNavigateToTab('news')}
             style={styles.gridCard}
             activeOpacity={0.85}
           >
-            <View style={styles.gridAdPill}>
-              <Text style={styles.gridAdText}>AD</Text>
-            </View>
-            <Text style={styles.gridTitle}>Play Game</Text>
-            <Text style={styles.gridSubtitle}>Let's the play of game</Text>
+            <Text style={styles.gridTitle}>Video Highlights</Text>
+            <Text style={styles.gridSubtitle}>Watch match highlights & key moments</Text>
             <View style={styles.gridArtWrapper}>
-              <WicketsGameArt />
+              <Ionicons name="play-circle" size={36} color="#008000" />
             </View>
           </TouchableOpacity>
 
-          {/* Grid Item 3: Play Game (AD) */}
+          {/* Grid Item 3: World Cup Hub */}
           <TouchableOpacity
-            onPress={handlePlayGame}
+            onPress={() => onNavigateToTab && onNavigateToTab('series', 'table')}
             style={styles.gridCard}
             activeOpacity={0.85}
           >
-            <View style={styles.gridAdPill}>
-              <Text style={styles.gridAdText}>AD</Text>
-            </View>
-            <Text style={styles.gridTitle}>Play Game</Text>
-            <Text style={styles.gridSubtitle}>Let's the play of game</Text>
+            <Text style={styles.gridTitle}>World Cup Hub</Text>
+            <Text style={styles.gridSubtitle}>T20 & ODI WC standings & stats</Text>
             <View style={styles.gridArtWrapper}>
-              <WicketsGameArt />
+              <Ionicons name="trophy" size={36} color="#D97706" />
             </View>
           </TouchableOpacity>
 
@@ -492,7 +486,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
           </TouchableOpacity>
         </View>
 
-        {/* Section 4: Full-width Horizontal Card - Point Table (Light Green BG #F4FBF6) */}
+        {/* Section 4: Full-width Horizontal Card - Point Table */}
         <TouchableOpacity
           onPress={() => onNavigateToTab && onNavigateToTab('series', 'table')}
           style={styles.horizontalCard}
@@ -526,7 +520,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
           </View>
         </TouchableOpacity>
 
-        {/* Section 6: Grey Card - IPL News (Read More) */}
+        {/* Section 6: Grey Card - IPL News */}
         <View style={styles.featureAdContainer}>
           <View style={styles.adHeaderRow}>
             <View style={styles.adRedBallCircle}>
@@ -560,19 +554,20 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
           </TouchableOpacity>
         </View>
 
-        {/* Section 7: Full-width Horizontal Card - Play Game (AD) */}
+        {/* Section 7: Full-width Horizontal Card - World Cup History */}
         <TouchableOpacity
-          onPress={handlePlayGame}
+          onPress={() => setCurrentSubScreen('playoffs')}
           style={styles.horizontalCard}
           activeOpacity={0.85}
         >
           <View style={styles.horizontalLeft}>
-            <WicketsGameArt />
-            <Text style={[styles.horizontalTitle, { marginLeft: 16 }]}>Play Game</Text>
+            <Ionicons name="ribbon" size={26} color="#F59E0B" />
+            <Text style={[styles.horizontalTitle, { marginLeft: 16 }]}>World Cup History</Text>
           </View>
 
-          <View style={styles.cardAdTagGreen}>
-            <Text style={styles.cardAdTagText}>AD</Text>
+          <View style={styles.greenChevronSquare}>
+            <Ionicons name="chevron-forward-sharp" size={14} color="#FFFFFF" style={{ marginLeft: -1 }} />
+            <Ionicons name="chevron-forward-sharp" size={14} color="#FFFFFF" style={{ marginLeft: -8 }} />
           </View>
         </TouchableOpacity>
 

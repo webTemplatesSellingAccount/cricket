@@ -16,77 +16,268 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getIplPlayoff } from '../services/cricketApi';
 import { RecordListSkeleton } from '../components/ShimmerSkeleton';
+import {
+  T20_WORLD_CUP_PLAYOFFS,
+  ODI_WORLD_CUP_PLAYOFFS,
+} from '../data/worldCupData';
 
 export default function PlayoffsScreen({ onBack }) {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [playoffImages, setPlayoffImages] = useState([]);
+  const [selectedTournament, setSelectedTournament] = useState('ipl'); // 'ipl' | 't20_wc' | 'odi_wc'
+  const [playoffList, setPlayoffList] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const loadPlayoffs = useCallback(async (isSilent = false) => {
-    if (!isSilent) setLoading(true);
-    try {
-      const res = await getIplPlayoff();
-      if (res.playoffImages && res.playoffImages.length > 0) {
-        // Sort descending by year (2024 to 2011)
-        const sorted = [...res.playoffImages].sort((a, b) => parseInt(b.year) - parseInt(a.year));
-        setPlayoffImages(sorted);
+  const loadPlayoffData = useCallback(async (tourney) => {
+    setLoading(true);
+    const t = tourney || selectedTournament;
+
+    if (t === 'ipl') {
+      try {
+        const res = await getIplPlayoff();
+        setPlayoffList(res.images || []);
+      } catch (err) {
+        console.warn('IPL Playoff fetch err:', err.message);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-    } catch (err) {
-      console.warn('Playoffs fetch err:', err.message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+    } else if (t === 't20_wc') {
+      setTimeout(() => {
+        setPlayoffList(T20_WORLD_CUP_PLAYOFFS);
+        setLoading(false);
+        setRefreshing(false);
+      }, 300);
+    } else if (t === 'odi_wc') {
+      setTimeout(() => {
+        setPlayoffList(ODI_WORLD_CUP_PLAYOFFS);
+        setLoading(false);
+        setRefreshing(false);
+      }, 300);
     }
-  }, []);
+  }, [selectedTournament]);
 
   useEffect(() => {
-    loadPlayoffs();
-  }, [loadPlayoffs]);
+    loadPlayoffData(selectedTournament);
+  }, [selectedTournament]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    loadPlayoffs();
+    loadPlayoffData(selectedTournament);
+  };
+
+  const handleSelectTournament = (tourney) => {
+    setSelectedTournament(tourney);
+  };
+
+  const getHeaderTitle = () => {
+    if (selectedTournament === 'ipl') return 'IPL Playoff History';
+    if (selectedTournament === 't20_wc') return 'T20 WC Playoff History';
+    return 'ODI WC Playoff History';
   };
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={onBack ? ['top', 'left', 'right', 'bottom'] : ['bottom', 'left', 'right']}
-    >
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* 1. Header (Only render top bar if onBack is provided, preventing 2x PlayOff History title) */}
-      {onBack ? (
-        <View style={styles.topHeaderBar}>
-          <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.7}>
-            <Ionicons name="chevron-back" size={28} color="#000000" />
-          </TouchableOpacity>
+      {/* 1. Header Bar */}
+      <View style={styles.topHeaderBar}>
+        <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.7}>
+          <Ionicons name="chevron-back" size={28} color="#000000" />
+        </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>Playoff History</Text>
+        <Text style={styles.headerTitle}>{getHeaderTitle()}</Text>
 
-          {/* Top Right Circular AD Badge */}
-          <View style={styles.topRightAdBadge}>
-            <View style={styles.adBadgeGreenCircle}>
-              <View style={styles.adRedBallCircleHeader}>
-                <View style={styles.redBallInner} />
-              </View>
-              <View style={styles.adSmallPillGreen}>
-                <Text style={styles.adSmallPillText}>AD</Text>
-              </View>
+        <View style={styles.topRightAdBadge}>
+          <View style={styles.adBadgeGreenCircle}>
+            <View style={styles.adRedBallCircleHeader}>
+              <View style={styles.redBallInner} />
+            </View>
+            <View style={styles.adSmallPillGreen}>
+              <Text style={styles.adSmallPillText}>AD</Text>
             </View>
           </View>
         </View>
-      ) : null}
+      </View>
 
-      {/* 2. Top Sub-Header AD Card */}
+      {/* 2. Tournament Selector (IPL | T20 World Cup | ODI World Cup) */}
+      <View style={styles.tournamentSegmentRow}>
+        <TouchableOpacity
+          onPress={() => handleSelectTournament('ipl')}
+          style={[
+            styles.segmentBtn,
+            selectedTournament === 'ipl' && styles.segmentBtnActive,
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.segmentBtnText,
+              selectedTournament === 'ipl' && styles.segmentBtnTextActive,
+            ]}
+          >
+            IPL
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => handleSelectTournament('t20_wc')}
+          style={[
+            styles.segmentBtn,
+            selectedTournament === 't20_wc' && styles.segmentBtnActive,
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.segmentBtnText,
+              selectedTournament === 't20_wc' && styles.segmentBtnTextActive,
+            ]}
+          >
+            T20 World Cup
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => handleSelectTournament('odi_wc')}
+          style={[
+            styles.segmentBtn,
+            selectedTournament === 'odi_wc' && styles.segmentBtnActive,
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.segmentBtnText,
+              selectedTournament === 'odi_wc' && styles.segmentBtnTextActive,
+            ]}
+          >
+            ODI World Cup
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* 3. Top Sub-Header AD Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
-          <View style={styles.adBallBlueCircle}>
-            <Ionicons name="baseball" size={18} color="#0284C7" />
-            <View style={styles.adTagPillCyan}>
-              <Text style={styles.adTagText}>AD</Text>
+          <View style={styles.adRedBallCircle}>
+            <Ionicons name="trophy-outline" size={18} color="#008000" />
+            <View style={styles.adBadgePillGreen}>
+              <Text style={styles.adBadgeText}>AD</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.adTextBox}>
+          <Text style={styles.adTitle} numberOfLines={1}>IPL & World Cup History</Text>
+          <Text style={styles.adSubtitle} numberOfLines={1}>
+            Explore all champions, final matches & playoff brackets
+          </Text>
+        </View>
+
+        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
+          <Text style={styles.installButtonText}>Install</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* 4. Playoff History Cards List */}
+      {loading ? (
+        <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 10 }}>
+            <ActivityIndicator size="small" color="#008000" style={{ marginRight: 8 }} />
+            <Text style={{ fontSize: 13, color: '#008000', fontWeight: '700' }}>
+              Fetching {getHeaderTitle()}...
+            </Text>
+          </View>
+          <RecordListSkeleton count={6} />
+        </ScrollView>
+      ) : (
+        <ScrollView
+          style={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 24 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#008000"
+              colors={['#008000', '#10B981', '#009270']}
+            />
+          }
+        >
+          {selectedTournament === 'ipl' ? (
+            /* IPL Image Cards */
+            playoffList.map((item, index) => (
+              <TouchableOpacity
+                key={item.year || index}
+                style={styles.playoffCard}
+                activeOpacity={0.9}
+                onPress={() => item.url && setSelectedImage(item.url)}
+              >
+                <View style={styles.cardHeaderRow}>
+                  <View style={styles.yearBadge}>
+                    <Ionicons name="trophy" size={14} color="#F59E0B" style={{ marginRight: 4 }} />
+                    <Text style={styles.yearBadgeText}>{item.year} Playoff</Text>
+                  </View>
+                  <Text style={styles.tapToViewText}>Tap to Enlarge</Text>
+                </View>
+
+                {item.url ? (
+                  <Image
+                    source={{ uri: item.url }}
+                    style={styles.playoffImage}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <View style={styles.noImagePlaceholder}>
+                    <Text style={styles.noImageText}>IPL {item.year} Playoff Table</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))
+          ) : (
+            /* World Cup Structured Cards */
+            playoffList.map((item, index) => (
+              <View key={item.year || index} style={styles.worldCupCard}>
+                <View style={styles.wcYearRow}>
+                  <View style={styles.yearBadge}>
+                    <Ionicons name="trophy" size={16} color="#F59E0B" style={{ marginRight: 6 }} />
+                    <Text style={styles.yearBadgeText}>{item.year} Champions</Text>
+                  </View>
+                  <Text style={styles.wcVenueText}>{item.venue}</Text>
+                </View>
+
+                <View style={styles.wcTeamRow}>
+                  <View style={styles.wcWinnerBox}>
+                    <Text style={styles.wcLabelText}>WINNER</Text>
+                    <Text style={styles.wcWinnerText}>{item.winner}</Text>
+                  </View>
+                  <View style={styles.wcVsBox}>
+                    <Text style={styles.wcVsText}>VS</Text>
+                  </View>
+                  <View style={styles.wcRunnerBox}>
+                    <Text style={styles.wcLabelText}>RUNNER-UP</Text>
+                    <Text style={styles.wcRunnerText}>{item.runnerUp}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.wcMarginBox}>
+                  <Text style={styles.wcMarginText}>{item.margin}</Text>
+                </View>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      )}
+
+      {/* Bottom Ad Banner */}
+      <View style={styles.bottomAdBanner}>
+        <View style={styles.adIconBox}>
+          <View style={styles.adRedBallCircle}>
+            <Ionicons name="baseball" size={18} color="#DC2626" />
+            <View style={styles.adBadgePillGreen}>
+              <Text style={styles.adBadgeText}>AD</Text>
             </View>
           </View>
         </View>
@@ -103,78 +294,17 @@ export default function PlayoffsScreen({ onBack }) {
         </TouchableOpacity>
       </View>
 
-      {/* 3. PlayOff History Year Cards List from API */}
-      {loading ? (
-        <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
-            <ActivityIndicator size="small" color="#008000" style={{ marginRight: 8 }} />
-            <Text style={{ fontSize: 13, color: '#008000', fontWeight: '700' }}>
-              Fetching IPL Playoff History...
-            </Text>
-          </View>
-          <RecordListSkeleton count={6} />
-        </ScrollView>
-      ) : (
-        <ScrollView
-          style={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 24 }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="#008000"
-              colors={['#008000', '#10B981']}
-            />
-          }
-        >
-          {playoffImages.map((item) => (
-            <TouchableOpacity
-              key={item.id || item.year}
-              style={styles.yearCardContainer}
-              activeOpacity={0.9}
-              onPress={() => setSelectedImage(item.imageUrl)}
-            >
-              {/* Green Year Header Banner */}
-              <View style={styles.yearHeaderBanner}>
-                <View style={styles.yearHeaderLeft}>
-
-                  <Image
-                    source={require('../../assets/ipl_batsman_icon.jpg')}
-                    style={styles.batsmanHeaderIcon}
-                    resizeMode="contain"
-                  />
-                  <Text style={styles.yearHeaderText}>IPL {item.year} PLAYOFFS</Text>
-                </View>
-                <View style={styles.tapBadge}>
-                  <Ionicons name="expand-outline" size={11} color="#008000" style={{ marginRight: 3 }} />
-                  <Text style={styles.tapBadgeText}>Tap to Zoom</Text>
-                </View>
-              </View>
-
-              {/* Full Width 100% Edge-to-Edge Image without any cropping */}
-              <Image
-                source={{ uri: item.imageUrl }}
-                style={styles.playoffImage}
-                resizeMode="stretch"
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
-
-      {/* 4. Fullscreen Modal for Playoff Image */}
+      {/* Full Screen Image Modal */}
       <Modal
         visible={!!selectedImage}
         transparent={true}
         animationType="fade"
         onRequestClose={() => setSelectedImage(null)}
       >
-        <View style={styles.modalBackdrop}>
+        <View style={styles.imageModalContainer}>
           <TouchableOpacity
-            style={styles.modalCloseButton}
+            style={styles.closeModalBtn}
             onPress={() => setSelectedImage(null)}
-            activeOpacity={0.8}
           >
             <Ionicons name="close-circle" size={36} color="#FFFFFF" />
           </TouchableOpacity>
@@ -187,29 +317,6 @@ export default function PlayoffsScreen({ onBack }) {
           )}
         </View>
       </Modal>
-
-      {/* 5. Bottom Ad Banner */}
-      <View style={styles.bottomAdBanner}>
-        <View style={styles.adIconBox}>
-          <View style={styles.adBallRedCircle}>
-            <Ionicons name="baseball" size={20} color="#DC2626" />
-            <View style={styles.adBadgePillGreen}>
-              <Text style={styles.adBadgeText}>AD</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>IPL News</Text>
-          <Text style={styles.adSubtitle} numberOfLines={1}>
-            Stay updated with the latest IPL news and
-          </Text>
-        </View>
-
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -219,12 +326,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+
+  /* Header Bar */
   topHeaderBar: {
-    height: 52,
+    height: 54,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
     backgroundColor: '#FFFFFF',
   },
   backButton: {
@@ -232,87 +343,123 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '800',
     color: '#000000',
     textAlign: 'center',
   },
-  topRightAdBadge: {
+
+  /* Tournament Segment Row */
+  tournamentSegmentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#F1F5F9',
+    marginHorizontal: 16,
+    marginTop: 10,
     padding: 4,
+    borderRadius: 12,
   },
-  adBadgeGreenCircle: {
+  segmentBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  segmentBtnActive: {
+    backgroundColor: '#008000',
+  },
+  segmentBtnText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  segmentBtnTextActive: {
+    color: '#FFFFFF',
+  },
+
+  /* Top Right Circular AD Badge */
+  topRightAdBadge: {
     width: 38,
     height: 38,
-    borderRadius: 19,
-    backgroundColor: '#DCFCE7',
-    borderWidth: 1.5,
-    borderColor: '#16A34A',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  adBadgeGreenCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#E6F4EA',
+    borderWidth: 1.5,
+    borderColor: '#34A853',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'relative',
   },
   adRedBallCircleHeader: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: '#EF4444',
-    alignItems: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#EA4335',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   redBallInner: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#FCA5A5',
+    backgroundColor: '#FFFFFF',
+    opacity: 0.8,
   },
   adSmallPillGreen: {
     position: 'absolute',
     top: -2,
-    right: -2,
-    backgroundColor: '#16A34A',
+    right: -4,
+    backgroundColor: '#34A853',
+    borderRadius: 6,
     paddingHorizontal: 3,
     paddingVertical: 1,
-    borderRadius: 5,
   },
   adSmallPillText: {
     fontSize: 7,
     fontWeight: '900',
     color: '#FFFFFF',
   },
+
+  /* Sub-Header AD Card */
   adBannerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    backgroundColor: '#F8FAFC',
     marginHorizontal: 16,
-    marginTop: 4,
-    marginBottom: 8,
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
   adIconBox: {
     marginRight: 10,
   },
-  adBallBlueCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#E0F2FE',
+  adRedBallCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F0FDF4',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
-  adTagPillCyan: {
+  adBadgePillGreen: {
     position: 'absolute',
     top: -2,
-    left: -2,
-    backgroundColor: '#0284C7',
-    paddingHorizontal: 3,
+    right: -2,
+    backgroundColor: '#16A34A',
+    paddingHorizontal: 4,
     paddingVertical: 1,
-    borderRadius: 5,
+    borderRadius: 6,
   },
-  adTagText: {
+  adBadgeText: {
     fontSize: 7,
     fontWeight: '900',
     color: '#FFFFFF',
@@ -322,15 +469,14 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   adTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#000000',
-    marginBottom: 1,
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0F172A',
   },
   adSubtitle: {
-    fontSize: 11,
-    color: '#4B5563',
-    fontWeight: '500',
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 1,
   },
   installButton: {
     backgroundColor: '#008000',
@@ -340,130 +486,176 @@ const styles = StyleSheet.create({
   },
   installButtonText: {
     color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800',
+    fontSize: 14,
+    fontWeight: '700',
   },
+
   scrollContent: {
     flex: 1,
     paddingHorizontal: 16,
+    paddingTop: 10,
   },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#008000',
-  },
-  yearCardContainer: {
-    backgroundColor: '#008000',
+  playoffCard: {
+    backgroundColor: '#ECFDF3',
     borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#008000',
-    marginBottom: 12,
-    overflow: 'hidden',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    borderWidth: 1.2,
+    borderColor: '#16A34A',
+    padding: 12,
+    marginBottom: 14,
   },
-  yearHeaderBanner: {
-    backgroundColor: '#008000',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+  cardHeaderRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
-  yearHeaderLeft: {
+  yearBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 4
-  },
-  batsmanHeaderIcon: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    marginRight: 6,
-    backgroundColor: '#FFFFFF',
-  },
-  yearHeaderText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '900',
-    letterSpacing: 0.4,
-  },
-  tapBadge: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: '#056E2B',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
-  tapBadgeText: {
-    color: '#008000',
-    fontSize: 10,
-    fontWeight: '900',
+  yearBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  tapToViewText: {
+    fontSize: 12,
+    color: '#16A34A',
+    fontWeight: '700',
   },
   playoffImage: {
     width: '100%',
     height: 180,
+    borderRadius: 10,
     backgroundColor: '#FFFFFF',
   },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.92)',
-    alignItems: 'center',
+  noImagePlaceholder: {
+    height: 120,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     justifyContent: 'center',
-    padding: 16,
+    alignItems: 'center',
   },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    zIndex: 20,
-    padding: 6,
+  noImageText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#008000',
   },
-  fullScreenImage: {
-    width: '100%',
-    height: '80%',
+
+  /* World Cup Structured Card Styles */
+  worldCupCard: {
+    backgroundColor: '#ECFDF3',
+    borderRadius: 16,
+    borderWidth: 1.2,
+    borderColor: '#16A34A',
+    padding: 14,
+    marginBottom: 14,
   },
+  wcYearRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  wcVenueText: {
+    fontSize: 12,
+    color: '#475569',
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'right',
+    marginLeft: 8,
+  },
+  wcTeamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  wcWinnerBox: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  wcRunnerBox: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  wcVsBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#008000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  wcVsText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  wcLabelText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    marginBottom: 2,
+  },
+  wcWinnerText: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#008000',
+  },
+  wcRunnerText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#334155',
+  },
+  wcMarginBox: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  wcMarginText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+
+  /* Bottom AD Banner */
   bottomAdBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
+    backgroundColor: '#F8FAFC',
+    marginHorizontal: 16,
+    marginVertical: 8,
+    paddingHorizontal: 12,
     paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
-  adBallRedCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#FEF2F2',
-    alignItems: 'center',
+
+  /* Image Modal */
+  imageModalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
     justifyContent: 'center',
-    position: 'relative',
+    alignItems: 'center',
   },
-  adBadgePillGreen: {
+  closeModalBtn: {
     position: 'absolute',
-    top: -2,
-    left: -2,
-    backgroundColor: '#16A34A',
-    paddingHorizontal: 3,
-    paddingVertical: 1,
-    borderRadius: 5,
+    top: 40,
+    right: 20,
+    zIndex: 10,
   },
-  adBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 7,
-    fontWeight: '900',
+  fullScreenImage: {
+    width: '95%',
+    height: '80%',
   },
 });
