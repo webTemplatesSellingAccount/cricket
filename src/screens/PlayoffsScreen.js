@@ -377,6 +377,7 @@ const styles = StyleSheet.create({
   yearHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 4
   },
   batsmanHeaderIcon: {
     width: 22,

@@ -505,15 +505,15 @@ export default function IplHubScreen() {
 
               {/* All Seasons Playoff History Images */}
               {playoffImages && playoffImages.length > 0 && (
-                <View className="mt-4 pt-4 border-t" style={{ borderColor: theme.divider }}>
-                  <Text style={{ color: theme.text }} className="font-extrabold text-sm mb-3 tracking-wide">
+                <View className="mt-3 pt-3 border-t" style={{ borderColor: theme.divider }}>
+                  <Text style={{ color: theme.text }} className="font-extrabold text-sm mb-2.5 tracking-wide">
                     ALL SEASONS PLAYOFF HISTORY
                   </Text>
                   {playoffImages.map((img) => (
                     <TouchableOpacity
                       key={img.id || img.year}
                       style={{ backgroundColor: theme.accent, borderColor: theme.accent, borderWidth: 1.5 }}
-                      className="rounded-2xl shadow-sm mb-4 overflow-hidden"
+                      className="rounded-2xl shadow-sm mb-3 overflow-hidden"
                       activeOpacity={0.9}
                       onPress={() => setSelectedImage(img.imageUrl)}
                     >
