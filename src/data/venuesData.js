@@ -13,7 +13,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Gujarat Titans, Gujarat, Team India',
     ends: 'Adani Pavilion End, Reliance End',
-    image: require('../../assets/venues/narendra_modi_stadium.jpg'),
+    image: require('../../assets/venues/Ahmedabad_compress.webp'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Narendra_Modi_Stadium_Ahmedabad.jpg',
     highestTotal: '233/3 - GT vs MI (IPL 2023)',
     iconicMatch: '2023 CWC Final & IPL 2022 Final',
@@ -32,7 +32,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Royal Challengers Bengaluru, Karnataka, Team India',
     ends: 'Pavilion End, BHEL End',
-    image: require('../../assets/venues/chinnaswamy_stadium.jpg'),
+    image: require('../../assets/venues/Bangalore_compress.webp'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/9/97/Chinnaswamy_Cricket_Stadium.jpg',
     highestTotal: '263/5 - RCB vs PWI (IPL 2013)',
     iconicMatch: 'Gayle 175* off 66 balls in IPL 2013',
@@ -51,7 +51,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'KKR, Bengal, Team India',
     ends: 'High Court End, Club House End',
-    image: require('../../assets/venues/eden_gardens.jpg'),
+    image: require('../../assets/venues/Kolkata_compress.avif'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Eden_Gardens_Cricket_Stadium%2C_Kolkata.jpg',
     highestTotal: '404/5 - India vs Sri Lanka (2014)',
     iconicMatch: '2001 Test vs Australia (VVS Laxman 281 & Dravid 180)',
@@ -70,7 +70,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Mumbai Indians, Mumbai, Team India',
     ends: 'Garware Pavilion End, Tata End',
-    image: require('../../assets/venues/wankhede_stadium.jpg'),
+    image: require('../../assets/venues/Wankhede_compress.avif'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/Wankhede_stadium.jpg',
     highestTotal: '438/4 - South Africa vs India (2015)',
     iconicMatch: '2011 ICC CWC Final - Dhoni six sealing victory',
@@ -89,7 +89,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Chennai Super Kings, Tamil Nadu, Team India',
     ends: 'Anna Pavilion End, Pattabhiraman Gate End',
-    image: require('../../assets/venues/chidambaram_stadium.jpg'),
+    image: require('../../assets/venues/Chennai_compress.webp'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/M.A.Chidambaram_Stadium_before_IND_vs_AUS_3rd_ODI_2023.jpg',
     highestTotal: '619/9d - India vs Australia (2001)',
     iconicMatch: '1986 Tied Test vs Australia & Sachin 136 vs PAK (1999)',
@@ -108,7 +108,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Delhi Capitals, Delhi, Team India',
     ends: 'Stadium End, Pavilion End',
-    image: require('../../assets/venues/arun_jaitley_stadium.jpg'),
+    image: require('../../assets/venues/Delhi_compress.webp'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Arun_Jaitley_stadium.jpg',
     highestTotal: '266/7 - SRH vs DC (IPL 2024)',
     iconicMatch: 'Anil Kumble 10/74 vs Pakistan (1999)',
@@ -127,7 +127,7 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Punjab Kings, Himachal Pradesh, Team India',
     ends: 'River End, Cathedral End',
-    image: require('../../assets/venues/hpca_stadium.jpg'),
+    image: require('../../assets/venues/Dharamshala_compress.avif'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/9/91/HPCA_Stadium.jpg',
     highestTotal: '364/9 - England vs Bangladesh (CWC 2023)',
     iconicMatch: 'India vs Australia 2017 Test win',
@@ -146,16 +146,111 @@ export const VENUES_DATA = [
     floodlights: true,
     homeTeams: 'Sunrisers Hyderabad, Hyderabad, Team India',
     ends: 'Pavilion End, North End',
-    image: require('../../assets/venues/rajiv_gandhi_stadium.jpg'),
+    image: require('../../assets/venues/RajivGandhiINTHYD_compress.avif'),
     imageUri: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Rajiv_Gandhi_International_Cricket_Stadium_Hyderabad.jpg',
     highestTotal: '277/3 - SRH vs MI (IPL 2024)',
     iconicMatch: 'SRH 277 IPL record total in 2024',
     description: 'Modern venue with a high flat pitch conducive to massive IPL strokeplay and heavy six-hitting.',
   },
+  {
+    id: '9',
+    name: 'BRSABV Ekana Cricket Stadium',
+    city: 'Lucknow',
+    country: 'India',
+    flag: '🇮🇳',
+    opened: '2017',
+    capacity: '50,000',
+    capacityNum: 50000,
+    pitchType: 'Spin Friendly',
+    floodlights: true,
+    homeTeams: 'Lucknow Super Giants, Uttar Pradesh, Team India',
+    ends: 'North End, South End',
+    image: require('../../assets/venues/Lucknow_compress.avif'),
+    imageUri: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Ekana_Cricket_Stadium%2C_Lucknow.jpg',
+    highestTotal: '199/2 - India vs Sri Lanka (2022)',
+    iconicMatch: 'LSG IPL thriller wins & CWC 2023 matches',
+    description: 'State-of-the-art venue in Lucknow boasting expansive outfields and black & red soil spin tracks.',
+  },
+  {
+    id: '10',
+    name: 'MCA International Stadium',
+    city: 'Pune',
+    country: 'India',
+    flag: '🇮🇳',
+    opened: '2012',
+    capacity: '37,000',
+    capacityNum: 37000,
+    pitchType: 'Batting Friendly',
+    floodlights: true,
+    homeTeams: 'Maharashtra, CSK (former home), Team India',
+    ends: 'Pavilion End, Hill End',
+    image: require('../../assets/venues/Pune.avif'),
+    imageUri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Sahara_Stadium_Pune_4.jpg/1280px-Sahara_Stadium_Pune_4.jpg',
+    highestTotal: '356/7 - India vs England (2017)',
+    iconicMatch: 'Kedar Jadhav & Virat Kohli epic chase vs England 2017',
+    description: 'Situated on the outskirts of Pune at Gahunje, renowned for high-scoring ODI matches and true bounce.',
+  },
+  {
+    id: '11',
+    name: 'Barsapara ACA Cricket Stadium',
+    city: 'Guwahati',
+    country: 'India',
+    flag: '🇮🇳',
+    opened: '2012',
+    capacity: '40,000',
+    capacityNum: 40000,
+    pitchType: 'Batting Friendly',
+    floodlights: true,
+    homeTeams: 'Rajasthan Royals (Secondary Home), Assam, Team India',
+    ends: 'Media End, Pavilion End',
+    image: require('../../assets/venues/Guwahati_compress.webp'),
+    imageUri: 'https://upload.wikimedia.org/wikipedia/commons/d/dd/Barsapara_Cricket_Stadium_during_construction.jpg',
+    highestTotal: '237/3 - India vs South Africa (T20I 2022)',
+    iconicMatch: 'RR IPL matches in Northeast India',
+    description: 'The premier cricket stadium of North East India located in Guwahati, famous for electric crowds.',
+  },
+  {
+    id: '12',
+    name: 'ACA-VDCA Cricket Stadium',
+    city: 'Visakhapatnam',
+    country: 'India',
+    flag: '🇮🇳',
+    opened: '2003',
+    capacity: '27,500',
+    capacityNum: 27500,
+    pitchType: 'Batting Friendly',
+    floodlights: true,
+    homeTeams: 'Delhi Capitals (Secondary Home), Andhra, Team India',
+    ends: 'Vizag End, Sea End',
+    image: require('../../assets/venues/ACA_VDCA_Stadium.webp'),
+    imageUri: 'https://upload.wikimedia.org/wikipedia/commons/b/be/ACA-VDCA_stadium_at_Madhurawada_02.jpg',
+    highestTotal: '387/5 - India vs West Indies (2019)',
+    iconicMatch: 'MS Dhoni 148 vs Pakistan (2005 breakout match)',
+    description: 'Picturesque coastal venue in Vizag surrounded by lush green hills, featuring batting-conducive wickets.',
+  },
+  {
+    id: '13',
+    name: 'Greenfield International Stadium',
+    city: 'Thiruvananthapuram',
+    country: 'India',
+    flag: '🇮🇳',
+    opened: '2015',
+    capacity: '55,000',
+    capacityNum: 55000,
+    pitchType: 'Balanced',
+    floodlights: true,
+    homeTeams: 'Kerala, Team India',
+    ends: 'Kariavattom End, University End',
+    image: require('../../assets/venues/Greenfield_International_Stadium_compressed.avif'),
+    imageUri: 'https://upload.wikimedia.org/wikipedia/commons/3/35/Greenfield_International_Stadium_Kerala.jpg',
+    highestTotal: '390/5 - India vs Sri Lanka (2023)',
+    iconicMatch: 'Shubman Gill 116 & Kohli 166* vs Sri Lanka 2023',
+    description: 'Multi-purpose eco-friendly sports complex in Kerala built to international standards.',
+  },
 
   // --- AUSTRALIA ---
   {
-    id: '9',
+    id: '14',
     name: 'Melbourne Cricket Ground (MCG)',
     city: 'Melbourne',
     country: 'Australia',
@@ -174,7 +269,7 @@ export const VENUES_DATA = [
     description: 'The giant colosseum of Australian sport, home of the Boxing Day Test and world-class sporting atmosphere.',
   },
   {
-    id: '10',
+    id: '15',
     name: 'Sydney Cricket Ground (SCG)',
     city: 'Sydney',
     country: 'Australia',
@@ -193,7 +288,7 @@ export const VENUES_DATA = [
     description: 'Traditional venue known for turning pitches on days 4 & 5 and rich cricketing heritage.',
   },
   {
-    id: '11',
+    id: '16',
     name: 'The Gabba',
     city: 'Brisbane',
     country: 'Australia',
@@ -212,7 +307,7 @@ export const VENUES_DATA = [
     description: 'Famous fortress for Australia known for steep pace and true bounce off the pitch.',
   },
   {
-    id: '12',
+    id: '17',
     name: 'Optus Stadium (Perth Stadium)',
     city: 'Perth',
     country: 'Australia',
@@ -233,7 +328,7 @@ export const VENUES_DATA = [
 
   // --- ENGLAND ---
   {
-    id: '13',
+    id: '18',
     name: "Lord's Cricket Ground",
     city: 'London',
     country: 'England',
@@ -252,7 +347,7 @@ export const VENUES_DATA = [
     description: 'The Home of Cricket. Famous for its sloped outfield, iconic pavilion, honors board, and legendary bell.',
   },
   {
-    id: '14',
+    id: '19',
     name: 'The Kia Oval',
     city: 'London',
     country: 'England',
@@ -271,7 +366,7 @@ export const VENUES_DATA = [
     description: 'Traditional home of the final Test match of the English summer, providing bouncy tracks with spin later on.',
   },
   {
-    id: '15',
+    id: '20',
     name: 'Edgbaston',
     city: 'Birmingham',
     country: 'England',
@@ -292,7 +387,7 @@ export const VENUES_DATA = [
 
   // --- SOUTH AFRICA ---
   {
-    id: '16',
+    id: '21',
     name: 'The Wanderers Stadium',
     city: 'Johannesburg',
     country: 'South Africa',
@@ -311,7 +406,7 @@ export const VENUES_DATA = [
     description: 'Nicknamed "The Bullring" for its intimidating atmosphere and steep bounce due to high altitude.',
   },
   {
-    id: '17',
+    id: '22',
     name: 'Newlands Cricket Ground',
     city: 'Cape Town',
     country: 'South Africa',
@@ -332,7 +427,7 @@ export const VENUES_DATA = [
 
   // --- PAKISTAN ---
   {
-    id: '18',
+    id: '23',
     name: 'Gaddafi Stadium',
     city: 'Lahore',
     country: 'Pakistan',
@@ -351,7 +446,7 @@ export const VENUES_DATA = [
     description: 'The headquarters of the Pakistan Cricket Board with distinctive Mughal architectural brickwork.',
   },
   {
-    id: '19',
+    id: '24',
     name: 'National Bank Stadium',
     city: 'Karachi',
     country: 'Pakistan',
@@ -372,7 +467,7 @@ export const VENUES_DATA = [
 
   // --- NEW ZEALAND ---
   {
-    id: '20',
+    id: '25',
     name: 'Eden Park',
     city: 'Auckland',
     country: 'New Zealand',
@@ -391,7 +486,7 @@ export const VENUES_DATA = [
     description: 'Unique baseball diamond shape layout causing extremely short straight boundaries.',
   },
   {
-    id: '21',
+    id: '26',
     name: 'Hagley Oval',
     city: 'Christchurch',
     country: 'New Zealand',
@@ -412,7 +507,7 @@ export const VENUES_DATA = [
 
   // --- SRI LANKA ---
   {
-    id: '22',
+    id: '27',
     name: 'R. Premadasa Stadium',
     city: 'Colombo',
     country: 'Sri Lanka',
@@ -433,7 +528,7 @@ export const VENUES_DATA = [
 
   // --- WEST INDIES ---
   {
-    id: '23',
+    id: '28',
     name: 'Kensington Oval',
     city: 'Bridgetown',
     country: 'West Indies',
@@ -454,7 +549,7 @@ export const VENUES_DATA = [
 
   // --- UAE ---
   {
-    id: '24',
+    id: '29',
     name: 'Dubai International Stadium',
     city: 'Dubai',
     country: 'UAE',
@@ -473,7 +568,7 @@ export const VENUES_DATA = [
     description: 'Features a unique "Ring of Fire" roof lights arrangement and desert weather conditions.',
   },
   {
-    id: '25',
+    id: '30',
     name: 'Sharjah Cricket Stadium',
     city: 'Sharjah',
     country: 'UAE',
@@ -494,7 +589,7 @@ export const VENUES_DATA = [
 
   // --- BANGLADESH ---
   {
-    id: '26',
+    id: '31',
     name: 'Sher-e-Bangla Stadium',
     city: 'Dhaka',
     country: 'Bangladesh',

@@ -49,14 +49,14 @@ export const SettingsProvider = ({ children }) => {
   const updateSettings = useCallback((patch) => {
     setSettings((prev) => {
       const next = { ...prev, ...patch };
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => { });
       return next;
     });
   }, []);
 
   const resetSettings = useCallback(() => {
     setSettings(DEFAULT_SETTINGS);
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS)).catch(() => {});
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS)).catch(() => { });
   }, []);
 
   return (

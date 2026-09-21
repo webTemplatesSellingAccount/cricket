@@ -666,9 +666,6 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
 
             <View style={{ flex: 1, marginLeft: 8 }}>
               <Text style={styles.headerTitle}>Stadium Venues</Text>
-              <Text style={{ fontSize: 11, color: '#008000', fontWeight: '700' }}>
-                {filteredVenues.length} {filteredVenues.length === 1 ? 'Stadium' : 'Stadiums'} Available
-              </Text>
             </View>
 
             {/* Filter Options Modal Button */}
@@ -821,8 +818,8 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
                   <View style={venueCardStyles.imageWrapper}>
                     <Image
                       source={
-                        imageErrorMap[item.id]
-                          ? (typeof item.imageUri === 'string' ? { uri: item.imageUri } : item.image)
+                        imageErrorMap[item.id] || !item.image
+                          ? require('../../assets/venues/narendra_modi_stadium.jpg')
                           : (typeof item.image === 'string' ? { uri: item.image } : item.image)
                       }
                       style={venueCardStyles.stadiumImage}
@@ -901,35 +898,91 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
       </Modal>
 
       {/* Additional Filters Modal (Capacity & Sort Options) */}
-      <Modal visible={showVenueFilterModal} animationType="fade" transparent={true}>
-        <View style={modalStyles.overlay}>
-          <View style={[modalStyles.content, { maxHeight: '80%' }]}>
-            <View style={modalStyles.header}>
-              <Text style={modalStyles.title}>Filter & Sort Stadiums</Text>
-              <TouchableOpacity onPress={() => setShowVenueFilterModal(false)}>
-                <Ionicons name="close-circle" size={26} color="#64748B" />
+      <Modal visible={showVenueFilterModal} animationType="fade" transparent={true} onRequestClose={() => setShowVenueFilterModal(false)}>
+        <TouchableOpacity
+          style={modalStyles.overlay}
+          activeOpacity={1}
+          onPress={() => setShowVenueFilterModal(false)}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            style={venueFilterModalStyles.modalContent}
+            onPress={(e) => {
+              if (e && e.stopPropagation) e.stopPropagation();
+            }}
+          >
+            {/* Header */}
+            <View style={venueFilterModalStyles.modalHeader}>
+              <View style={venueFilterModalStyles.headerTitleBox}>
+                <View style={venueFilterModalStyles.headerIconBadge}>
+                  <Ionicons name="options-sharp" size={18} color="#008000" />
+                </View>
+                <View>
+                  <Text style={venueFilterModalStyles.headerTitle}>Filter & Sort Stadiums</Text>
+                  <Text style={venueFilterModalStyles.headerSubtitle}>Customize pitch condition, capacity & sorting</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowVenueFilterModal(false)}
+                style={venueFilterModalStyles.closeBtn}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="close" size={20} color="#64748B" />
               </TouchableOpacity>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} style={{ marginVertical: 12 }}>
-              {/* Capacity Filter Section */}
-              <Text style={venueCardStyles.filterSectionTitle}>Seating Capacity</Text>
-              <View style={venueCardStyles.filterOptionsGrid}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ marginVertical: 8 }} contentContainerStyle={{ paddingBottom: 10 }}>
+              {/* Pitch Condition Section */}
+              <View style={venueFilterModalStyles.sectionHeaderRow}>
+                <Ionicons name="flash" size={14} color="#008000" style={{ marginRight: 6 }} />
+                <Text style={venueFilterModalStyles.sectionTitle}>PITCH CONDITION</Text>
+              </View>
+              <View style={venueFilterModalStyles.chipsWrap}>
+                {PITCH_TYPES.map((pt) => {
+                  const isSel = venueSelectedPitch === pt;
+                  return (
+                    <TouchableOpacity
+                      key={pt}
+                      onPress={() => setVenueSelectedPitch(pt)}
+                      style={[venueFilterModalStyles.pitchChip, isSel && venueFilterModalStyles.pitchChipSelected]}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons
+                        name={isSel ? 'checkmark-circle' : 'ellipse-outline'}
+                        size={14}
+                        color={isSel ? '#FFFFFF' : '#64748B'}
+                        style={{ marginRight: 4 }}
+                      />
+                      <Text style={[venueFilterModalStyles.pitchChipText, isSel && venueFilterModalStyles.pitchChipTextSelected]}>
+                        {pt}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* Seating Capacity Section */}
+              <View style={[venueFilterModalStyles.sectionHeaderRow, { marginTop: 18 }]}>
+                <Ionicons name="people" size={14} color="#008000" style={{ marginRight: 6 }} />
+                <Text style={venueFilterModalStyles.sectionTitle}>SEATING CAPACITY</Text>
+              </View>
+              <View style={venueFilterModalStyles.gridOptions}>
                 {CAPACITY_RANGES.map((cap) => {
                   const isSel = venueSelectedCapacity === cap.id;
                   return (
                     <TouchableOpacity
                       key={cap.id}
                       onPress={() => setVenueSelectedCapacity(cap.id)}
-                      style={[venueCardStyles.filterGridOption, isSel && venueCardStyles.filterGridOptionSelected]}
+                      style={[venueFilterModalStyles.gridCardOption, isSel && venueFilterModalStyles.gridCardOptionSelected]}
+                      activeOpacity={0.8}
                     >
                       <Ionicons
                         name={isSel ? 'radio-button-on' : 'radio-button-off'}
                         size={16}
-                        color={isSel ? '#008000' : '#64748B'}
-                        style={{ marginRight: 6 }}
+                        color={isSel ? '#008000' : '#94A3B8'}
+                        style={{ marginRight: 8 }}
                       />
-                      <Text style={[venueCardStyles.filterGridOptionText, isSel && { color: '#008000', fontWeight: '700' }]}>
+                      <Text style={[venueFilterModalStyles.gridOptionText, isSel && venueFilterModalStyles.gridOptionTextSelected]}>
                         {cap.label}
                       </Text>
                     </TouchableOpacity>
@@ -938,23 +991,27 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
               </View>
 
               {/* Sorting Section */}
-              <Text style={[venueCardStyles.filterSectionTitle, { marginTop: 16 }]}>Sort By</Text>
-              <View style={venueCardStyles.filterOptionsGrid}>
+              <View style={[venueFilterModalStyles.sectionHeaderRow, { marginTop: 18 }]}>
+                <Ionicons name="swap-vertical" size={14} color="#008000" style={{ marginRight: 6 }} />
+                <Text style={venueFilterModalStyles.sectionTitle}>SORT STADIUMS BY</Text>
+              </View>
+              <View style={venueFilterModalStyles.gridOptions}>
                 {SORT_OPTIONS.map((opt) => {
                   const isSel = venueSortBy === opt.id;
                   return (
                     <TouchableOpacity
                       key={opt.id}
                       onPress={() => setVenueSortBy(opt.id)}
-                      style={[venueCardStyles.filterGridOption, isSel && venueCardStyles.filterGridOptionSelected]}
+                      style={[venueFilterModalStyles.gridCardOption, isSel && venueFilterModalStyles.gridCardOptionSelected]}
+                      activeOpacity={0.8}
                     >
                       <Ionicons
                         name={isSel ? 'checkmark-circle' : 'ellipse-outline'}
                         size={16}
-                        color={isSel ? '#008000' : '#64748B'}
-                        style={{ marginRight: 6 }}
+                        color={isSel ? '#008000' : '#94A3B8'}
+                        style={{ marginRight: 8 }}
                       />
-                      <Text style={[venueCardStyles.filterGridOptionText, isSel && { color: '#008000', fontWeight: '700' }]}>
+                      <Text style={[venueFilterModalStyles.gridOptionText, isSel && venueFilterModalStyles.gridOptionTextSelected]}>
                         {opt.label}
                       </Text>
                     </TouchableOpacity>
@@ -963,124 +1020,188 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
               </View>
             </ScrollView>
 
-            <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
+            {/* Sticky Action Footer Row */}
+            <View style={venueFilterModalStyles.footerActionRow}>
               <TouchableOpacity
                 onPress={resetVenueFilters}
-                style={[modalStyles.cancelBtn, { flex: 1 }]}
+                style={venueFilterModalStyles.resetBtn}
+                activeOpacity={0.8}
               >
-                <Text style={modalStyles.cancelBtnText}>Reset</Text>
+                <Ionicons name="refresh-sharp" size={16} color="#DC2626" style={{ marginRight: 4 }} />
+                <Text style={venueFilterModalStyles.resetBtnText}>Reset All</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => setShowVenueFilterModal(false)}
-                style={[modalStyles.playBtn, { flex: 1, backgroundColor: '#008000' }]}
+                style={venueFilterModalStyles.applyBtn}
+                activeOpacity={0.85}
               >
-                <Text style={modalStyles.playBtnText}>Apply Filters</Text>
+                <Text style={venueFilterModalStyles.applyBtnText}>Apply Filters</Text>
+                <Ionicons name="checkmark-circle-sharp" size={18} color="#FFFFFF" style={{ marginLeft: 6 }} />
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
 
       {/* Stadium Detail Popup Sheet / Modal */}
       <Modal visible={!!selectedVenueDetail} animationType="slide" transparent={true} onRequestClose={() => setSelectedVenueDetail(null)}>
-        <View style={modalStyles.overlay}>
-          <View style={[modalStyles.content, { maxHeight: '90%', padding: 0, overflow: 'hidden' }]}>
+        <TouchableOpacity
+          style={modalStyles.overlay}
+          activeOpacity={1}
+          onPress={() => setSelectedVenueDetail(null)}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            style={venueDetailModalStyles.modalContent}
+            onPress={(e) => {
+              if (e && e.stopPropagation) e.stopPropagation();
+            }}
+          >
             {selectedVenueDetail && (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Detail Header Image */}
-                <View style={{ height: 200, width: '100%', position: 'relative' }}>
+              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 16 }}>
+                {/* Detail Header Image with Badges */}
+                <View style={venueDetailModalStyles.heroHeader}>
                   <Image
                     source={
-                      imageErrorMap[selectedVenueDetail.id]
-                        ? (typeof selectedVenueDetail.imageUri === 'string' ? { uri: selectedVenueDetail.imageUri } : selectedVenueDetail.image)
+                      imageErrorMap[selectedVenueDetail.id] || !selectedVenueDetail.image
+                        ? require('../../assets/venues/narendra_modi_stadium.jpg')
                         : (typeof selectedVenueDetail.image === 'string' ? { uri: selectedVenueDetail.image } : selectedVenueDetail.image)
                     }
-                    style={{ width: '100%', height: '100%' }}
+                    style={venueDetailModalStyles.heroImage}
                     resizeMode="cover"
                     onError={() => handleImageError(selectedVenueDetail.id)}
                   />
-                  <View style={{ position: 'absolute', top: 12, right: 12, backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: 20, padding: 4 }}>
-                    <TouchableOpacity onPress={() => setSelectedVenueDetail(null)}>
-                      <Ionicons name="close" size={24} color="#FFFFFF" />
+
+                  {/* Gradient Backdrops / Badges */}
+                  <View style={venueDetailModalStyles.topCloseOverlay}>
+                    <TouchableOpacity
+                      onPress={() => setSelectedVenueDetail(null)}
+                      style={venueDetailModalStyles.closeGlassBtn}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="close" size={20} color="#FFFFFF" />
                     </TouchableOpacity>
                   </View>
-                  <View style={{ position: 'absolute', bottom: 12, left: 16, backgroundColor: '#008000', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 }}>
-                    <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 13 }}>
+
+                  <View style={venueDetailModalStyles.bottomFlagOverlay}>
+                    <Text style={venueDetailModalStyles.bottomFlagText}>
                       {selectedVenueDetail.flag} {selectedVenueDetail.country}
                     </Text>
+                  </View>
+
+                  <View style={venueDetailModalStyles.pitchBadgeOverlay}>
+                    <Ionicons name="flash-sharp" size={12} color="#FFFFFF" style={{ marginRight: 4 }} />
+                    <Text style={venueDetailModalStyles.pitchBadgeOverlayText}>{selectedVenueDetail.pitchType}</Text>
                   </View>
                 </View>
 
                 {/* Detail Content Body */}
-                <View style={{ padding: 18 }}>
-                  <Text style={{ fontSize: 20, fontWeight: '900', color: '#0F172A' }}>
-                    {selectedVenueDetail.name}
-                  </Text>
-                  <Text style={{ fontSize: 14, color: '#64748B', marginTop: 2, fontWeight: '600' }}>
-                    📍 {selectedVenueDetail.city}, {selectedVenueDetail.country}
-                  </Text>
+                <View style={venueDetailModalStyles.bodyPadding}>
+                  {/* Title & City Location */}
+                  <Text style={venueDetailModalStyles.stadiumTitle}>{selectedVenueDetail.name}</Text>
 
-                  <Text style={{ fontSize: 13, color: '#334155', lineHeight: 20, marginTop: 12 }}>
-                    {selectedVenueDetail.description}
-                  </Text>
-
-                  {/* Grid Stats */}
-                  <View style={venueCardStyles.detailStatsBox}>
-                    <View style={venueCardStyles.detailStatItem}>
-                      <Text style={venueCardStyles.detailStatLabel}>ESTABLISHED</Text>
-                      <Text style={venueCardStyles.detailStatVal}>{selectedVenueDetail.opened}</Text>
-                    </View>
-                    <View style={venueCardStyles.detailStatItem}>
-                      <Text style={venueCardStyles.detailStatLabel}>CAPACITY</Text>
-                      <Text style={venueCardStyles.detailStatVal}>{selectedVenueDetail.capacity}</Text>
-                    </View>
-                    <View style={venueCardStyles.detailStatItem}>
-                      <Text style={venueCardStyles.detailStatLabel}>PITCH TYPE</Text>
-                      <Text style={[venueCardStyles.detailStatVal, { color: '#008000' }]}>
-                        {selectedVenueDetail.pitchType}
-                      </Text>
+                  <View style={venueDetailModalStyles.locationRow}>
+                    <Ionicons name="location-sharp" size={16} color="#008000" style={{ marginRight: 4 }} />
+                    <Text style={venueDetailModalStyles.locationText}>
+                      {selectedVenueDetail.city}, {selectedVenueDetail.country}
+                    </Text>
+                    <View style={venueDetailModalStyles.openedPill}>
+                      <Text style={venueDetailModalStyles.openedPillText}>🏛️ Opened {selectedVenueDetail.opened}</Text>
                     </View>
                   </View>
 
-                  {/* Additional Information Rows */}
-                  <View style={venueCardStyles.detailInfoCard}>
-                    <View style={venueCardStyles.detailRow}>
-                      <Ionicons name="people-outline" size={18} color="#008000" style={{ marginRight: 8 }} />
-                      <Text style={venueCardStyles.detailRowLabel}>Home Teams:</Text>
-                      <Text style={venueCardStyles.detailRowValue}>{selectedVenueDetail.homeTeams}</Text>
+                  {/* Description Box with Left Border Accent */}
+                  <View style={venueDetailModalStyles.descriptionCard}>
+                    <Text style={venueDetailModalStyles.descriptionText}>
+                      {selectedVenueDetail.description}
+                    </Text>
+                  </View>
+
+                  {/* 3 Columns Stat Boxes */}
+                  <View style={venueDetailModalStyles.statGrid3}>
+                    <View style={venueDetailModalStyles.statCardItem}>
+                      <Ionicons name="calendar-outline" size={18} color="#008000" style={{ marginBottom: 4 }} />
+                      <Text style={venueDetailModalStyles.statLabel}>ESTABLISHED</Text>
+                      <Text style={venueDetailModalStyles.statValue}>{selectedVenueDetail.opened}</Text>
                     </View>
 
-                    <View style={venueCardStyles.detailRow}>
-                      <Ionicons name="compass-outline" size={18} color="#008000" style={{ marginRight: 8 }} />
-                      <Text style={venueCardStyles.detailRowLabel}>Bowling Ends:</Text>
-                      <Text style={venueCardStyles.detailRowValue}>{selectedVenueDetail.ends}</Text>
+                    <View style={venueDetailModalStyles.statDivider} />
+
+                    <View style={venueDetailModalStyles.statCardItem}>
+                      <Ionicons name="people-outline" size={18} color="#008000" style={{ marginBottom: 4 }} />
+                      <Text style={venueDetailModalStyles.statLabel}>CAPACITY</Text>
+                      <Text style={venueDetailModalStyles.statValue}>{selectedVenueDetail.capacity}</Text>
                     </View>
 
-                    <View style={venueCardStyles.detailRow}>
-                      <Ionicons name="trophy-outline" size={18} color="#008000" style={{ marginRight: 8 }} />
-                      <Text style={venueCardStyles.detailRowLabel}>Highest Total:</Text>
-                      <Text style={venueCardStyles.detailRowValue}>{selectedVenueDetail.highestTotal}</Text>
-                    </View>
+                    <View style={venueDetailModalStyles.statDivider} />
 
-                    <View style={venueCardStyles.detailRow}>
-                      <Ionicons name="star-outline" size={18} color="#008000" style={{ marginRight: 8 }} />
-                      <Text style={venueCardStyles.detailRowLabel}>Iconic Moment:</Text>
-                      <Text style={venueCardStyles.detailRowValue}>{selectedVenueDetail.iconicMatch}</Text>
+                    <View style={venueDetailModalStyles.statCardItem}>
+                      <Ionicons name="flash-outline" size={18} color="#008000" style={{ marginBottom: 4 }} />
+                      <Text style={venueDetailModalStyles.statLabel}>LIGHTING</Text>
+                      <Text style={venueDetailModalStyles.statValue}>{selectedVenueDetail.floodlights ? 'LED Rings 💡' : 'Standard'}</Text>
                     </View>
                   </View>
 
-                  {/* Close CTA Button */}
-                  <TouchableOpacity
-                    onPress={() => setSelectedVenueDetail(null)}
-                    style={[modalStyles.playBtn, { backgroundColor: '#008000', marginTop: 16 }]}
-                  >
-                    <Text style={modalStyles.playBtnText}>Close Details</Text>
-                  </TouchableOpacity>
+                  {/* Comprehensive Specifications Box */}
+                  <View style={venueDetailModalStyles.specificationsBox}>
+                    <View style={venueDetailModalStyles.specRow}>
+                      <View style={venueDetailModalStyles.specIconBox}>
+                        <Ionicons name="people-sharp" size={16} color="#008000" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={venueDetailModalStyles.specTitle}>Home Teams</Text>
+                        <Text style={venueDetailModalStyles.specDesc}>{selectedVenueDetail.homeTeams}</Text>
+                      </View>
+                    </View>
+
+                    <View style={venueDetailModalStyles.specRow}>
+                      <View style={venueDetailModalStyles.specIconBox}>
+                        <Ionicons name="compass-sharp" size={16} color="#008000" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={venueDetailModalStyles.specTitle}>Bowling Ends</Text>
+                        <Text style={venueDetailModalStyles.specDesc}>{selectedVenueDetail.ends}</Text>
+                      </View>
+                    </View>
+
+                    <View style={venueDetailModalStyles.specRow}>
+                      <View style={venueDetailModalStyles.specIconBox}>
+                        <Ionicons name="trophy-sharp" size={16} color="#008000" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={venueDetailModalStyles.specTitle}>Highest Recorded Score</Text>
+                        <Text style={venueDetailModalStyles.specDescHighlight}>{selectedVenueDetail.highestTotal}</Text>
+                      </View>
+                    </View>
+
+                    <View style={venueDetailModalStyles.specRow}>
+                      <View style={venueDetailModalStyles.specIconBox}>
+                        <Ionicons name="star-sharp" size={16} color="#008000" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={venueDetailModalStyles.specTitle}>Iconic Historic Match</Text>
+                        <Text style={venueDetailModalStyles.specDesc}>{selectedVenueDetail.iconicMatch}</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Responsive Action Buttons Row */}
+                  <View style={venueDetailModalStyles.footerButtonRow}>
+                    <TouchableOpacity
+                      onPress={() => setSelectedVenueDetail(null)}
+                      style={venueDetailModalStyles.closeCTA}
+                      activeOpacity={0.85}
+                    >
+                      <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
+                      <Text style={venueDetailModalStyles.closeCTAText}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </ScrollView>
             )}
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
 
       {/* Cricket Game Trivia Modal */}
@@ -2476,5 +2597,402 @@ const venueCardStyles = StyleSheet.create({
     fontWeight: '600',
     color: '#0F172A',
     flex: 1,
+  },
+});
+
+const venueFilterModalStyles = StyleSheet.create({
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 16,
+    maxHeight: '85%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 14,
+  },
+  headerTitleBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  headerIconBadge: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#DCFCE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 1,
+    fontWeight: '600',
+  },
+  closeBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: '#334155',
+    letterSpacing: 0.6,
+  },
+  chipsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  pitchChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 14,
+  },
+  pitchChipSelected: {
+    backgroundColor: '#008000',
+    borderColor: '#008000',
+    elevation: 2,
+  },
+  pitchChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  pitchChipTextSelected: {
+    color: '#FFFFFF',
+  },
+  gridOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  gridCardOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '48.5%',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 14,
+  },
+  gridCardOptionSelected: {
+    backgroundColor: '#F0FDF4',
+    borderColor: '#008000',
+  },
+  gridOptionText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#475569',
+    flex: 1,
+  },
+  gridOptionTextSelected: {
+    color: '#008000',
+    fontWeight: '800',
+  },
+  footerActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  resetBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1.5,
+    borderColor: '#FCA5A5',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+  },
+  resetBtnText: {
+    color: '#DC2626',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  applyBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#008000',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    shadowColor: '#008000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  applyBtnText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+});
+
+const venueDetailModalStyles = StyleSheet.create({
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    maxHeight: '90%',
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  heroHeader: {
+    height: 210,
+    width: '100%',
+    position: 'relative',
+    backgroundColor: '#0F172A',
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  topCloseOverlay: {
+    position: 'absolute',
+    top: 14,
+    right: 14,
+    zIndex: 10,
+  },
+  closeGlassBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  bottomFlagOverlay: {
+    position: 'absolute',
+    bottom: 12,
+    left: 14,
+    backgroundColor: '#008000',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  bottomFlagText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  pitchBadgeOverlay: {
+    position: 'absolute',
+    bottom: 12,
+    right: 14,
+    backgroundColor: 'rgba(15, 23, 42, 0.85)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  pitchBadgeOverlayText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  bodyPadding: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
+  },
+  stadiumTitle: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#0F172A',
+    lineHeight: 28,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  locationText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  openedPill: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginLeft: 4,
+  },
+  openedPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  descriptionCard: {
+    backgroundColor: '#F0FDF4',
+    borderLeftWidth: 4,
+    borderLeftColor: '#008000',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 14,
+    marginBottom: 16,
+  },
+  descriptionText: {
+    fontSize: 13,
+    color: '#1E293B',
+    lineHeight: 20,
+    fontWeight: '500',
+  },
+  statGrid3: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginBottom: 16,
+  },
+  statCardItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: '#CBD5E1',
+  },
+  statLabel: {
+    fontSize: 9,
+    fontWeight: '900',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  statValue: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#0F172A',
+    marginTop: 2,
+  },
+  specificationsBox: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 16,
+    padding: 14,
+    gap: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  specRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  specIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: '#DCFCE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    marginTop: 2,
+  },
+  specTitle: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  specDesc: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginTop: 1,
+  },
+  specDescHighlight: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#008000',
+    marginTop: 1,
+  },
+  footerButtonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 18,
+  },
+  closeCTA: {
+    flex: 1,
+    height: 48,
+    backgroundColor: '#008000',
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#008000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  closeCTAText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '800',
   },
 });
