@@ -17,6 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import MatchesHistoryScreen from './MatchesHistoryScreen';
 import PlayoffsScreen from './PlayoffsScreen';
+import AllRecordsScreen from './AllRecordsScreen';
 import {
   VENUES_DATA,
   COUNTRY_FILTERS,
@@ -301,19 +302,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
   };
 
   if (currentSubScreen === 'records') {
-    return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-        <View style={styles.topHeaderBar}>
-          <TouchableOpacity onPress={() => setCurrentSubScreen(null)} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#000000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>All Records</Text>
-          <View style={{ width: 36 }} />
-        </View>
-        <MatchesHistoryScreen onOpenNewMatch={() => { }} />
-      </SafeAreaView>
-    );
+    return <AllRecordsScreen onBack={() => setCurrentSubScreen(null)} />;
   }
 
   if (currentSubScreen === 'playoffs') {
