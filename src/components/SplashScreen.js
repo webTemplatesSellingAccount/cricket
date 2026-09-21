@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
+const ILLUSTRATION_HEIGHT = width * (768 / 1376);
 
 export default function SplashScreen({ onFinish, isPreview = false, onClose }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -33,8 +34,11 @@ export default function SplashScreen({ onFinish, isPreview = false, onClose }) {
   }, []);
 
   const handleNextScreen = () => {
-    if (onClose) onClose();
-    if (onFinish) onFinish();
+    if (onFinish) {
+      onFinish();
+    } else if (onClose) {
+      onClose();
+    }
   };
 
   return (
@@ -77,12 +81,12 @@ export default function SplashScreen({ onFinish, isPreview = false, onClose }) {
           </Text>
         </Animated.View>
 
-        {/* Bottom Cricket Players Illustration (Flush to screen bottom edge) */}
+        {/* Bottom Cricket Players Illustration (Full image with 0% cutting) */}
         <Animated.View style={[styles.bottomIllustrationWrapper, { opacity: fadeAnim }]}>
           <Image
             source={require('../../assets/splash_cricket_players.jpg')}
             style={styles.playersIllustrationImage}
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </Animated.View>
       </TouchableOpacity>
@@ -108,14 +112,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
-    marginTop: height * 0.05,
   },
   logoWrapper: {
-    width: 155,
-    height: 155,
-    borderRadius: 30,
+    width: 150,
+    height: 150,
+    borderRadius: 28,
     overflow: 'hidden',
-    marginBottom: 24,
+    marginBottom: 20,
     elevation: 8,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 6 },
@@ -131,10 +134,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   liveCricketTitle: {
-    fontSize: 27,
+    fontSize: 26,
     fontWeight: '900',
     color: '#000000',
     letterSpacing: -0.3,
@@ -143,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tvHdTitle: {
-    fontSize: 27,
+    fontSize: 26,
     fontWeight: '900',
     color: '#007A3B',
     letterSpacing: -0.3,
@@ -156,16 +159,16 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   subtitleText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '500',
-    color: '#4B5563',
+    color: '#64748B',
     textAlign: 'center',
   },
 
   /* Bottom Illustration Styles */
   bottomIllustrationWrapper: {
-    width: width,
-    height: height * 0.28,
+    width: '100%',
+    height: ILLUSTRATION_HEIGHT,
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingBottom: 0,
@@ -174,6 +177,6 @@ const styles = StyleSheet.create({
   playersIllustrationImage: {
     width: '100%',
     height: '100%',
+    resizeMode: 'cover',
   },
 });
-

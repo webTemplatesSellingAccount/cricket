@@ -108,12 +108,10 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
 
   const handleSelectOption = (id) => {
     setSelectedOption(id);
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   const handleSelectTeam = (code) => {
     setSelectedTeam(code);
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   return (
@@ -201,6 +199,22 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
                   </TouchableOpacity>
                 );
               })}
+
+              {/* Next Button directly after MCQ options (no empty space gap) */}
+              <View style={styles.inlineNextButtonContainer}>
+                <TouchableOpacity
+                  onPress={handleNextQuiz}
+                  style={styles.nextButton}
+                  activeOpacity={0.85}
+                >
+                  <View style={{ width: 32 }} />
+                  <Text style={styles.nextButtonText}>Next</Text>
+                  <View style={styles.nextIconCircle}>
+                    <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -1 }} />
+                    <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -8 }} />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
 
@@ -236,23 +250,23 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
           )}
         </ScrollView>
 
-        {/* Fixed Pinned Bottom Action Button (Always Visible Without Scrolling) */}
-        <View style={styles.fixedBottomContainer}>
-          <TouchableOpacity
-            onPress={handleNextQuiz}
-            style={styles.nextButton}
-            activeOpacity={0.85}
-          >
-            <View style={{ width: 32 }} />
-            <Text style={styles.nextButtonText}>
-              {questionIndex === quizQuestions.length ? 'Submit' : 'Next'}
-            </Text>
-            <View style={styles.nextIconCircle}>
-              <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -1 }} />
-              <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -8 }} />
-            </View>
-          </TouchableOpacity>
-        </View>
+        {/* Fixed Pinned Submit Button for Question 3 (Teams) */}
+        {currentQuiz.type === 'teams' && (
+          <View style={styles.fixedBottomContainer}>
+            <TouchableOpacity
+              onPress={handleNextQuiz}
+              style={styles.nextButton}
+              activeOpacity={0.85}
+            >
+              <View style={{ width: 32 }} />
+              <Text style={styles.nextButtonText}>Submit</Text>
+              <View style={styles.nextIconCircle}>
+                <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -1 }} />
+                <Ionicons name="chevron-forward-sharp" size={16} color="#007A3B" style={{ marginLeft: -8 }} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Bottom Ad Banner */}
         <View style={styles.bottomAdBanner}>
@@ -511,6 +525,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 4,
     elevation: 4,
+  },
+  inlineNextButtonContainer: {
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 20,
   },
   nextButtonContainer: {
     alignItems: 'center',
