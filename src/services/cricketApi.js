@@ -739,36 +739,81 @@ export async function getCricketNews() {
   };
 }
 
-/**
- * 12. GET REAL CRICKET VIDEOS
- */
 export async function getCricketVideos() {
-  return {
-    videos: [
-      {
-        id: 'vid_1',
-        title: 'HIGHLIGHTS: Unstoppable Fast Bowling & Power Hitting Moments',
-        duration: '04:12',
-        tag: 'HIGHLIGHTS',
-        views: '1.4M views',
-        timeAgo: '2h ago',
-        category: 'Highlights',
-        imageUrl: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop',
-        videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-      },
-      {
-        id: 'vid_2',
-        title: 'BEST WICKETS & SAVES: Precision Yorkers and Flying Slip Catches',
-        duration: '06:45',
-        tag: 'BEST MOMENTS',
-        views: '890K views',
-        timeAgo: '5h ago',
-        category: 'Wickets',
-        imageUrl: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=800&auto=format&fit=crop',
-        videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-      },
-    ],
-  };
+  const SAMPLE_MP4_URLS = [
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdown.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutback2012.mp4',
+  ];
+
+  const THUMBNAILS = [
+    'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=800&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1512712338825-9b2f6ef5c3f9?q=80&w=800&auto=format&fit=crop',
+  ];
+
+  const TEAMS = [
+    'Chennai Super Kings', 'Mumbai Indians', 'Royal Challengers Bengaluru',
+    'Kolkata Knight Riders', 'Gujarat Titans', 'Rajasthan Royals',
+    'Sunrisers Hyderabad', 'Delhi Capitals', 'Lucknow Super Giants', 'Punjab Kings',
+    'India', 'Australia', 'Pakistan', 'England', 'South Africa', 'New Zealand', 'West Indies', 'Sri Lanka'
+  ];
+
+  const FEATURE_TITLES = [
+    'Full Match Highlights & Dramatic Last Over Finish',
+    'Super Over Thriller: Unbelievable Boundary Hitting',
+    'Hat-Trick Magic: 3 Wickets in 3 Balls Show',
+    'Powerplay Assault: 80 Runs in First 6 Overs',
+    'Masterclass Century: Unbeaten Match Winning Knock',
+    'Death Overs Yorker Clinic: Precision Bowling',
+    'Spectacular Flying Slip Catch & Run-Out Collection',
+    'Massive 105m Sixes Into the Stadium Roof',
+    'Championship Final Battle: Trophy Winning Moments',
+    'Classic Comeback Victory: Defying All Odds',
+  ];
+
+  const CATEGORIES = ['Highlights', 'Batting', 'Wickets', 'Sixes'];
+  const TAGS = ['IPL 2026', 'T20 WC', 'ODI WC', 'WTC TEST', 'SUPER OVER', 'RECORD', 'HAT-TRICK', 'FINISH'];
+
+  const generatedVideos = [];
+
+  // Generate 220 unique cricket highlight videos
+  for (let i = 1; i <= 220; i++) {
+    const t1 = TEAMS[(i * 3) % TEAMS.length];
+    const t2 = TEAMS[(i * 5 + 1) % TEAMS.length];
+    const feat = FEATURE_TITLES[i % FEATURE_TITLES.length];
+    const cat = CATEGORIES[i % CATEGORIES.length];
+    const tag = TAGS[i % TAGS.length];
+    const mp4 = SAMPLE_MP4_URLS[i % SAMPLE_MP4_URLS.length];
+    const thumb = THUMBNAILS[i % THUMBNAILS.length];
+
+    const mins = Math.floor(4 + (i % 12));
+    const secs = (i * 13) % 60;
+    const duration = `${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`;
+
+    const views = `${(Math.floor(100 + (i * 37) % 900) / 10).toFixed(1)}M views`;
+    const hours = (i % 24) + 1;
+    const timeAgo = i < 24 ? `${hours}h ago` : `${Math.floor(i / 24)}d ago`;
+
+    generatedVideos.push({
+      id: `vid_${i}`,
+      title: `${tag}: ${t1} vs ${t2} — ${feat}`,
+      duration,
+      tag,
+      views,
+      timeAgo,
+      category: cat,
+      imageUrl: thumb,
+      videoUrl: mp4,
+    });
+  }
+
+  return { videos: generatedVideos };
 }
 
 /**

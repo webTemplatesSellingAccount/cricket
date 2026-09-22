@@ -8,48 +8,34 @@ import {
   ActivityIndicator,
   StyleSheet,
   StatusBar,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
-import {
-  getInProgressFixtures,
-  getUpcomingFixtures,
-  getCompletedFixtures,
-} from '../services/cricketApi';
-import MatchCenterModal from '../components/MatchCenterModal';
-import { TeamFlag } from '../utils/flagHelper';
-import { MatchCardSkeleton } from '../components/ShimmerSkeleton';
+import { getCricketVideos } from '../services/cricketApi';
+import VideoPlayerModal from '../components/VideoPlayerModal';
+import { NewsArticleSkeleton } from '../components/ShimmerSkeleton';
 import EmptyStateView from '../components/EmptyStateView';
 
 export default function MatchesScreen({ onBack }) {
   const { theme } = useTheme();
 
-  const [activeSubTab, setActiveSubTab] = useState('upcoming'); // 'live' | 'recent' | 'upcoming'
+  const [activeCategory, setActiveCategory] = useState('All'); // 'All' | 'Highlights' | 'Batting' | 'Wickets'
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [videosList, setVideosList] = useState([]);
 
-  const [liveFixtures, setLiveFixtures] = useState([]);
-  const [upcomingFixtures, setUpcomingFixtures] = useState([]);
-  const [completedFixtures, setCompletedFixtures] = useState([]);
+  const [playingVideo, setPlayingVideo] = useState(null);
+  const [playerVisible, setPlayerVisible] = useState(false);
 
-  const [selectedFixture, setSelectedFixture] = useState(null);
-  const [matchCenterVisible, setMatchCenterVisible] = useState(false);
-
-  const fetchMatches = useCallback(async (isSilent = false) => {
+  const fetchVideos = useCallback(async (isSilent = false) => {
     if (!isSilent) setLoading(true);
     try {
-      const [liveRes, upRes, compRes] = await Promise.all([
-        getInProgressFixtures(10),
-        getUpcomingFixtures(10),
-        getCompletedFixtures(10),
-      ]);
-
-      setLiveFixtures(liveRes.fixtures || []);
-      setUpcomingFixtures(upRes.fixtures || []);
-      setCompletedFixtures(compRes.fixtures || []);
+      const res = await getCricketVideos();
+      setVideosList(res.videos || []);
     } catch (err) {
-      console.warn('Fetch error:', err);
+      console.warn('Fetch videos error:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -57,31 +43,36 @@ export default function MatchesScreen({ onBack }) {
   }, []);
 
   useEffect(() => {
-    fetchMatches();
-    const interval = setInterval(() => fetchMatches(true), 30000);
-    return () => clearInterval(interval);
-  }, [fetchMatches]);
+    fetchVideos();
+  }, [fetchVideos]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchMatches();
+    fetchVideos();
   };
 
-  const openFixtureDetail = (fixture) => {
-    setSelectedFixture(fixture);
-    setMatchCenterVisible(true);
+  const openVideo = (video) => {
+    setPlayingVideo(video);
+    setPlayerVisible(true);
   };
 
-  let displayedFixtures = [];
-  if (activeSubTab === 'live') displayedFixtures = liveFixtures;
-  else if (activeSubTab === 'upcoming') displayedFixtures = upcomingFixtures;
-  else if (activeSubTab === 'recent') displayedFixtures = completedFixtures;
+  const categories = [
+    { id: 'All', label: 'All Highlights' },
+    { id: 'Highlights', label: 'Match Highlights' },
+    { id: 'Batting', label: 'Best Batting' },
+    { id: 'Wickets', label: 'Wickets & Sixes' },
+  ];
+
+  const filteredVideos =
+    activeCategory === 'All'
+      ? videosList
+      : videosList.filter((v) => v.category === activeCategory);
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* 1. Header Bar Matching Screenshots 2 & 3 */}
+      {/* 1. Header Bar */}
       <View style={styles.topHeaderBar}>
         {onBack ? (
           <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.7}>
@@ -91,7 +82,7 @@ export default function MatchesScreen({ onBack }) {
           <View style={{ width: 36 }} />
         )}
 
-        <Text style={styles.headerTitle}>Live Score</Text>
+        <Text style={styles.headerTitle}>Video Highlights</Text>
 
         {/* Top Right Circular AD Badge Icon */}
         <View style={styles.topRightAdBadge}>
@@ -109,18 +100,18 @@ export default function MatchesScreen({ onBack }) {
       {/* 2. Top Sub-Header AD Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
-          <View style={styles.adTrophyCircle}>
-            <Ionicons name="trophy" size={18} color="#D97706" />
-            <View style={styles.adTagPillGreen}>
-              <Text style={styles.adTagText}>AD</Text>
+          <View style={styles.adPlayCircle}>
+            <Ionicons name="play" size={18} color="#008000" />
+            <View style={styles.adBadgePillGreen}>
+              <Text style={styles.adBadgeText}>AD</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>IPL News</Text>
+          <Text style={styles.adTitle} numberOfLines={1}>Watch Match Highlights</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Stay updated with the latest IPL news and
+            IPL, T20 & ODI World Cup match videos
           </Text>
         </View>
 
@@ -129,57 +120,45 @@ export default function MatchesScreen({ onBack }) {
         </TouchableOpacity>
       </View>
 
-      {/* 3. 3-Tab Segmented Navigation Bar (Live | Recent | Upcoming) */}
+      {/* 3. Category Filter Tabs (All Highlights | Match Highlights | Best Batting | Wickets & Sixes) */}
       <View style={styles.tabsContainer}>
-        <View style={styles.tabsRow}>
-          {[
-            { id: 'live', label: 'Live', hasDot: false },
-            { id: 'recent', label: 'Recent', hasDot: false },
-            { id: 'upcoming', label: 'Upcoming', hasDot: true },
-          ].map((tab) => {
-            const isActive = activeSubTab === tab.id;
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsRow}>
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.id;
             return (
               <TouchableOpacity
-                key={tab.id}
-                onPress={() => setActiveSubTab(tab.id)}
+                key={cat.id}
+                onPress={() => setActiveCategory(cat.id)}
                 style={[
                   styles.tabButton,
                   isActive && styles.activeTabButton,
                 ]}
                 activeOpacity={0.85}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Text
-                    style={[
-                      styles.tabText,
-                      isActive && styles.activeTabText,
-                    ]}
-                  >
-                    {tab.label}
-                  </Text>
-                  {tab.hasDot && (
-                    <View style={styles.redNotificationDot} />
-                  )}
-                </View>
+                <Text
+                  style={[
+                    styles.tabText,
+                    isActive && styles.activeTabText,
+                  ]}
+                >
+                  {cat.label}
+                </Text>
               </TouchableOpacity>
             );
           })}
-        </View>
+        </ScrollView>
       </View>
 
-      {/* 4. Content Area */}
+      {/* 4. Video List Content Area */}
       {loading ? (
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollInner} showsVerticalScrollIndicator={false}>
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
             <ActivityIndicator size="small" color="#008000" style={{ marginRight: 8 }} />
             <Text style={{ fontSize: 13, color: '#008000', fontWeight: '700' }}>
-              Loading Matches...
+              Loading Video Highlights...
             </Text>
           </View>
-          <MatchCardSkeleton />
-          <MatchCardSkeleton />
-          <MatchCardSkeleton />
-          <MatchCardSkeleton />
+          <NewsArticleSkeleton count={5} />
         </ScrollView>
       ) : (
         <ScrollView
@@ -191,99 +170,84 @@ export default function MatchesScreen({ onBack }) {
               refreshing={refreshing}
               onRefresh={onRefresh}
               tintColor="#008000"
+              colors={['#008000', '#10B981', '#009270']}
             />
           }
         >
-          {displayedFixtures.length === 0 ? (
+          {filteredVideos.length === 0 ? (
             <EmptyStateView
-              type={activeSubTab}
+              type="general"
               onRefresh={onRefresh}
+              actionLabel="Reload Videos"
             />
           ) : (
-            <View style={{ paddingBottom: 16 }}>
-              {displayedFixtures.map((match) => (
-                <TouchableOpacity
-                  key={match.fixtureId || match.id}
-                  onPress={() => openFixtureDetail(match)}
-                  activeOpacity={0.85}
-                  style={styles.matchCard}
-                >
-                  {/* Card Header */}
-                  <View style={styles.matchHeader}>
-                    <Text style={styles.matchSeriesTitle} numberOfLines={1}>
-                      {match.title || match.series || 'IPL 2026 T20'}
+            filteredVideos.map((video) => (
+              <TouchableOpacity
+                key={video.id}
+                onPress={() => openVideo(video)}
+                style={styles.videoCardContainer}
+                activeOpacity={0.88}
+              >
+                {/* Thumbnail Box */}
+                <View style={styles.videoThumbnailBox}>
+                  <Image
+                    source={{ uri: video.imageUrl }}
+                    style={StyleSheet.absoluteFillObject}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.thumbnailDarkOverlay} />
+
+                  {/* Tag Pill top left */}
+                  <View style={styles.videoTagBadge}>
+                    <Text style={styles.videoTagText}>{video.tag}</Text>
+                  </View>
+
+                  {/* Play Icon Circle Center */}
+                  <View style={styles.playIconOverlay}>
+                    <View style={styles.playIconCircle}>
+                      <Ionicons name="play" size={26} color="#FFFFFF" style={{ marginLeft: 3 }} />
+                    </View>
+                  </View>
+
+                  {/* Duration Pill bottom right */}
+                  <View style={styles.durationPill}>
+                    <Text style={styles.durationText}>{video.duration}</Text>
+                  </View>
+                </View>
+
+                {/* Video Title & Info Row */}
+                <View style={styles.videoInfoBox}>
+                  <Text style={styles.videoTitleText} numberOfLines={2}>
+                    {video.title}
+                  </Text>
+                  <View style={styles.videoMetaRow}>
+                    <Text style={styles.videoMetaText}>
+                      {video.views} • {video.timeAgo}
                     </Text>
-                    <View style={styles.statusBadge}>
-                      <Text style={styles.statusBadgeText}>
-                        {match.status || 'Scheduled'}
-                      </Text>
-                    </View>
+                    <Ionicons name="play-circle-outline" size={18} color="#008000" />
                   </View>
-
-                  {/* Team Matchup */}
-                  <View style={styles.teamsRow}>
-                    <View style={styles.teamCol}>
-                      <TeamFlag
-                        logo={match.team1?.logo}
-                        teamName={match.team1?.name}
-                        countryCode={match.team1?.shortName}
-                        size={28}
-                      />
-                      <Text style={styles.teamNameText} numberOfLines={1}>
-                        {match.team1?.name}
-                      </Text>
-                      <Text style={styles.scoreText}>
-                        {match.team1?.score || '-'}
-                      </Text>
-                    </View>
-
-                    <View style={styles.vsBadgeCircle}>
-                      <Text style={styles.vsText}>VS</Text>
-                    </View>
-
-                    <View style={styles.teamCol}>
-                      <TeamFlag
-                        logo={match.team2?.logo}
-                        teamName={match.team2?.name}
-                        countryCode={match.team2?.shortName}
-                        size={28}
-                      />
-                      <Text style={styles.teamNameText} numberOfLines={1}>
-                        {match.team2?.name}
-                      </Text>
-                      <Text style={styles.scoreText}>
-                        {match.team2?.score || '-'}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.matchFooter}>
-                    <Text style={styles.matchVenueText} numberOfLines={1}>
-                      {match.venue || match.matchDate || 'Matches from Ground'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
+                </View>
+              </TouchableOpacity>
+            ))
           )}
         </ScrollView>
       )}
 
-      {/* 5. Fixed Bottom Sticky AD Banner */}
+      {/* Bottom Ad Banner */}
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
-          <View style={styles.adRedBallCircle}>
-            <Ionicons name="baseball" size={20} color="#DC2626" />
-            <View style={styles.adTagPillGreen}>
-              <Text style={styles.adTagText}>AD</Text>
+          <View style={styles.adPlayCircle}>
+            <Ionicons name="baseball" size={18} color="#DC2626" />
+            <View style={styles.adBadgePillGreen}>
+              <Text style={styles.adBadgeText}>AD</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>IPL News</Text>
+          <Text style={styles.adTitle} numberOfLines={1}>Live Cricket Updates</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Stay updated with the latest IPL news and
+            Get ball-by-ball scores & match highlights
           </Text>
         </View>
 
@@ -292,11 +256,11 @@ export default function MatchesScreen({ onBack }) {
         </TouchableOpacity>
       </View>
 
-      {/* Match Center Modal */}
-      <MatchCenterModal
-        visible={matchCenterVisible}
-        fixture={selectedFixture}
-        onClose={() => setMatchCenterVisible(false)}
+      {/* Video Player Modal */}
+      <VideoPlayerModal
+        visible={playerVisible}
+        video={playingVideo}
+        onClose={() => setPlayerVisible(false)}
       />
     </SafeAreaView>
   );
@@ -307,59 +271,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+
+  /* Top Header Bar */
   topHeaderBar: {
-    height: 52,
+    height: 54,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
     backgroundColor: '#FFFFFF',
   },
   backButton: {
     padding: 4,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#000000',
     textAlign: 'center',
   },
+
+  /* Top Right Circular AD Badge Icon */
   topRightAdBadge: {
-    padding: 4,
-  },
-  adBadgeGreenCircle: {
     width: 38,
     height: 38,
-    borderRadius: 19,
-    backgroundColor: '#DCFCE7',
-    borderWidth: 1.5,
-    borderColor: '#16A34A',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  adBadgeGreenCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#E6F4EA',
+    borderWidth: 1.5,
+    borderColor: '#34A853',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'relative',
   },
   adRedBallCircleHeader: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: '#EF4444',
-    alignItems: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#EA4335',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   redBallInner: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#FCA5A5',
+    backgroundColor: '#FFFFFF',
+    opacity: 0.8,
   },
   adSmallPillGreen: {
     position: 'absolute',
     top: -2,
-    right: -2,
-    backgroundColor: '#16A34A',
+    right: -4,
+    backgroundColor: '#34A853',
+    borderRadius: 6,
     paddingHorizontal: 3,
     paddingVertical: 1,
-    borderRadius: 5,
   },
   adSmallPillText: {
     fontSize: 7,
@@ -367,51 +341,53 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  /* Top Sub Header Banner */
+  /* Top Sub-Header AD Card */
   adBannerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    backgroundColor: '#F8FAFC',
     marginHorizontal: 16,
-    marginTop: 4,
-    marginBottom: 12,
-    borderWidth: 1.5,
-    borderColor: '#008000',
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  bottomAdBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    marginHorizontal: 16,
+    marginVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   adIconBox: {
     marginRight: 10,
   },
-  adTrophyCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#FEF3C7',
+  adPlayCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#ECFDF3',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
-  adRedBallCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#FEF2F2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  adTagPillGreen: {
+  adBadgePillGreen: {
     position: 'absolute',
     top: -2,
-    left: -2,
+    right: -2,
     backgroundColor: '#16A34A',
-    paddingHorizontal: 3,
+    paddingHorizontal: 4,
     paddingVertical: 1,
-    borderRadius: 5,
+    borderRadius: 6,
   },
-  adTagText: {
+  adBadgeText: {
     fontSize: 7,
     fontWeight: '900',
     color: '#FFFFFF',
@@ -421,15 +397,14 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   adTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#000000',
-    marginBottom: 1,
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0F172A',
   },
   adSubtitle: {
-    fontSize: 11,
-    color: '#4B5563',
-    fontWeight: '500',
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 1,
   },
   installButton: {
     backgroundColor: '#008000',
@@ -439,150 +414,133 @@ const styles = StyleSheet.create({
   },
   installButtonText: {
     color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800',
+    fontSize: 14,
+    fontWeight: '700',
   },
 
-  /* Sub-Tab Navigation Bar */
+  /* Tabs Bar */
   tabsContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 12,
+    marginTop: 8,
+    marginBottom: 4,
   },
   tabsRow: {
-    flexDirection: 'row',
-    backgroundColor: '#EFEFEF',
-    borderRadius: 22,
-    padding: 4,
+    paddingHorizontal: 16,
   },
   tabButton: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F1F5F9',
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
   },
   activeTabButton: {
     backgroundColor: '#008000',
+    borderColor: '#008000',
   },
   tabText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
-    color: '#4B5563',
+    color: '#475569',
   },
   activeTabText: {
     color: '#FFFFFF',
-    fontWeight: '900',
-  },
-  redNotificationDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#EF4444',
-    marginLeft: 4,
-    marginTop: -6,
+    fontWeight: '800',
   },
 
-  /* Scroll Area */
+  /* Scroll Content Area */
   scrollContent: {
     flex: 1,
-    paddingHorizontal: 16,
   },
   scrollInner: {
-    paddingTop: 4,
-    paddingBottom: 24,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 20,
   },
 
-  /* Match Card */
-  matchCard: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#008000',
-    borderRadius: 18,
-    padding: 14,
-    marginBottom: 12,
+  /* Video Card Styles */
+  videoCardContainer: {
+    backgroundColor: '#ECFDF3',
+    borderRadius: 16,
+    borderWidth: 1.2,
+    borderColor: '#16A34A',
+    marginBottom: 14,
+    overflow: 'hidden',
   },
-  matchHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    paddingBottom: 6,
+  videoThumbnailBox: {
+    width: '100%',
+    height: 190,
+    backgroundColor: '#0F172A',
+    position: 'relative',
   },
-  matchSeriesTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#0F172A',
-    flex: 1,
+  thumbnailDarkOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
-  statusBadge: {
-    backgroundColor: '#DCFCE7',
+  videoTagBadge: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: '#DC2626',
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: 6,
+    zIndex: 10,
   },
-  statusBadgeText: {
-    color: '#16A34A',
+  videoTagText: {
+    color: '#FFFFFF',
     fontSize: 10,
     fontWeight: '900',
   },
-  teamsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-  },
-  teamCol: {
-    flex: 1,
+  playIconOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  teamNameText: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginTop: 4,
-  },
-  scoreText: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: '#008000',
-    marginTop: 2,
-  },
-  vsBadgeCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#008000',
+  playIconCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 8,
   },
-  vsText: {
+  durationPill: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    zIndex: 10,
+  },
+  durationText: {
     color: '#FFFFFF',
     fontSize: 11,
     fontWeight: '900',
   },
-  matchFooter: {
-    marginTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-    paddingTop: 6,
+  videoInfoBox: {
+    padding: 12,
   },
-  matchVenueText: {
-    fontSize: 11,
-    color: '#64748B',
-    textAlign: 'center',
+  videoTitleText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0F172A',
+    lineHeight: 20,
+    marginBottom: 6,
   },
-
-  /* Fixed Bottom Sticky AD Banner */
-  bottomAdBanner: {
+  videoMetaRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+  },
+  videoMetaText: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '600',
   },
 });
