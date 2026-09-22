@@ -42,8 +42,8 @@ export default function PointsTableScreen({ onBack }) {
     selectedTournament === 'ipl'
       ? iplYears
       : selectedTournament === 't20_wc'
-      ? T20_WORLD_CUP_YEARS
-      : ODI_WORLD_CUP_YEARS;
+        ? T20_WORLD_CUP_YEARS
+        : ODI_WORLD_CUP_YEARS;
 
   const loadPointsTable = useCallback(async (tournament, yearToFetch, isSilent = false) => {
     const tourney = tournament || selectedTournament;

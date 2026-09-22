@@ -55,6 +55,7 @@ export const SettingsProvider = ({ children }) => {
   }, []);
 
   const resetSettings = useCallback(() => {
+    0
     setSettings(DEFAULT_SETTINGS);
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS)).catch(() => { });
   }, []);

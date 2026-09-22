@@ -214,3 +214,29 @@ export function NewsArticleSkeleton({ count = 5 }) {
     </View>
   );
 }
+
+export function VideoCardSkeleton({ count = 4 }) {
+  return (
+    <View style={{ paddingVertical: 8 }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <View
+          key={i}
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 16,
+            borderWidth: 1,
+            borderColor: '#E2E8F0',
+            marginBottom: 14,
+            overflow: 'hidden',
+          }}
+        >
+          <SkeletonBox width="100%" height={190} borderRadius={0} />
+          <View style={{ padding: 12 }}>
+            <SkeletonBox width="90%" height={16} borderRadius={4} style={{ marginBottom: 8 }} />
+            <SkeletonBox width="60%" height={14} borderRadius={4} />
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}

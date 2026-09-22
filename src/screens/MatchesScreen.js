@@ -9,19 +9,20 @@ import {
   StyleSheet,
   StatusBar,
   Image,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getCricketVideos } from '../services/cricketApi';
 import VideoPlayerModal from '../components/VideoPlayerModal';
-import { NewsArticleSkeleton } from '../components/ShimmerSkeleton';
+import { VideoCardSkeleton } from '../components/ShimmerSkeleton';
 import EmptyStateView from '../components/EmptyStateView';
 
 export default function MatchesScreen({ onBack }) {
   const { theme } = useTheme();
 
-  const [activeCategory, setActiveCategory] = useState('All'); // 'All' | 'Highlights' | 'Batting' | 'Wickets'
+  const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [videosList, setVideosList] = useState([]);
@@ -56,6 +57,17 @@ export default function MatchesScreen({ onBack }) {
     setPlayerVisible(true);
   };
 
+  const handleInstallPress = () => {
+    Alert.alert(
+      'Live Cricket Highlights',
+      'Watch IPL, T20 & ODI World Cup match highlights, super overs, and best batting moments!',
+      [
+        { text: 'Dismiss', style: 'cancel' },
+        { text: 'Get App', onPress: () => {} },
+      ]
+    );
+  };
+
   const categories = [
     { id: 'All', label: 'All Highlights' },
     { id: 'Highlights', label: 'Match Highlights' },
@@ -66,7 +78,12 @@ export default function MatchesScreen({ onBack }) {
   const filteredVideos =
     activeCategory === 'All'
       ? videosList
-      : videosList.filter((v) => v.category === activeCategory);
+      : videosList.filter(
+          (v) =>
+            v.category === activeCategory ||
+            v.tag === activeCategory ||
+            (activeCategory === 'Wickets' && v.category === 'Sixes')
+        );
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
@@ -85,7 +102,7 @@ export default function MatchesScreen({ onBack }) {
         <Text style={styles.headerTitle}>Video Highlights</Text>
 
         {/* Top Right Circular AD Badge Icon */}
-        <View style={styles.topRightAdBadge}>
+        <TouchableOpacity style={styles.topRightAdBadge} onPress={handleInstallPress} activeOpacity={0.8}>
           <View style={styles.adBadgeGreenCircle}>
             <View style={styles.adRedBallCircleHeader}>
               <View style={styles.redBallInner} />
@@ -94,7 +111,7 @@ export default function MatchesScreen({ onBack }) {
               <Text style={styles.adSmallPillText}>AD</Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
 
       {/* 2. Top Sub-Header AD Card */}
@@ -115,12 +132,12 @@ export default function MatchesScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.installButton} activeOpacity={0.85} onPress={handleInstallPress}>
           <Text style={styles.installButtonText}>Install</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 3. Category Filter Tabs (All Highlights | Match Highlights | Best Batting | Wickets & Sixes) */}
+      {/* 3. Category Filter Tabs */}
       <View style={styles.tabsContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsRow}>
           {categories.map((cat) => {
@@ -158,7 +175,7 @@ export default function MatchesScreen({ onBack }) {
               Loading Video Highlights...
             </Text>
           </View>
-          <NewsArticleSkeleton count={5} />
+          <VideoCardSkeleton count={4} />
         </ScrollView>
       ) : (
         <ScrollView
@@ -251,7 +268,7 @@ export default function MatchesScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.installButton} activeOpacity={0.85} onPress={handleInstallPress}>
           <Text style={styles.installButtonText}>Install</Text>
         </TouchableOpacity>
       </View>
