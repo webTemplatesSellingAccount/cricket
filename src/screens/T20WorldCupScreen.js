@@ -5,11 +5,11 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Image,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import {
   T20_WC_META,
@@ -70,7 +70,7 @@ export default function T20WorldCupScreen({ onBack }) {
         <View style={styles.adTextBox}>
           <Text style={styles.adTitle} numberOfLines={1}>T20 World Cup Highlights</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Full history (2007-2026), 2026 Groups & Squads
+            Full history, Groups & Squads
           </Text>
         </View>
 
@@ -98,7 +98,7 @@ export default function T20WorldCupScreen({ onBack }) {
         </ScrollView>
       </View>
 
-      {/* 4. Sub Navigation Tabs (Champions | 2026 Groups | 2026 Squads | Venues) */}
+      {/* 4. Sub Navigation Tabs (Champions | Groups | Squads | Venues) */}
       <View style={styles.navTabRow}>
         <TouchableOpacity
           onPress={() => setActiveTab('finals')}
@@ -116,7 +116,7 @@ export default function T20WorldCupScreen({ onBack }) {
           activeOpacity={0.8}
         >
           <Text style={[styles.tabBtnText, activeTab === 'groups' && styles.tabBtnTextActive]}>
-            2026 Groups
+            Groups
           </Text>
         </TouchableOpacity>
 
@@ -126,7 +126,7 @@ export default function T20WorldCupScreen({ onBack }) {
           activeOpacity={0.8}
         >
           <Text style={[styles.tabBtnText, activeTab === 'squads' && styles.tabBtnTextActive]}>
-            2026 Squads
+            Squads
           </Text>
         </TouchableOpacity>
 
@@ -186,7 +186,7 @@ export default function T20WorldCupScreen({ onBack }) {
                   )}
                 </View>
 
-                {/* Scores if available (e.g. 2026 Final) */}
+                {/* Scores if available (e.g. Final) */}
                 {ed.final?.scores && (
                   <View style={styles.scoreDetailsBox}>
                     <Text style={styles.scoreText}>
@@ -202,12 +202,12 @@ export default function T20WorldCupScreen({ onBack }) {
           </View>
         )}
 
-        {/* TAB 2: 2026 GROUPS */}
+        {/* TAB 2: GROUPS */}
         {activeTab === 'groups' && (
           <View style={styles.groupsContainer}>
             <View style={styles.groupsHeaderNote}>
               <Text style={styles.groupsNoteText}>
-                2026 T20 World Cup Format: 20 Teams split into 4 Groups. Top 2 from each group advance to Super 8.
+                T20 World Cup Format: 20 Teams split into 4 Groups. Top 2 from each group advance to Super 8.
               </Text>
             </View>
 
@@ -232,7 +232,7 @@ export default function T20WorldCupScreen({ onBack }) {
           </View>
         )}
 
-        {/* TAB 3: 2026 SQUADS */}
+        {/* TAB 3: SQUADS */}
         {activeTab === 'squads' && (
           <View>
             {/* Squad Team Selector Scroll */}
@@ -259,7 +259,7 @@ export default function T20WorldCupScreen({ onBack }) {
             <View style={styles.squadCardContainer}>
               <View style={styles.squadCardHeader}>
                 <TeamFlag teamName={selectedSquadTeam} size={26} style={{ marginRight: 10 }} />
-                <Text style={styles.squadCardTitle}>{selectedSquadTeam} 2026 Squad</Text>
+                <Text style={styles.squadCardTitle}>{selectedSquadTeam} Squad</Text>
                 <Text style={styles.squadCountBadge}>15 Players</Text>
               </View>
 
@@ -292,7 +292,7 @@ export default function T20WorldCupScreen({ onBack }) {
           <View>
             <View style={styles.groupsHeaderNote}>
               <Text style={styles.groupsNoteText}>
-                2026 T20 World Cup Venues: Host Grounds across India & Sri Lanka.
+                T20 World Cup Venues: Host Grounds across India & Sri Lanka.
               </Text>
             </View>
 
