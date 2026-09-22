@@ -35,30 +35,9 @@ export default function OdiWorldCupScreen({ onBack }) {
 
         <Text style={styles.headerTitle}>ODI World Cup</Text>
 
-        {/* Top Right Sleek Live Badge */}
         <View style={styles.topRightLiveBadge}>
           <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
           <Text style={styles.topRightLiveText}>LIVE LINE</Text>
-        </View>
-      </View>
-
-      {/* 2. Top Sub-Header Showcase Card */}
-      <View style={styles.adBannerCard}>
-        <View style={styles.adIconBox}>
-          <View style={styles.adTrophyCircle}>
-            <Ionicons name="trophy" size={20} color="#D97706" />
-          </View>
-        </View>
-
-        <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>ODI World Cup Highlights</Text>
-          <Text style={styles.adSubtitle} numberOfLines={1}>
-            13 Complete Editions (1975 - 2023) Standings & Finals
-          </Text>
-        </View>
-
-        <View style={styles.installButton}>
-          <Text style={styles.installButtonText}>Explore</Text>
         </View>
       </View>
 
@@ -135,7 +114,7 @@ export default function OdiWorldCupScreen({ onBack }) {
                   <View style={styles.teamWinnerBox}>
                     <TeamFlag teamName={ed.champion} size={20} style={{ marginRight: 6 }} />
                     <Text style={styles.winnerText}>{ed.champion}</Text>
-                    <Text style={styles.crownPill}>WINNER 🏆</Text>
+                    <Ionicons name="trophy" size={16} color="#F59E0B" style={{ marginLeft: 4 }} />
                   </View>
 
                   <View style={styles.vsBadge}>
@@ -588,13 +567,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
   },
   winnerText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '900',
-    color: '#008000',
-    marginRight: 6,
+    color: '#059669',
   },
   crownPill: {
     fontSize: 9,
