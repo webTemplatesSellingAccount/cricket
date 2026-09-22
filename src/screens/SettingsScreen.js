@@ -13,10 +13,23 @@ import { useTheme } from '../context/ThemeContext';
 import { useSettings, IPL_TEAMS } from '../context/SettingsContext';
 import { TeamFlag } from '../utils/flagHelper';
 import { getUserMe, getApiUsage } from '../services/cricketApi';
+import { useAds } from '../context/AdContext';
+import AdContainer from '../components/AdContainer';
 
 export default function SettingsScreen({ onPreviewSplash }) {
   const { theme, isDarkMode, toggleTheme } = useTheme();
   const { settings, updateSettings } = useSettings();
+  const {
+    globalConfig,
+    screenConfigs,
+    updateGlobalConfig,
+    updateScreenConfig,
+    resetAllConfigs,
+    showAppOpenAd,
+    showInterstitialAd,
+  } = useAds();
+
+  const [selectedAdScreen, setSelectedAdScreen] = useState('settings');
 
   // BigBallsData API status state
   const [apiUserInfo, setApiUserInfo] = useState(null);
@@ -484,28 +497,235 @@ export default function SettingsScreen({ onPreviewSplash }) {
             />
           </View>
 
-          {/* Clear Cache */}
-          <TouchableOpacity
-            onPress={handleClearCache}
-            className="flex-row items-center justify-between p-4"
-            activeOpacity={0.7}
-          >
+        {/* 4.5 FIREBASE REMOTE CONFIG & ADMOB TEST ADS MANAGEMENT */}
+        <Text style={{ color: theme.textMuted }} className="text-xs font-black uppercase tracking-wider px-1 mb-2">
+          Firebase Remote Config & AdMob Management
+        </Text>
+        <View
+          style={{ backgroundColor: theme.card, borderColor: theme.cardBorder }}
+          className="p-4 rounded-3xl border shadow-xs mb-5"
+        >
+          {/* Header */}
+          <View className="flex-row items-center justify-between pb-3 border-b mb-3" style={{ borderColor: theme.divider }}>
             <View className="flex-row items-center">
-              <View className="w-8 h-8 rounded-xl bg-red-500/15 items-center justify-center mr-3">
-                <Ionicons name="trash-outline" size={17} color="#EF4444" />
+              <View className="w-8 h-8 rounded-xl bg-amber-500/15 items-center justify-center mr-2.5">
+                <Ionicons name="flame" size={18} color="#F59E0B" />
               </View>
               <View>
                 <Text style={{ color: theme.text }} className="font-extrabold text-sm">
-                  Clear Cached Data
+                  Firebase Remote Config Ads
                 </Text>
-                <Text style={{ color: theme.textMuted }} className="text-xs">
-                  Freed space: {cacheSize}
+                <Text style={{ color: theme.textMuted }} className="text-[10px]">
+                  Real-time AdMob Units & Dynamic Heights
                 </Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={16} color={theme.textMuted} />
-          </TouchableOpacity>
+            <View className="px-2.5 py-1 bg-emerald-500/20 rounded-full">
+              <Text className="text-emerald-600 dark:text-emerald-400 font-black text-[10px] uppercase">
+                FIREBASE LIVE
+              </Text>
+            </View>
+          </View>
+
+          {/* Master Ads Status Switch */}
+          <View className="flex-row items-center justify-between py-2 border-b" style={{ borderColor: theme.divider }}>
+            <View className="flex-row items-center flex-1 mr-2">
+              <Ionicons name="megaphone-outline" size={18} color={theme.accent} style={{ marginRight: 8 }} />
+              <View>
+                <Text style={{ color: theme.text }} className="font-bold text-xs">
+                  Global Ads Status (adsstatus)
+                </Text>
+                <Text style={{ color: theme.textMuted }} className="text-[10px]">
+                  Enable/Disable all app ads globally
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={globalConfig?.adsstatus ?? true}
+              onValueChange={(val) => updateGlobalConfig({ adsstatus: val })}
+              trackColor={{ false: '#94A3B8', true: '#10B981' }}
+              thumbColor="#FFFFFF"
+            />
+          </View>
+
+          {/* App Open Status Switch */}
+          <View className="flex-row items-center justify-between py-2 border-b" style={{ borderColor: theme.divider }}>
+            <View className="flex-row items-center flex-1 mr-2">
+              <Ionicons name="open-outline" size={18} color="#3B82F6" style={{ marginRight: 8 }} />
+              <View>
+                <Text style={{ color: theme.text }} className="font-bold text-xs">
+                  App Open Ad (appopen)
+                </Text>
+                <Text style={{ color: theme.textMuted }} className="text-[10px]">
+                  Launch overlay on startup
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={globalConfig?.appopen ?? true}
+              onValueChange={(val) => updateGlobalConfig({ appopen: val })}
+              trackColor={{ false: '#94A3B8', true: '#10B981' }}
+              thumbColor="#FFFFFF"
+            />
+          </View>
+
+          {/* Interstitial Click Frequency Selector */}
+          <View className="py-2.5 border-b" style={{ borderColor: theme.divider }}>
+            <View className="flex-row justify-between items-center mb-1.5">
+              <Text style={{ color: theme.text }} className="font-bold text-xs">
+                Interstitial Click Threshold (interstitial_click)
+              </Text>
+              <Text style={{ color: '#10B981' }} className="font-black text-xs">
+                Every {globalConfig?.interstitial_click ?? 1} click
+              </Text>
+            </View>
+            <View className="flex-row space-x-2">
+              {[1, 2, 3, 5].map((count) => {
+                const isSelected = (globalConfig?.interstitial_click ?? 1) === count;
+                return (
+                  <TouchableOpacity
+                    key={count}
+                    onPress={() => updateGlobalConfig({ interstitial_click: count })}
+                    style={{
+                      backgroundColor: isSelected ? theme.accent : theme.inputBg,
+                      borderColor: isSelected ? theme.accent : theme.cardBorder,
+                    }}
+                    className="px-3 py-1.5 rounded-xl border mr-2"
+                  >
+                    <Text
+                      style={{
+                        color: isSelected ? '#FFF' : theme.text,
+                        fontWeight: isSelected ? '900' : '600',
+                        fontSize: 11,
+                      }}
+                    >
+                      {count} {count === 1 ? 'click' : 'clicks'}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
+          {/* Per Screen JSON Controls */}
+          <View className="pt-3 mb-2">
+            <Text style={{ color: theme.text }} className="font-black text-xs mb-2">
+              Screen-wise Ad Remote Settings (JSON)
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-3">
+              {['settings', 'liveScoreHub', 'schedule', 'matches', 'news', 'videos', 't20WorldCup'].map((scr) => {
+                const isSelected = selectedAdScreen === scr;
+                return (
+                  <TouchableOpacity
+                    key={scr}
+                    onPress={() => setSelectedAdScreen(scr)}
+                    style={{
+                      backgroundColor: isSelected ? '#10B981' : theme.inputBg,
+                      borderColor: isSelected ? '#10B981' : theme.cardBorder,
+                    }}
+                    className="px-3 py-1.5 rounded-xl border mr-2"
+                  >
+                    <Text
+                      style={{
+                        color: isSelected ? '#FFF' : theme.text,
+                        fontWeight: isSelected ? '900' : '600',
+                        fontSize: 10,
+                      }}
+                    >
+                      {scr}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Selected Screen Editor controls */}
+            {(() => {
+              const scrConfig = screenConfigs.find((s) => s.screen === selectedAdScreen) || {
+                screen: selectedAdScreen,
+                ads_type: 'banner',
+                banner_type: 'inline_adaptive',
+                inline_size: 340,
+              };
+
+              return (
+                <View style={{ backgroundColor: isDarkMode ? '#0F172A' : '#F8FAFC' }} className="p-3 rounded-2xl border" style={{ borderColor: theme.cardBorder }}>
+                  <Text style={{ color: theme.textMuted }} className="text-[10px] font-mono mb-2">
+                    {JSON.stringify(scrConfig, null, 2)}
+                  </Text>
+
+                  {/* Ad Type selector */}
+                  <View className="flex-row items-center justify-between mb-2">
+                    <Text style={{ color: theme.text }} className="text-xs font-bold">ads_type:</Text>
+                    <View className="flex-row space-x-1">
+                      {['banner', 'native'].map((type) => (
+                        <TouchableOpacity
+                          key={type}
+                          onPress={() => updateScreenConfig(selectedAdScreen, { ads_type: type })}
+                          style={{
+                            backgroundColor: scrConfig.ads_type === type ? '#10B981' : theme.card,
+                            borderColor: scrConfig.ads_type === type ? '#10B981' : theme.cardBorder,
+                          }}
+                          className="px-2.5 py-1 rounded-lg border mr-1"
+                        >
+                          <Text style={{ color: scrConfig.ads_type === type ? '#FFF' : theme.text, fontSize: 10, fontWeight: '800' }}>
+                            {type}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Inline Size / Height selector */}
+                  <View className="flex-row items-center justify-between">
+                    <Text style={{ color: theme.text }} className="text-xs font-bold">inline_size (Height):</Text>
+                    <View className="flex-row space-x-1">
+                      {[110, 140, 200, 260, 340].map((size) => (
+                        <TouchableOpacity
+                          key={size}
+                          onPress={() => updateScreenConfig(selectedAdScreen, { inline_size: size })}
+                          style={{
+                            backgroundColor: scrConfig.inline_size === size ? '#3B82F6' : theme.card,
+                            borderColor: scrConfig.inline_size === size ? '#3B82F6' : theme.cardBorder,
+                          }}
+                          className="px-2 py-1 rounded-lg border mr-1"
+                        >
+                          <Text style={{ color: scrConfig.inline_size === size ? '#FFF' : theme.text, fontSize: 10, fontWeight: '800' }}>
+                            {size}px
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+              );
+            })()}
+          </View>
+
+          {/* Test Ad Buttons */}
+          <View className="flex-row space-x-2 pt-2 border-t mt-2" style={{ borderColor: theme.divider }}>
+            <TouchableOpacity
+              onPress={showAppOpenAd}
+              className="flex-1 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 items-center mr-1"
+            >
+              <Text className="text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">
+                Test App Open Ad
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => showInterstitialAd()}
+              className="flex-1 py-2 rounded-xl bg-blue-500/20 border border-blue-500/40 items-center ml-1"
+            >
+              <Text className="text-blue-600 dark:text-blue-400 font-extrabold text-[11px]">
+                Test Interstitial Ad
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {/* Dynamic Ad Placement for Settings Screen */}
+        <AdContainer screen="settings" />
 
         {/* 5. ABOUT & SUPPORT */}
         <Text style={{ color: theme.textMuted }} className="text-xs font-black uppercase tracking-wider px-1 mb-2">

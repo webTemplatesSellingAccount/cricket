@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import EmptyStateView from '../components/EmptyStateView';
+import AdContainer from '../components/AdContainer';
 
 // Local transparent PNG team logos matching exact screenshot
 const LOCAL_TEAM_LOGOS = {
@@ -208,25 +208,8 @@ export default function ScheduleScreen({ onBack }) {
           </View>
         </View>
 
-        {/* 2. Top Sub-Header Showcase Card */}
-        <View style={styles.adBannerCard}>
-          <View style={styles.adIconBox}>
-            <View style={styles.adBallCircle}>
-              <Ionicons name="baseball" size={18} color="#DC2626" />
-            </View>
-          </View>
-
-          <View style={styles.adTextBox}>
-            <Text style={styles.adTitle} numberOfLines={1}>IPL Live Matches</Text>
-            <Text style={styles.adSubtitle} numberOfLines={1}>
-              Watch live Cricket matches & real-time telemetry
-            </Text>
-          </View>
-
-          <View style={styles.installButton}>
-            <Text style={styles.installButtonText}>Explore</Text>
-          </View>
-        </View>
+        {/* 2. Top Sub-Header Showcase AdMob Card (Managed via Firebase) */}
+        <AdContainer screen="schedule" style={{ marginHorizontal: 12 }} />
 
         {/* 3. 3-Tab Segmented Nav Bar (Live | Recent | Upcoming*) matching Screenshot 3 */}
         <View style={styles.tabsContainer}>

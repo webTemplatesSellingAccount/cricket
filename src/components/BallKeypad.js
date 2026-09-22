@@ -246,7 +246,7 @@ export default function BallKeypad() {
 
               {/* Next Batsman Selection */}
               {availableNextBatsmen.length > 0 ? (
-                <>
+                <View>
                   <Text style={{ color: theme.textMuted }} className="text-xs font-bold uppercase mb-2">
                     Next Batsman to Bat
                   </Text>
@@ -268,7 +268,7 @@ export default function BallKeypad() {
                       </TouchableOpacity>
                     ))}
                   </View>
-                </>
+                </View>
               ) : (
                 <View
                   style={{ backgroundColor: theme.extraBadge + '20', borderColor: theme.extraBadge + '50' }}

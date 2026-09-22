@@ -1,21 +1,17 @@
 {
   "expo": {
-    "name": "Cricket Live Line",
-    "slug": "cricket",
+    "name": "Cricket HD TV Live",
+    "slug": "cricket-hd-tv-live",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "splash": {
-      "image": "./assets/splash_logo.jpg",
-      "resizeMode": "contain",
-      "backgroundColor": "#022C22"
-    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "package": "com.keyur.cricket",
+      "package": "com.crickethdtv.live",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#022C22",
         "foregroundImage": "./assets/adaptive-icon.png"
@@ -26,7 +22,14 @@
     },
     "plugins": [
       "expo-video",
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511"
+        }
+      ]
     ]
   }
 }

@@ -14,6 +14,7 @@ import { getCricketNews } from '../services/cricketApi';
 import EmptyStateView from '../components/EmptyStateView';
 import ArticleWebViewModal from '../components/ArticleWebViewModal';
 import { NewsArticleSkeleton } from '../components/ShimmerSkeleton';
+import AdContainer from '../components/AdContainer';
 
 export default function NewsScreen() {
   const { theme } = useTheme();
@@ -159,6 +160,9 @@ export default function NewsScreen() {
                   </View>
                 </View>
               </TouchableOpacity>
+
+              {/* Dynamic Firebase Ad Container for News Screen */}
+              <AdContainer screen="news" />
 
               {/* List of Other News */}
               <View className="space-y-3 pb-8">

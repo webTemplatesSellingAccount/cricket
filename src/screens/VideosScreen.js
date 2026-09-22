@@ -15,6 +15,7 @@ import { useTheme } from '../context/ThemeContext';
 import { getCricketVideos } from '../services/cricketApi';
 import VideoPlayerModal from '../components/VideoPlayerModal';
 import EmptyStateView from '../components/EmptyStateView';
+import AdContainer from '../components/AdContainer';
 
 export default function VideosScreen() {
   const { theme } = useTheme();
@@ -116,6 +117,7 @@ export default function VideosScreen() {
             />
           }
         >
+          <AdContainer screen="videos" />
           {filteredVideos.length === 0 ? (
             <EmptyStateView
               type="general"

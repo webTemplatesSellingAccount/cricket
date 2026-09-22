@@ -19,6 +19,7 @@ import {
 import { MatchCardSkeleton, SkeletonBox } from '../components/ShimmerSkeleton';
 import EmptyStateView from '../components/EmptyStateView';
 import { TeamFlag } from '../utils/flagHelper';
+import AdContainer from '../components/AdContainer';
 
 export default function IplHubScreen() {
   const { theme } = useTheme();
@@ -123,6 +124,11 @@ export default function IplHubScreen() {
             </TouchableOpacity>
           );
         })}
+      </View>
+
+      {/* Dynamic Firebase Ad Container */}
+      <View className="px-4">
+        <AdContainer screen="iplHub" />
       </View>
 
       {loading ? (

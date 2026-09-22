@@ -14,7 +14,7 @@ import { useTheme } from '../context/ThemeContext';
 let WebView = null;
 try {
   WebView = require('react-native-webview').WebView;
-} catch {
+} catch (e) {
   WebView = null;
 }
 
@@ -29,7 +29,7 @@ class WebViewErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.warn('WebView failed to render (fallback to browser link):', error?.message);
+    console.warn('WebView failed to render (fallback to browser link):', error && error.message);
   }
 
   render() {
@@ -44,7 +44,7 @@ export default function ArticleWebViewModal({ visible, article, onClose }) {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
 
-  if (!visible || !article?.link) return null;
+  if (!visible || !(article && article.link)) return null;
 
   const handleShare = async () => {
     try {
@@ -53,7 +53,7 @@ export default function ArticleWebViewModal({ visible, article, onClose }) {
         message: `${article.headline || article.title}\n\nRead more at: ${article.link}`,
         url: article.link,
       });
-    } catch { }
+    } catch (e) { }
   };
 
   const handleOpenBrowser = async () => {

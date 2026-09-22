@@ -33,14 +33,15 @@ export default function MatchCenterModal({ visible, fixture, onClose }) {
 
   const loadScorecard = async () => {
     setLoading(true);
-    const res = await getScorecard(fixture?.fixtureId || fixture?.id, fixture);
+    const fId = fixture ? (fixture.fixtureId || fixture.id) : null;
+    const res = await getScorecard(fId, fixture);
     setScorecardData(res.scorecard);
     setLoading(false);
   };
 
   const loadTeamInfo = async () => {
-    const activeTeamObj = selectedTeamTab === 'team1' ? fixture?.team1 : fixture?.team2;
-    if (!activeTeamObj?.id) {
+    const activeTeamObj = selectedTeamTab === 'team1' ? (fixture && fixture.team1) : (fixture && fixture.team2);
+    if (!activeTeamObj || !activeTeamObj.id) {
       setTeamDetail(null);
       setTeamForm([]);
       setTeamRecentMatches([]);
@@ -67,8 +68,9 @@ export default function MatchCenterModal({ visible, fixture, onClose }) {
 
   if (!visible || !fixture) return null;
 
-  const currentInning = scorecardData?.innings?.find((inn) => inn.inningNumber === selectedInningTab) || scorecardData?.innings?.[0];
-  const activeTeamObj = selectedTeamTab === 'team1' ? fixture?.team1 : fixture?.team2;
+  const inningsList = (scorecardData && scorecardData.innings) || [];
+  const currentInning = inningsList.find((inn) => inn.inningNumber === selectedInningTab) || inningsList[0];
+  const activeTeamObj = selectedTeamTab === 'team1' ? (fixture && fixture.team1) : (fixture && fixture.team2);
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>

@@ -21,7 +21,7 @@ import {
 import { TeamFlag } from '../utils/flagHelper';
 import MatchCenterModal from '../components/MatchCenterModal';
 import { MatchCardSkeleton } from '../components/ShimmerSkeleton';
-import EmptyStateView from '../components/EmptyStateView';
+import AdContainer from '../components/AdContainer';
 
 export default function MatchesScreen({ onBack }) {
   const { theme } = useTheme();
@@ -124,25 +124,8 @@ export default function MatchesScreen({ onBack }) {
         </View>
       </View>
 
-      {/* 2. Top Sub-Header Showcase Card */}
-      <View style={styles.adBannerCard}>
-        <View style={styles.adIconBox}>
-          <View style={styles.adPlayCircle}>
-            <Ionicons name="baseball" size={18} color="#008000" />
-          </View>
-        </View>
-
-        <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>Live Cricket Match Telemetry</Text>
-          <Text style={styles.adSubtitle} numberOfLines={1}>
-            Ball-by-ball commentary, player stats & run rates
-          </Text>
-        </View>
-
-        <View style={styles.installButton}>
-          <Text style={styles.installButtonText}>Explore</Text>
-        </View>
-      </View>
+      {/* 2. Top Sub-Header Showcase AdMob Card (Managed via Firebase) */}
+      <AdContainer screen="matches" style={{ marginHorizontal: 12 }} />
 
       {/* 3. Category Filter Tabs */}
       <View style={styles.tabsContainer}>

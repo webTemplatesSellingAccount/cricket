@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { ALL_RECORDS_CATEGORIES } from '../data/allRecordsData';
+import AdContainer from '../components/AdContainer';
 
 // Folder Graphic Component to match Screenshot 1 & 3
 const FolderGraphic = () => (
@@ -62,6 +63,9 @@ export default function AllRecordsScreen({ onBack }) {
           <Text style={styles.topRightLiveText}>LIVE LINE</Text>
         </View>
       </View>
+
+      {/* Dynamic Firebase Ad Placement */}
+      <AdContainer screen="allRecords" style={{ marginHorizontal: 16 }} />
 
       {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>

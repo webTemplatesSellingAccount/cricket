@@ -17,6 +17,8 @@ import SeriesScreen from './src/screens/SeriesScreen';
 import NewsScreen from './src/screens/NewsScreen';
 import PointsTableScreen from './src/screens/PointsTableScreen';
 
+import { AdProvider } from './src/context/AdContext';
+
 function MainApp() {
   const [showSplash, setShowSplash] = useState(true);
   const [quizVisible, setQuizVisible] = useState(false);
@@ -104,7 +106,9 @@ export default function App() {
       <ThemeProvider>
         <SettingsProvider>
           <CricketProvider>
-            <MainApp />
+            <AdProvider>
+              <MainApp />
+            </AdProvider>
           </CricketProvider>
         </SettingsProvider>
       </ThemeProvider>

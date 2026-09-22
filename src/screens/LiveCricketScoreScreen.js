@@ -21,6 +21,7 @@ import AllRecordsScreen from './AllRecordsScreen';
 import T20WorldCupScreen from './T20WorldCupScreen';
 import OdiWorldCupScreen from './OdiWorldCupScreen';
 import WorldTestChampionshipScreen from './WorldTestChampionshipScreen';
+import AdContainer from '../components/AdContainer';
 import {
   VENUES_DATA,
   COUNTRY_FILTERS,
@@ -349,25 +350,8 @@ export default function LiveCricketScoreScreen({
         </View>
       </View>
 
-      {/* 2. Top Sub-Header Showcase Card */}
-      <View style={styles.adBannerCard}>
-        <View style={styles.adIconBox}>
-          <View style={styles.adPinCircle}>
-            <Ionicons name="location" size={18} color="#0284C7" />
-          </View>
-        </View>
-
-        <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>IPL News & Updates</Text>
-          <Text style={styles.adSubtitle} numberOfLines={1}>
-            Stay updated with real-time IPL scores & series stats
-          </Text>
-        </View>
-
-        <View style={styles.installButton}>
-          <Text style={styles.installButtonText}>Explore</Text>
-        </View>
-      </View>
+      {/* 2. Top Sub-Header Showcase AdMob Card (Managed via Firebase) */}
+      <AdContainer screen="liveScoreHub" style={{ marginHorizontal: 12 }} />
 
       {/* 3. Main Scrollable Content */}
       <ScrollView

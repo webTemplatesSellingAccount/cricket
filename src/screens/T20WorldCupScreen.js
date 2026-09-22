@@ -19,6 +19,7 @@ import {
   T20_WC_2026_VENUES,
 } from '../data/t20WorldCupFullData';
 import { TeamFlag } from '../utils/flagHelper';
+import AdContainer from '../components/AdContainer';
 
 const { width } = Dimensions.get('window');
 
@@ -54,6 +55,9 @@ export default function T20WorldCupScreen({ onBack }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* Dynamic Ad Placement Managed via Firebase */}
+        <AdContainer screen="t20WorldCup" style={{ marginHorizontal: 16 }} />
+
         {/* 2. Sleek Modern Hero Banner */}
         <View style={styles.heroCard}>
           <View style={styles.heroGradientBg}>

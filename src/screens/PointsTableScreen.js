@@ -17,6 +17,7 @@ import { getIplPointTable } from '../services/cricketApi';
 import { TeamFlag } from '../utils/flagHelper';
 import { TableSkeleton } from '../components/ShimmerSkeleton';
 import EmptyStateView from '../components/EmptyStateView';
+import AdContainer from '../components/AdContainer';
 import {
   T20_WORLD_CUP_STANDINGS,
   ODI_WORLD_CUP_STANDINGS,
@@ -147,6 +148,9 @@ export default function PointsTableScreen({ onBack }) {
           <Text style={styles.topRightLiveText}>LIVE LINE</Text>
         </View>
       </View>
+
+      {/* Top Banner Ad managed via Firebase */}
+      <AdContainer screen="pointsTable" style={{ marginHorizontal: 12 }} />
 
       {/* 2. Tournament Segment Selector (IPL | T20 World Cup | ODI World Cup) */}
       <View style={styles.tournamentSegmentRow}>
