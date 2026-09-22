@@ -92,6 +92,9 @@ export const CricketProvider = ({ children }) => {
   // Select next batsman when someone gets out
   const selectNextBatsman = (batsmanIndex) => {
     updateCurrentInnings(inn => {
+      if (batsmanIndex < 0 || batsmanIndex >= inn.batsmen.length || !inn.batsmen[batsmanIndex]) {
+        return inn;
+      }
       const nextBatsmen = [...inn.batsmen];
       nextBatsmen[batsmanIndex] = {
         ...nextBatsmen[batsmanIndex],
@@ -135,8 +138,8 @@ export const CricketProvider = ({ children }) => {
       let allOvers = [...inn.allOvers];
       let fallOfWickets = [...inn.fallOfWickets];
 
-      let striker = updatedBatsmen[inn.strikerIndex];
-      let bowler = updatedBowlers[inn.activeBowlerIndex];
+      let striker = updatedBatsmen[inn.strikerIndex] || updatedBatsmen[0];
+      let bowler = updatedBowlers[inn.activeBowlerIndex] || updatedBowlers[0];
 
       let ballLabel = '';
       let ballColor = 'default';

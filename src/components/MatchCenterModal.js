@@ -724,7 +724,7 @@ export default function MatchCenterModal({ visible, fixture, onClose }) {
                               <Text style={{ color: theme.text }} className="text-xs font-extrabold">{teamDetail.stats.avg_goals_scored}</Text>
                             </View>
                           )}
-                          {teamDetail.stats.form_string && (
+                          {typeof teamDetail?.stats?.form_string === 'string' && (
                             <View className="flex-row justify-between items-center py-1">
                               <Text style={{ color: theme.textMuted }} className="text-xs">Recent Form</Text>
                               <View className="flex-row space-x-1">

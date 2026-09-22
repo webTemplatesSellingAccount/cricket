@@ -98,8 +98,8 @@ export default function MatchesScreen({ onBack }) {
 
   const filteredFixtures =
     activeCategory === 'All'
-      ? allFixtures
-      : allFixtures.filter((f) => f.status === activeCategory);
+      ? (allFixtures || []).filter(Boolean)
+      : (allFixtures || []).filter((f) => f && f.status === activeCategory);
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
@@ -217,12 +217,13 @@ export default function MatchesScreen({ onBack }) {
             />
           ) : (
             filteredFixtures.map((fixture) => {
+              if (!fixture) return null;
               const isLive = fixture.status === 'Live';
               const isFinished = fixture.status === 'Completed';
 
               return (
                 <TouchableOpacity
-                  key={fixture.fixtureId || fixture.id}
+                  key={fixture.fixtureId || fixture.id || Math.random().toString()}
                   onPress={() => openMatchCenter(fixture)}
                   style={styles.matchCardContainer}
                   activeOpacity={0.88}
@@ -348,9 +349,10 @@ export default function MatchesScreen({ onBack }) {
                             This Over:
                           </Text>
                           {fixture.lastBalls.map((b, bIdx) => {
-                            const isWicket = b.includes('W');
-                            const isSix = b === '6';
-                            const isFour = b === '4';
+                            const strB = String(b ?? '');
+                            const isWicket = strB.includes('W');
+                            const isSix = strB === '6';
+                            const isFour = strB === '4';
                             return (
                               <View
                                 key={bIdx}
@@ -365,7 +367,7 @@ export default function MatchesScreen({ onBack }) {
                                     (isWicket || isSix || isFour) && { color: '#FFFFFF' },
                                   ]}
                                 >
-                                  {b}
+                                  {strB}
                                 </Text>
                               </View>
                             );
