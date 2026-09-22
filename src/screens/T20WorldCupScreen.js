@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Image,
-  Alert,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +20,8 @@ import {
 } from '../data/t20WorldCupFullData';
 import { TeamFlag } from '../utils/flagHelper';
 
+const { width } = Dimensions.get('window');
+
 export default function T20WorldCupScreen({ onBack }) {
   const [activeTab, setActiveTab] = useState('finals'); // 'finals' | 'groups' | 'squads' | 'venues'
   const [selectedSquadTeam, setSelectedSquadTeam] = useState('India');
@@ -32,134 +33,234 @@ export default function T20WorldCupScreen({ onBack }) {
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* 1. Header Bar */}
-      <View style={styles.topHeaderBar}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.7}>
-          <Ionicons name="chevron-back" size={28} color="#000000" />
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
+          <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>T20 World Cup</Text>
+        <View style={styles.headerTitleBox}>
+          <Text style={styles.headerTitle}>T20 WORLD CUP</Text>
+          <Text style={styles.headerSubtitle}>Official Tournament Hub</Text>
+        </View>
 
-        <View style={styles.topRightLiveBadge}>
-          <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
-          <Text style={styles.topRightLiveText}>LIVE LINE</Text>
+        <View style={styles.liveBadge}>
+          <View style={styles.liveDot} />
+          <Text style={styles.liveText}>LIVE LINE</Text>
         </View>
       </View>
 
-      {/* 3. Hero Championship Leaderboard Strip */}
-      <View style={styles.heroStripContainer}>
-        <View style={styles.heroTitleRow}>
-          <Ionicons name="trophy" size={16} color="#F59E0B" style={{ marginRight: 6 }} />
-          <Text style={styles.heroStripTitle}>Champions Leaderboard (10 Editions)</Text>
+      <ScrollView
+        style={styles.mainScrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* 2. Sleek Modern Hero Banner */}
+        <View style={styles.heroCard}>
+          <View style={styles.heroGradientBg}>
+            <View style={styles.heroTopTagRow}>
+              <View style={styles.heroBadge}>
+                <Ionicons name="trophy" size={13} color="#F59E0B" style={{ marginRight: 4 }} />
+                <Text style={styles.heroBadgeText}>ICC T20 WORLD CUP 2026</Text>
+              </View>
+              <Text style={styles.heroHostText}>🇮🇳 India & 🇱🇰 Sri Lanka</Text>
+            </View>
+
+            <Text style={styles.heroTitle}>20 Teams • 55 Matches • 1 Champion</Text>
+
+            {/* Quick Stats Grid */}
+            <View style={styles.heroStatsRow}>
+              <View style={styles.heroStatItem}>
+                <Text style={styles.heroStatVal}>10</Text>
+                <Text style={styles.heroStatLbl}>Editions</Text>
+              </View>
+              <View style={styles.heroStatDivider} />
+              <View style={styles.heroStatItem}>
+                <Text style={styles.heroStatVal}>20</Text>
+                <Text style={styles.heroStatLbl}>Nations</Text>
+              </View>
+              <View style={styles.heroStatDivider} />
+              <View style={styles.heroStatItem}>
+                <Text style={styles.heroStatVal}>3🏆</Text>
+                <Text style={styles.heroStatLbl}>India (Max)</Text>
+              </View>
+            </View>
+          </View>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.leaderboardScroll}>
+
+        {/* 3. Champions Leaderboard Carousel */}
+        <View style={styles.sectionHeader}>
+          <Ionicons name="ribbon" size={18} color="#059669" style={{ marginRight: 6 }} />
+          <Text style={styles.sectionTitle}>Trophies Leaderboard</Text>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.leaderboardContainer}
+        >
           {T20_WC_TITLE_COUNTS.map((item) => (
-            <View key={item.team} style={styles.titleCountPill}>
-              <TeamFlag teamName={item.team} countryCode={item.code} size={18} style={{ marginRight: 6 }} />
-              <Text style={styles.teamPillName}>{item.team}</Text>
-              <View style={styles.trophyPillBadge}>
-                <Text style={styles.trophyBadgeText}>🏆 {item.titles}</Text>
+            <View key={item.team} style={styles.leaderboardChip}>
+              <TeamFlag teamName={item.team} countryCode={item.code} size={22} style={styles.chipFlag} />
+              <View style={styles.chipInfo}>
+                <Text style={styles.chipTeamName}>{item.team}</Text>
+                <Text style={styles.chipTitleCount}>🏆 {item.titles} {item.titles === 1 ? 'Title' : 'Titles'}</Text>
               </View>
             </View>
           ))}
         </ScrollView>
-      </View>
 
-      {/* 4. Sub Navigation Tabs (Champions | Groups | Squads | Venues) */}
-      <View style={styles.navTabRow}>
-        <TouchableOpacity
-          onPress={() => setActiveTab('finals')}
-          style={[styles.tabBtn, activeTab === 'finals' && styles.tabBtnActive]}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabBtnText, activeTab === 'finals' && styles.tabBtnTextActive]}>
-            Finals
-          </Text>
-        </TouchableOpacity>
+        {/* 4. Sub-Navigation Tabs */}
+        <View style={styles.tabContainer}>
+          <TouchableOpacity
+            onPress={() => setActiveTab('finals')}
+            style={[styles.tabBtn, activeTab === 'finals' && styles.tabBtnActive]}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="trophy-outline"
+              size={16}
+              color={activeTab === 'finals' ? '#FFFFFF' : '#64748B'}
+              style={{ marginRight: 4 }}
+            />
+            <Text style={[styles.tabText, activeTab === 'finals' && styles.tabTextActive]}>
+              Finals
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setActiveTab('groups')}
-          style={[styles.tabBtn, activeTab === 'groups' && styles.tabBtnActive]}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabBtnText, activeTab === 'groups' && styles.tabBtnTextActive]}>
-            Groups
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setActiveTab('groups')}
+            style={[styles.tabBtn, activeTab === 'groups' && styles.tabBtnActive]}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="grid-outline"
+              size={16}
+              color={activeTab === 'groups' ? '#FFFFFF' : '#64748B'}
+              style={{ marginRight: 4 }}
+            />
+            <Text style={[styles.tabText, activeTab === 'groups' && styles.tabTextActive]}>
+              Groups
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setActiveTab('squads')}
-          style={[styles.tabBtn, activeTab === 'squads' && styles.tabBtnActive]}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabBtnText, activeTab === 'squads' && styles.tabBtnTextActive]}>
-            Squads
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setActiveTab('squads')}
+            style={[styles.tabBtn, activeTab === 'squads' && styles.tabBtnActive]}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="people-outline"
+              size={16}
+              color={activeTab === 'squads' ? '#FFFFFF' : '#64748B'}
+              style={{ marginRight: 4 }}
+            />
+            <Text style={[styles.tabText, activeTab === 'squads' && styles.tabTextActive]}>
+              Squads
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setActiveTab('venues')}
-          style={[styles.tabBtn, activeTab === 'venues' && styles.tabBtnActive]}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tabBtnText, activeTab === 'venues' && styles.tabBtnTextActive]}>
-            Venues
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => setActiveTab('venues')}
+            style={[styles.tabBtn, activeTab === 'venues' && styles.tabBtnActive]}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="location-outline"
+              size={16}
+              color={activeTab === 'venues' ? '#FFFFFF' : '#64748B'}
+              style={{ marginRight: 4 }}
+            />
+            <Text style={[styles.tabText, activeTab === 'venues' && styles.tabTextActive]}>
+              Venues
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* 5. Main Content Section based on Active Tab */}
-      <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
+        {/* 5. Tab Views */}
 
-        {/* TAB 1: FINALS & EDITIONS HISTORY */}
+        {/* TAB 1: FINALS HISTORY */}
         {activeTab === 'finals' && (
-          <View>
+          <View style={styles.tabContent}>
             {T20_WC_EDITIONS.map((ed) => (
-              <View key={ed.id} style={styles.editionCard}>
-                <View style={styles.editionHeaderRow}>
-                  <View style={styles.yearBadge}>
-                    <Ionicons name="ribbon" size={14} color="#F59E0B" style={{ marginRight: 4 }} />
-                    <Text style={styles.yearBadgeText}>{ed.year} (Edition {ed.edition})</Text>
+              <View key={ed.id} style={styles.finalsCard}>
+                {/* Edition Card Header */}
+                <View style={styles.finalsCardHeader}>
+                  <View style={styles.yearPill}>
+                    <Text style={styles.yearPillText}>{ed.year}</Text>
                   </View>
-                  <Text style={styles.hostText}>Host: {ed.hosts.join(', ')}</Text>
-                </View>
-
-                {/* Match Result Banner */}
-                <View style={styles.resultBanner}>
-                  <View style={styles.teamWinnerBox}>
-                    <TeamFlag teamName={ed.champion} size={20} style={{ marginRight: 6 }} />
-                    <Text style={styles.winnerText}>{ed.champion}</Text>
-                    <Ionicons name="trophy" size={16} color="#F59E0B" style={{ marginLeft: 4 }} />
-                  </View>
-
-                  <View style={styles.vsBadge}>
-                    <Text style={styles.vsText}>VS</Text>
-                  </View>
-
-                  <View style={styles.teamRunnerBox}>
-                    <TeamFlag teamName={ed.runner_up} size={20} style={{ marginRight: 6 }} />
-                    <Text style={styles.runnerText}>{ed.runner_up}</Text>
+                  <Text style={styles.editionTag}>Edition #{ed.edition}</Text>
+                  <View style={styles.hostPill}>
+                    <Ionicons name="earth" size={12} color="#059669" style={{ marginRight: 3 }} />
+                    <Text style={styles.hostPillText}>{ed.hosts.join(', ')}</Text>
                   </View>
                 </View>
 
-                <View style={styles.resultSummaryRow}>
-                  <Text style={styles.resultMarginText}>
+                {/* Match Score Banner */}
+                <View style={styles.matchBanner}>
+                  {/* Winner Team */}
+                  <View style={styles.matchTeamSide}>
+                    <TeamFlag teamName={ed.champion} size={28} style={{ marginBottom: 6 }} />
+                    <View style={styles.championNameRow}>
+                      <Text style={styles.championText}>{ed.champion}</Text>
+                      <Ionicons name="trophy" size={14} color="#F59E0B" style={{ marginLeft: 3 }} />
+                    </View>
+                    <Text style={styles.championBadgeLabel}>WINNER</Text>
+                  </View>
+
+                  {/* VS Badge */}
+                  <View style={styles.vsContainer}>
+                    <View style={styles.vsCircle}>
+                      <Text style={styles.vsLabel}>VS</Text>
+                    </View>
+                    <Text style={styles.finalLabel}>FINAL</Text>
+                  </View>
+
+                  {/* Runner-Up Team */}
+                  <View style={styles.matchTeamSide}>
+                    <TeamFlag teamName={ed.runner_up} size={28} style={{ marginBottom: 6 }} />
+                    <Text style={styles.runnerUpText}>{ed.runner_up}</Text>
+                    <Text style={styles.runnerUpBadgeLabel}>RUNNER-UP</Text>
+                  </View>
+                </View>
+
+                {/* Result Description */}
+                <View style={styles.resultBox}>
+                  <Text style={styles.resultSummaryText}>
                     {ed.final?.result || `${ed.champion} won the tournament`}
                   </Text>
-                  {ed.final?.venue && (
-                    <Text style={styles.venueLocationText}>
-                      📍 {ed.final.venue}, {ed.final.city}
-                    </Text>
-                  )}
                 </View>
 
-                {/* Scores if available (e.g. Final) */}
+                {/* Scores Box if available */}
                 {ed.final?.scores && (
-                  <View style={styles.scoreDetailsBox}>
-                    <Text style={styles.scoreText}>
-                      🇮🇳 India: {ed.final.scores.India.runs}/{ed.final.scores.India.wickets} ({ed.final.scores.India.overs} ov)
-                    </Text>
-                    <Text style={styles.scoreText}>
-                      🇳🇿 New Zealand: {ed.final.scores['New Zealand'].runs}/{ed.final.scores['New Zealand'].wickets} ({ed.final.scores['New Zealand'].overs} ov)
+                  <View style={styles.scoresGrid}>
+                    <View style={styles.scoreRow}>
+                      <View style={styles.scoreTeamInfo}>
+                        <TeamFlag teamName={ed.champion} size={16} style={{ marginRight: 6 }} />
+                        <Text style={styles.scoreTeamName}>{ed.champion}</Text>
+                      </View>
+                      <Text style={styles.scoreValText}>
+                        {ed.final.scores[ed.champion]?.runs}/{ed.final.scores[ed.champion]?.wickets} ({ed.final.scores[ed.champion]?.overs} ov)
+                      </Text>
+                    </View>
+
+                    <View style={styles.scoreRow}>
+                      <View style={styles.scoreTeamInfo}>
+                        <TeamFlag teamName={ed.runner_up} size={16} style={{ marginRight: 6 }} />
+                        <Text style={styles.scoreTeamName}>{ed.runner_up}</Text>
+                      </View>
+                      <Text style={styles.scoreValText}>
+                        {ed.final.scores[ed.runner_up]?.runs}/{ed.final.scores[ed.runner_up]?.wickets} ({ed.final.scores[ed.runner_up]?.overs} ov)
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Venue Footer */}
+                {ed.final?.venue && (
+                  <View style={styles.venueFooter}>
+                    <Ionicons name="location" size={13} color="#64748B" style={{ marginRight: 4 }} />
+                    <Text style={styles.venueFooterText}>
+                      {ed.final.venue}, {ed.final.city}
                     </Text>
                   </View>
                 )}
@@ -170,26 +271,46 @@ export default function T20WorldCupScreen({ onBack }) {
 
         {/* TAB 2: GROUPS */}
         {activeTab === 'groups' && (
-          <View style={styles.groupsContainer}>
-            <View style={styles.groupsHeaderNote}>
-              <Text style={styles.groupsNoteText}>
-                T20 World Cup Format: 20 Teams split into 4 Groups. Top 2 from each group advance to Super 8.
+          <View style={styles.tabContent}>
+            {/* Format Banner */}
+            <View style={styles.infoBanner}>
+              <Ionicons name="information-circle-outline" size={20} color="#047857" style={{ marginRight: 8 }} />
+              <Text style={styles.infoBannerText}>
+                20 Nations split across 4 Groups of 5 teams. Top 2 from each group advance to the Super 8s stage.
               </Text>
             </View>
 
             {Object.keys(T20_WC_2026_GROUPS).map((groupKey) => (
               <View key={groupKey} style={styles.groupCard}>
-                <View style={styles.groupHeaderBar}>
-                  <Text style={styles.groupHeaderText}>Group {groupKey}</Text>
-                  <Text style={styles.groupSubText}>5 Teams</Text>
+                <View style={styles.groupHeader}>
+                  <View style={styles.groupTitleRow}>
+                    <Text style={styles.groupHeaderTitle}>GROUP {groupKey}</Text>
+                    <View style={styles.groupBadge}>
+                      <Text style={styles.groupBadgeText}>5 TEAMS</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.groupSubHeader}>T20 World Cup 2026</Text>
                 </View>
 
-                <View style={styles.groupTeamsList}>
+                <View style={styles.groupTeamList}>
                   {T20_WC_2026_GROUPS[groupKey].map((teamName, idx) => (
-                    <View key={teamName} style={styles.groupTeamRow}>
-                      <Text style={styles.groupRankIndex}>{idx + 1}.</Text>
-                      <TeamFlag teamName={teamName} size={22} style={{ marginRight: 10 }} />
-                      <Text style={styles.groupTeamName}>{teamName}</Text>
+                    <View
+                      key={teamName}
+                      style={[
+                        styles.groupTeamRow,
+                        idx === T20_WC_2026_GROUPS[groupKey].length - 1 && { borderBottomWidth: 0 },
+                      ]}
+                    >
+                      <View style={styles.rankBadge}>
+                        <Text style={styles.rankBadgeText}>{idx + 1}</Text>
+                      </View>
+                      <TeamFlag teamName={teamName} size={24} style={{ marginRight: 12 }} />
+                      <Text style={styles.groupTeamNameText}>{teamName}</Text>
+                      {idx < 2 && (
+                        <View style={styles.qualifyBadge}>
+                          <Text style={styles.qualifyBadgeText}>SUPER 8</Text>
+                        </View>
+                      )}
                     </View>
                   ))}
                 </View>
@@ -200,20 +321,26 @@ export default function T20WorldCupScreen({ onBack }) {
 
         {/* TAB 3: SQUADS */}
         {activeTab === 'squads' && (
-          <View>
-            {/* Squad Team Selector Scroll */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }}>
+          <View style={styles.tabContent}>
+            {/* Team Scroll Selector */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.squadTeamSelector}
+            >
               {squadTeamList.map((tName) => {
                 const isSelected = selectedSquadTeam === tName;
                 return (
                   <TouchableOpacity
                     key={tName}
                     onPress={() => setSelectedSquadTeam(tName)}
-                    style={[styles.teamSelectPill, isSelected && styles.teamSelectPillActive]}
+                    style={[styles.squadTeamChip, isSelected && styles.squadTeamChipActive]}
                     activeOpacity={0.8}
                   >
                     <TeamFlag teamName={tName} size={18} style={{ marginRight: 6 }} />
-                    <Text style={[styles.teamSelectText, isSelected && styles.teamSelectTextActive]}>
+                    <Text
+                      style={[styles.squadTeamChipText, isSelected && styles.squadTeamChipTextActive]}
+                    >
                       {tName}
                     </Text>
                   </TouchableOpacity>
@@ -221,29 +348,35 @@ export default function T20WorldCupScreen({ onBack }) {
               })}
             </ScrollView>
 
-            {/* Squad List Box */}
-            <View style={styles.squadCardContainer}>
-              <View style={styles.squadCardHeader}>
-                <TeamFlag teamName={selectedSquadTeam} size={26} style={{ marginRight: 10 }} />
-                <Text style={styles.squadCardTitle}>{selectedSquadTeam} Squad</Text>
-                <Text style={styles.squadCountBadge}>15 Players</Text>
+            {/* Squad Player List Card */}
+            <View style={styles.squadContainer}>
+              <View style={styles.squadCardTitleBar}>
+                <TeamFlag teamName={selectedSquadTeam} size={28} style={{ marginRight: 10 }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.squadMainTitle}>{selectedSquadTeam} Squad</Text>
+                  <Text style={styles.squadSubTitle}>Official 15-Member Roster</Text>
+                </View>
+                <View style={styles.rosterCountPill}>
+                  <Text style={styles.rosterCountText}>15 Players</Text>
+                </View>
               </View>
 
-              <View style={styles.squadPlayerList}>
+              <View style={styles.playerGrid}>
                 {(T20_WC_2026_SQUADS[selectedSquadTeam] || []).map((player, idx) => (
-                  <View key={player} style={styles.squadPlayerRow}>
-                    <View style={styles.playerNumCircle}>
-                      <Text style={styles.playerNumText}>{idx + 1}</Text>
+                  <View key={player} style={styles.playerCardRow}>
+                    <View style={styles.playerAvatarCircle}>
+                      <Text style={styles.playerAvatarText}>{idx + 1}</Text>
                     </View>
                     <Text style={styles.playerNameText}>{player}</Text>
+
                     {player.includes('(C)') && (
-                      <View style={styles.captainBadge}>
-                        <Text style={styles.captainBadgeText}>CAPTAIN</Text>
+                      <View style={styles.captainPill}>
+                        <Text style={styles.captainPillText}>CAPTAIN</Text>
                       </View>
                     )}
                     {player.includes('(WK)') && (
-                      <View style={styles.wkBadge}>
-                        <Text style={styles.wkBadgeText}>WK</Text>
+                      <View style={styles.wkPill}>
+                        <Text style={styles.wkPillText}>WK</Text>
                       </View>
                     )}
                   </View>
@@ -255,46 +388,51 @@ export default function T20WorldCupScreen({ onBack }) {
 
         {/* TAB 4: VENUES */}
         {activeTab === 'venues' && (
-          <View>
-            <View style={styles.groupsHeaderNote}>
-              <Text style={styles.groupsNoteText}>
-                T20 World Cup Venues: Host Grounds across India & Sri Lanka.
+          <View style={styles.tabContent}>
+            <View style={styles.infoBanner}>
+              <Ionicons name="location-outline" size={20} color="#047857" style={{ marginRight: 8 }} />
+              <Text style={styles.infoBannerText}>
+                Official Match Venues across Premier Stadiums in India & Sri Lanka.
               </Text>
             </View>
 
             {T20_WC_2026_VENUES.map((v) => (
               <View key={v.id} style={styles.venueCard}>
-                <View style={styles.venueHeaderRow}>
-                  <Ionicons name="location" size={20} color="#008000" style={{ marginRight: 8 }} />
-                  <Text style={styles.venueNameText}>{v.name}</Text>
-                </View>
-
-                <View style={styles.venueMetaRow}>
-                  <Text style={styles.venueMetaText}>📍 {v.city}, {v.country}</Text>
-                  <Text style={styles.venueCapacityText}>🏟️ Capacity: {v.capacity}</Text>
+                <View style={styles.venueCardHeader}>
+                  <View style={styles.venueIconCircle}>
+                    <Ionicons name="shield-checkmark" size={18} color="#059669" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.venueNameText}>{v.name}</Text>
+                    <Text style={styles.venueCityText}>
+                      📍 {v.city}, {v.country}
+                    </Text>
+                  </View>
+                  <View style={styles.capacityPill}>
+                    <Ionicons name="people" size={12} color="#047857" style={{ marginRight: 3 }} />
+                    <Text style={styles.capacityText}>{v.capacity}</Text>
+                  </View>
                 </View>
               </View>
             ))}
           </View>
         )}
       </ScrollView>
-      <View style={styles.bottomAdBanner}>
-        <View style={styles.adIconBox}>
-          <View style={styles.adTrophyCircle}>
-            <Ionicons name="globe-outline" size={20} color="#0284C7" />
-          </View>
+
+      {/* Bottom Sleek Live Cricket Updates Banner */}
+      <View style={styles.bottomBanner}>
+        <View style={styles.bannerIconCircle}>
+          <Ionicons name="flash-outline" size={20} color="#059669" />
         </View>
 
-        <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>Live Cricket Updates</Text>
-          <Text style={styles.adSubtitle} numberOfLines={1}>
-            Get ball-by-ball scores & T20 World Cup stats
-          </Text>
+        <View style={styles.bannerTextBox}>
+          <Text style={styles.bannerTitle}>T20 World Cup Live Score</Text>
+          <Text style={styles.bannerSubtitle}>Real-time ball-by-ball commentary & odds</Text>
         </View>
 
-        <View style={styles.installButton}>
-          <Text style={styles.installButtonText}>View Live</Text>
-        </View>
+        <TouchableOpacity style={styles.bannerActionBtn} activeOpacity={0.8}>
+          <Text style={styles.bannerActionText}>View Live</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -303,493 +441,653 @@ export default function T20WorldCupScreen({ onBack }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8FAFC',
   },
 
-  /* Header Bar */
-  topHeaderBar: {
-    height: 54,
+  /* 1. Header Bar */
+  headerContainer: {
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
     backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
   },
-  backButton: {
-    padding: 4,
+  backBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitleBox: {
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#000000',
-    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#0F172A',
+    letterSpacing: 0.5,
   },
-
-  /* Top Right Sleek Live Badge */
-  topRightLiveBadge: {
+  headerSubtitle: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#64748B',
+    marginTop: 1,
+  },
+  liveBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ECFDF5',
     borderWidth: 1,
     borderColor: '#6EE7B7',
-    paddingHorizontal: 8,
+    paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: 12,
   },
-  topRightLiveText: {
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#059669',
+    marginRight: 5,
+  },
+  liveText: {
     color: '#047857',
     fontSize: 10,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
 
-  /* Top & Bottom Sub-Header AD Card */
-  adBannerCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    marginHorizontal: 16,
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  bottomAdBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    marginHorizontal: 16,
-    marginVertical: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  adIconBox: {
-    marginRight: 10,
-  },
-  adTrophyCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#FEF3C7',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  adBadgePillGreen: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    backgroundColor: '#16A34A',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 6,
-  },
-  adBadgeText: {
-    fontSize: 7,
-    fontWeight: '900',
-    color: '#FFFFFF',
-  },
-  adTextBox: {
+  /* Scroll Content */
+  mainScrollView: {
     flex: 1,
-    marginRight: 8,
   },
-  adTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  adSubtitle: {
-    fontSize: 12,
-    color: '#64748B',
-    marginTop: 1,
-  },
-  installButton: {
-    backgroundColor: '#008000',
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  installButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-
-  /* Hero Leaderboard Strip */
-  heroStripContainer: {
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#BBF7D0',
-    marginHorizontal: 16,
-    marginTop: 8,
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  heroTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  heroStripTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#008000',
-  },
-  leaderboardScroll: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  titleCountPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginRight: 8,
-  },
-  teamPillName: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginRight: 6,
-  },
-  trophyPillBadge: {
-    backgroundColor: '#FEF3C7',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  trophyBadgeText: {
-    fontSize: 11,
-    fontWeight: '900',
-    color: '#B45309',
-  },
-
-  /* Nav Tabs */
-  navTabRow: {
-    flexDirection: 'row',
-    backgroundColor: '#F1F5F9',
-    marginHorizontal: 16,
-    marginTop: 10,
-    padding: 4,
-    borderRadius: 12,
-  },
-  tabBtn: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  tabBtnActive: {
-    backgroundColor: '#008000',
-  },
-  tabBtnText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#475569',
-  },
-  tabBtnTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '800',
-  },
-
   scrollContent: {
-    flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingTop: 14,
+    paddingBottom: 24,
   },
 
-  /* Edition Card */
-  editionCard: {
-    backgroundColor: '#ECFDF3',
-    borderRadius: 16,
-    borderWidth: 1.2,
-    borderColor: '#16A34A',
-    padding: 14,
-    marginBottom: 12,
+  /* 2. Hero Banner */
+  heroCard: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 16,
+    backgroundColor: '#064E3B',
+    elevation: 3,
+    shadowColor: '#064E3B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
   },
-  editionHeaderRow: {
+  heroGradientBg: {
+    padding: 16,
+    backgroundColor: '#047857',
+  },
+  heroTopTagRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  heroBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#064E3B',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#059669',
+  },
+  heroBadgeText: {
+    color: '#F59E0B',
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  heroHostText: {
+    color: '#ECFDF5',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  heroTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 14,
+  },
+  heroStatsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: 'rgba(6, 78, 59, 0.65)',
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  heroStatItem: {
+    alignItems: 'center',
+  },
+  heroStatVal: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#F59E0B',
+  },
+  heroStatLbl: {
+    fontSize: 10,
+    color: '#D1FAE5',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  heroStatDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+
+  /* Section Title */
+  sectionHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
-  yearBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#056E2B',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  yearBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 13,
+  sectionTitle: {
+    fontSize: 15,
     fontWeight: '800',
+    color: '#0F172A',
   },
-  hostText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#475569',
+
+  /* Leaderboard Chips */
+  leaderboardContainer: {
+    paddingBottom: 12,
   },
-  resultBanner: {
+  leaderboardChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: 10,
     borderWidth: 1,
     borderColor: '#E2E8F0',
+    elevation: 1,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
   },
-  teamWinnerBox: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+  chipFlag: {
+    marginRight: 8,
   },
-  winnerText: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: '#059669',
-  },
-  crownPill: {
-    fontSize: 9,
-    fontWeight: '900',
-    color: '#B45309',
-    backgroundColor: '#FEF3C7',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  vsBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#008000',
-    alignItems: 'center',
+  chipInfo: {
     justifyContent: 'center',
-    marginHorizontal: 6,
   },
-  vsText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '900',
-  },
-  teamRunnerBox: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  runnerText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#334155',
-  },
-  resultSummaryRow: {
-    marginTop: 8,
-    alignItems: 'center',
-  },
-  resultMarginText: {
+  chipTeamName: {
     fontSize: 13,
     fontWeight: '800',
     color: '#0F172A',
   },
-  venueLocationText: {
+  chipTitleCount: {
     fontSize: 11,
-    color: '#64748B',
-    marginTop: 2,
+    fontWeight: '700',
+    color: '#D97706',
+    marginTop: 1,
   },
-  scoreDetailsBox: {
-    marginTop: 8,
-    backgroundColor: '#F0FDF4',
-    borderRadius: 8,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#86EFAC',
+
+  /* Tab Buttons */
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 4,
+    marginVertical: 12,
   },
-  scoreText: {
+  tabBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  tabBtnActive: {
+    backgroundColor: '#059669',
+    elevation: 2,
+    shadowColor: '#059669',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  tabText: {
     fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  tabTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+
+  tabContent: {
+    marginTop: 4,
+  },
+
+  /* Finals Cards */
+  finalsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+  },
+  finalsCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  yearPill: {
+    backgroundColor: '#059669',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  yearPillText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  editionTag: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  hostPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  hostPillText: {
+    fontSize: 11,
     fontWeight: '700',
     color: '#047857',
   },
 
-  /* Groups Tab */
-  groupsContainer: {
-    paddingVertical: 2,
+  /* Match Banner */
+  matchBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
   },
-  groupsHeaderNote: {
-    backgroundColor: '#F0FDF4',
+  matchTeamSide: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  championNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  championText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#059669',
+    textAlign: 'center',
+  },
+  championBadgeLabel: {
+    fontSize: 9,
+    fontWeight: '900',
+    color: '#D97706',
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginTop: 4,
+  },
+  vsContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  vsCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#059669',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vsLabel: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  finalLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#94A3B8',
+    marginTop: 3,
+  },
+  runnerUpText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#334155',
+    textAlign: 'center',
+  },
+  runnerUpBadgeLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    backgroundColor: '#E2E8F0',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginTop: 4,
+  },
+
+  resultBox: {
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  resultSummaryText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0F172A',
+    textAlign: 'center',
+  },
+
+  scoresGrid: {
+    marginTop: 10,
+    backgroundColor: '#ECFDF5',
     borderRadius: 10,
     padding: 10,
-    marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#86EFAC',
+    borderColor: '#A7F3D0',
   },
-  groupsNoteText: {
+  scoreRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 3,
+  },
+  scoreTeamInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  scoreTeamName: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#064E3B',
+  },
+  scoreValText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#047857',
+  },
+
+  venueFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  venueFooterText: {
+    fontSize: 11,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+
+  /* Info Banner */
+  infoBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+  },
+  infoBannerText: {
+    flex: 1,
     fontSize: 12,
     color: '#047857',
     fontWeight: '700',
     lineHeight: 16,
   },
+
+  /* Groups Cards */
   groupCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    borderWidth: 1.2,
-    borderColor: '#CBD5E1',
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginBottom: 14,
     overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
   },
-  groupHeaderBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#056E2B',
+  groupHeader: {
+    backgroundColor: '#064E3B',
     paddingVertical: 10,
     paddingHorizontal: 14,
   },
-  groupHeaderText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
+  groupTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  groupSubText: {
-    fontSize: 12,
-    color: '#DCFCE7',
+  groupHeaderTitle: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+  groupBadge: {
+    backgroundColor: '#059669',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  groupBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '900',
+  },
+  groupSubHeader: {
+    fontSize: 11,
+    color: '#D1FAE5',
+    marginTop: 2,
     fontWeight: '600',
   },
-  groupTeamsList: {
-    padding: 10,
+  groupTeamList: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   groupTeamRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
-  groupRankIndex: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#64748B',
-    width: 24,
-  },
-  groupTeamName: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-
-  /* Squads Tab */
-  teamSelectPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F5F9',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  teamSelectPillActive: {
-    backgroundColor: '#ECFDF3',
-    borderColor: '#16A34A',
-  },
-  teamSelectText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#475569',
-  },
-  teamSelectTextActive: {
-    color: '#008000',
-    fontWeight: '800',
-  },
-  squadCardContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    borderWidth: 1.2,
-    borderColor: '#16A34A',
-    overflow: 'hidden',
-  },
-  squadCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ECFDF3',
-    padding: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#A7F3D0',
-  },
-  squadCardTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: '#008000',
-    flex: 1,
-  },
-  squadCountBadge: {
-    backgroundColor: '#056E2B',
-    color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: '800',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  squadPlayerList: {
-    padding: 12,
-  },
-  squadPlayerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F8FAFC',
-  },
-  playerNumCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+  rankBadge: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  playerNumText: {
+  rankBadgeText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#475569',
+    color: '#64748B',
   },
-  playerNameText: {
-    fontSize: 15,
+  groupTeamNameText: {
+    flex: 1,
+    fontSize: 14,
     fontWeight: '700',
     color: '#0F172A',
-    flex: 1,
   },
-  captainBadge: {
+  qualifyBadge: {
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  qualifyBadgeText: {
+    fontSize: 9,
+    fontWeight: '900',
+    color: '#047857',
+  },
+
+  /* Squads Tab */
+  squadTeamSelector: {
+    paddingBottom: 12,
+  },
+  squadTeamChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  squadTeamChipActive: {
+    backgroundColor: '#059669',
+    borderColor: '#047857',
+  },
+  squadTeamChipText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  squadTeamChipTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '900',
+  },
+
+  squadContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+  },
+  squadCardTitleBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    padding: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#A7F3D0',
+  },
+  squadMainTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#064E3B',
+  },
+  squadSubTitle: {
+    fontSize: 11,
+    color: '#047857',
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  rosterCountPill: {
+    backgroundColor: '#059669',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  rosterCountText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '900',
+  },
+
+  playerGrid: {
+    padding: 12,
+  },
+  playerCardRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 9,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F8FAFC',
+  },
+  playerAvatarCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  playerAvatarText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  playerNameText: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  captainPill: {
     backgroundColor: '#FEF3C7',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#F59E0B',
+    marginLeft: 6,
   },
-  captainBadgeText: {
+  captainPillText: {
     fontSize: 9,
     fontWeight: '900',
     color: '#B45309',
   },
-  wkBadge: {
+  wkPill: {
     backgroundColor: '#E0F2FE',
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -798,7 +1096,7 @@ const styles = StyleSheet.create({
     borderColor: '#0284C7',
     marginLeft: 4,
   },
-  wkBadgeText: {
+  wkPillText: {
     fontSize: 9,
     fontWeight: '900',
     color: '#0369A1',
@@ -806,37 +1104,108 @@ const styles = StyleSheet.create({
 
   /* Venues Tab */
   venueCard: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    padding: 12,
+    padding: 14,
     marginBottom: 10,
+    elevation: 1,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
   },
-  venueHeaderRow: {
+  venueCardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+  },
+  venueIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#ECFDF5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
   },
   venueNameText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
     color: '#0F172A',
   },
-  venueMetaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  venueMetaText: {
-    fontSize: 13,
-    color: '#475569',
+  venueCityText: {
+    fontSize: 12,
+    color: '#64748B',
     fontWeight: '600',
+    marginTop: 2,
   },
-  venueCapacityText: {
+  capacityPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+  },
+  capacityText: {
+    fontSize: 11,
+    color: '#047857',
+    fontWeight: '800',
+  },
+
+  /* Bottom Live Score Banner */
+  bottomBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginVertical: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+  },
+  bannerIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#ECFDF5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  bannerTextBox: {
+    flex: 1,
+    marginRight: 8,
+  },
+  bannerTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  bannerSubtitle: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 1,
+  },
+  bannerActionBtn: {
+    backgroundColor: '#059669',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  bannerActionText: {
+    color: '#FFFFFF',
     fontSize: 13,
-    color: '#008000',
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });
