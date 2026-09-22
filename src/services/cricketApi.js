@@ -343,7 +343,7 @@ export async function getCompletedFixtures(limit = 10) {
 
   const completedMatches = allMatches.filter((f) => f.status === 'Completed');
 
-  return { fixtures: completedMatches.slice(0, limit) }; ``
+  return { fixtures: completedMatches.slice(0, limit) };
 }
 
 /**
