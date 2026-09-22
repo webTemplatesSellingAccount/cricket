@@ -1,9 +1,9 @@
 // World Cup Datasets for T20 World Cup & ODI World Cup (Standings & Playoff/Finals History)
 
 export const WORLD_CUP_TOURNAMENTS = [
-  { id: 'ipl', name: 'IPL' },
   { id: 't20_wc', name: 'T20 World Cup' },
   { id: 'odi_wc', name: 'ODI World Cup' },
+  { id: 'wtc', name: 'Test (WTC)' },
 ];
 
 export const T20_WORLD_CUP_YEARS = [
@@ -153,4 +153,11 @@ export const ODI_WORLD_CUP_PLAYOFFS = [
   { year: '1983', winner: 'India', runnerUp: 'West Indies', margin: 'India won by 43 runs', venue: 'Lord\'s, London' },
   { year: '1979', winner: 'West Indies', runnerUp: 'England', margin: 'West Indies won by 92 runs', venue: 'Lord\'s, London' },
   { year: '1975', winner: 'West Indies', runnerUp: 'Australia', margin: 'West Indies won by 17 runs', venue: 'Lord\'s, London' },
+];
+
+// Playoff / Finals History for World Test Championship (Test WTC)
+export const TEST_WTC_PLAYOFFS = [
+  { year: '2023-2025', winner: 'TBD', runnerUp: 'TBD', margin: 'Final scheduled at Lord\'s, London', venue: 'Lord\'s, London' },
+  { year: '2021-2023', winner: 'Australia', runnerUp: 'India', margin: 'Australia won by 209 runs', venue: 'The Oval, London' },
+  { year: '2019-2021', winner: 'New Zealand', runnerUp: 'India', margin: 'New Zealand won by 8 wickets', venue: 'Rose Bowl, Southampton' },
 ];

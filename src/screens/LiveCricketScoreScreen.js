@@ -198,7 +198,13 @@ const PlayoffCertificateArt = () => (
   </View>
 );
 
-export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, onNavigateToTab }) {
+export default function LiveCricketScoreScreen({
+  onBack,
+  onNavigateToSchedule,
+  onNavigateToMatches,
+  onNavigateToTable,
+  onNavigateToTab,
+}) {
   const [currentSubScreen, setCurrentSubScreen] = useState(null); // 'records' | 'playoffs'
   const [venuesModalVisible, setVenuesModalVisible] = useState(false);
   const [gameModalVisible, setGameModalVisible] = useState(false);
@@ -503,7 +509,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
 
         {/* Section 4: Full-width Horizontal Card - Point Table */}
         <TouchableOpacity
-          onPress={() => onNavigateToTab && onNavigateToTab('series', 'table')}
+          onPress={() => (onNavigateToTable ? onNavigateToTable() : onNavigateToTab && onNavigateToTab('series', 'table'))}
           style={styles.horizontalCard}
           activeOpacity={0.85}
         >

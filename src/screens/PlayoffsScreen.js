@@ -14,48 +14,35 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
-import { getIplPlayoff } from '../services/cricketApi';
 import { RecordListSkeleton } from '../components/ShimmerSkeleton';
 import {
   T20_WORLD_CUP_PLAYOFFS,
   ODI_WORLD_CUP_PLAYOFFS,
+  TEST_WTC_PLAYOFFS,
 } from '../data/worldCupData';
 
 export default function PlayoffsScreen({ onBack }) {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedTournament, setSelectedTournament] = useState('ipl'); // 'ipl' | 't20_wc' | 'odi_wc'
+  const [selectedTournament, setSelectedTournament] = useState('t20_wc'); // 't20_wc' | 'odi_wc' | 'wtc'
   const [playoffList, setPlayoffList] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
 
   const loadPlayoffData = useCallback(async (tourney) => {
     setLoading(true);
     const t = tourney || selectedTournament;
 
-    if (t === 'ipl') {
-      try {
-        const res = await getIplPlayoff();
-        setPlayoffList(res.images || []);
-      } catch (err) {
-        console.warn('IPL Playoff fetch err:', err.message);
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
-      }
-    } else if (t === 't20_wc') {
-      setTimeout(() => {
-        setPlayoffList(T20_WORLD_CUP_PLAYOFFS);
-        setLoading(false);
-        setRefreshing(false);
-      }, 300);
-    } else if (t === 'odi_wc') {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (t === 'odi_wc') {
         setPlayoffList(ODI_WORLD_CUP_PLAYOFFS);
-        setLoading(false);
-        setRefreshing(false);
-      }, 300);
-    }
+      } else if (t === 'wtc') {
+        setPlayoffList(TEST_WTC_PLAYOFFS);
+      } else {
+        setPlayoffList(T20_WORLD_CUP_PLAYOFFS);
+      }
+      setLoading(false);
+      setRefreshing(false);
+    }, 200);
   }, [selectedTournament]);
 
   useEffect(() => {
@@ -72,9 +59,9 @@ export default function PlayoffsScreen({ onBack }) {
   };
 
   const getHeaderTitle = () => {
-    if (selectedTournament === 'ipl') return 'IPL Playoff History';
-    if (selectedTournament === 't20_wc') return 'T20 WC Playoff History';
-    return 'ODI WC Playoff History';
+    if (selectedTournament === 't20_wc') return 'T20 WC History';
+    if (selectedTournament === 'odi_wc') return 'ODI WC History';
+    return 'Test (WTC) History';
   };
 
   return (
@@ -101,26 +88,8 @@ export default function PlayoffsScreen({ onBack }) {
         </View>
       </View>
 
-      {/* 2. Tournament Selector (IPL | T20 World Cup | ODI World Cup) */}
+      {/* 2. Tournament Selector (T20 World Cup | ODI World Cup | Test (WTC)) */}
       <View style={styles.tournamentSegmentRow}>
-        <TouchableOpacity
-          onPress={() => handleSelectTournament('ipl')}
-          style={[
-            styles.segmentBtn,
-            selectedTournament === 'ipl' && styles.segmentBtnActive,
-          ]}
-          activeOpacity={0.8}
-        >
-          <Text
-            style={[
-              styles.segmentBtnText,
-              selectedTournament === 'ipl' && styles.segmentBtnTextActive,
-            ]}
-          >
-            IPL
-          </Text>
-        </TouchableOpacity>
-
         <TouchableOpacity
           onPress={() => handleSelectTournament('t20_wc')}
           style={[
@@ -156,6 +125,24 @@ export default function PlayoffsScreen({ onBack }) {
             ODI World Cup
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => handleSelectTournament('wtc')}
+          style={[
+            styles.segmentBtn,
+            selectedTournament === 'wtc' && styles.segmentBtnActive,
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.segmentBtnText,
+              selectedTournament === 'wtc' && styles.segmentBtnTextActive,
+            ]}
+          >
+            Test (WTC)
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* 3. Top Sub-Header AD Card */}
@@ -170,9 +157,9 @@ export default function PlayoffsScreen({ onBack }) {
         </View>
 
         <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>IPL & World Cup History</Text>
+          <Text style={styles.adTitle} numberOfLines={1}>World Cup History</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Explore all champions, final matches & playoff brackets
+            Explore all T20, ODI & Test (WTC) champions & finals history
           </Text>
         </View>
 
@@ -181,7 +168,7 @@ export default function PlayoffsScreen({ onBack }) {
         </TouchableOpacity>
       </View>
 
-      {/* 4. Playoff History Cards List */}
+      {/* 4. Playoff & Champions History Cards List */}
       {loading ? (
         <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 10 }}>
@@ -206,68 +193,35 @@ export default function PlayoffsScreen({ onBack }) {
             />
           }
         >
-          {selectedTournament === 'ipl' ? (
-            /* IPL Image Cards */
-            playoffList.map((item, index) => (
-              <TouchableOpacity
-                key={item.year || index}
-                style={styles.playoffCard}
-                activeOpacity={0.9}
-                onPress={() => item.url && setSelectedImage(item.url)}
-              >
-                <View style={styles.cardHeaderRow}>
-                  <View style={styles.yearBadge}>
-                    <Ionicons name="trophy" size={14} color="#F59E0B" style={{ marginRight: 4 }} />
-                    <Text style={styles.yearBadgeText}>{item.year} Playoff</Text>
-                  </View>
-                  <Text style={styles.tapToViewText}>Tap to Enlarge</Text>
+          {playoffList.map((item, index) => (
+            <View key={item.year || index} style={styles.worldCupCard}>
+              <View style={styles.wcYearRow}>
+                <View style={styles.yearBadge}>
+                  <Ionicons name="trophy" size={16} color="#F59E0B" style={{ marginRight: 6 }} />
+                  <Text style={styles.yearBadgeText}>{item.year} Champions</Text>
                 </View>
+                <Text style={styles.wcVenueText}>{item.venue}</Text>
+              </View>
 
-                {item.url ? (
-                  <Image
-                    source={{ uri: item.url }}
-                    style={styles.playoffImage}
-                    resizeMode="contain"
-                  />
-                ) : (
-                  <View style={styles.noImagePlaceholder}>
-                    <Text style={styles.noImageText}>IPL {item.year} Playoff Table</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            ))
-          ) : (
-            /* World Cup Structured Cards */
-            playoffList.map((item, index) => (
-              <View key={item.year || index} style={styles.worldCupCard}>
-                <View style={styles.wcYearRow}>
-                  <View style={styles.yearBadge}>
-                    <Ionicons name="trophy" size={16} color="#F59E0B" style={{ marginRight: 6 }} />
-                    <Text style={styles.yearBadgeText}>{item.year} Champions</Text>
-                  </View>
-                  <Text style={styles.wcVenueText}>{item.venue}</Text>
+              <View style={styles.wcTeamRow}>
+                <View style={styles.wcWinnerBox}>
+                  <Text style={styles.wcLabelText}>WINNER</Text>
+                  <Text style={styles.wcWinnerText}>{item.winner}</Text>
                 </View>
-
-                <View style={styles.wcTeamRow}>
-                  <View style={styles.wcWinnerBox}>
-                    <Text style={styles.wcLabelText}>WINNER</Text>
-                    <Text style={styles.wcWinnerText}>{item.winner}</Text>
-                  </View>
-                  <View style={styles.wcVsBox}>
-                    <Text style={styles.wcVsText}>VS</Text>
-                  </View>
-                  <View style={styles.wcRunnerBox}>
-                    <Text style={styles.wcLabelText}>RUNNER-UP</Text>
-                    <Text style={styles.wcRunnerText}>{item.runnerUp}</Text>
-                  </View>
+                <View style={styles.wcVsBox}>
+                  <Text style={styles.wcVsText}>VS</Text>
                 </View>
-
-                <View style={styles.wcMarginBox}>
-                  <Text style={styles.wcMarginText}>{item.margin}</Text>
+                <View style={styles.wcRunnerBox}>
+                  <Text style={styles.wcLabelText}>RUNNER-UP</Text>
+                  <Text style={styles.wcRunnerText}>{item.runnerUp}</Text>
                 </View>
               </View>
-            ))
-          )}
+
+              <View style={styles.wcMarginBox}>
+                <Text style={styles.wcMarginText}>{item.margin}</Text>
+              </View>
+            </View>
+          ))}
         </ScrollView>
       )}
 
@@ -285,7 +239,7 @@ export default function PlayoffsScreen({ onBack }) {
         <View style={styles.adTextBox}>
           <Text style={styles.adTitle} numberOfLines={1}>Live Match Stats</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Get real-time stats and updates for every Cricket
+            Get real-time stats and updates for every Cricket match
           </Text>
         </View>
 
