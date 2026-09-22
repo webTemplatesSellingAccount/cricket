@@ -125,14 +125,10 @@ export default function WelcomeQuizModal({ visible, onClose, initialStep = 'quiz
             <Ionicons name="chevron-back" size={28} color="#000000" />
           </TouchableOpacity>
 
-          {/* Top Right Circular AD Badge */}
-          <View style={styles.topRightAdBadge}>
-            <View style={styles.adBadgeBlueCircle}>
-              <View style={styles.adRedBall} />
-              <View style={styles.adSmallPill}>
-                <Text style={styles.adSmallPillText}>AD</Text>
-              </View>
-            </View>
+          {/* Top Right Sleek Live Badge */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#ECFDF5', borderWidth: 1, borderColor: '#6EE7B7', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 }}>
+            <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+            <Text style={{ color: '#047857', fontSize: 10, fontWeight: '900', letterSpacing: 0.5 }}>LIVE LINE</Text>
           </View>
         </View>
 

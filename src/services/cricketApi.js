@@ -291,9 +291,10 @@ export async function getInProgressFixtures(limit = 10) {
  * 2. GET UPCOMING FIXTURES FROM REAL API (SORTED CHRONOLOGICALLY BY TIME)
  */
 export async function getUpcomingFixtures(limit = 20) {
-  const [cRes, gRes] = await Promise.all([
+  const [cRes, gRes, dsquareIpl] = await Promise.all([
     fetchFromBbs('/v1/cricket/matches'),
     fetchFromBbs('/v1/matches?sport=cricket'),
+    fetchIplScheduleFromApi(),
   ]);
 
   const rawList = [
@@ -308,14 +309,27 @@ export async function getUpcomingFixtures(limit = 20) {
     }
   });
 
-  const allMatches = Array.from(map.values()).map(transformBbsMatchToFixture);
+  const bbsMatches = Array.from(map.values()).map(transformBbsMatchToFixture).filter(Boolean);
 
-  // Filter upcoming & sort chronologically by kickoff timestamp (earliest first)
-  const upcomingMatches = allMatches
-    .filter((f) => f.status === 'Upcoming')
-    .sort((a, b) => (a.kickoffTimestamp || 0) - (b.kickoffTimestamp || 0));
+  let dsquareFixtures = [];
+  if (Array.isArray(dsquareIpl) && dsquareIpl.length > 0) {
+    dsquareFixtures = dsquareIpl
+      .filter((m) => !m.matchWinner || m.matchWinner === 'Pending')
+      .map(transformDsquareMatchToFixture)
+      .filter(Boolean);
+  }
 
-  return { fixtures: upcomingMatches.slice(0, limit) };
+  const allUpcoming = [...dsquareFixtures, ...bbsMatches.filter((f) => f.status === 'Upcoming')];
+
+  const finalMap = new Map();
+  allUpcoming.forEach((f) => {
+    const key = f.fixtureId || `${f.team1?.shortName}_${f.team2?.shortName}_${f.matchDate}`;
+    if (!finalMap.has(key)) {
+      finalMap.set(key, f);
+    }
+  });
+
+  return { fixtures: Array.from(finalMap.values()).slice(0, limit) };
 }
 
 /**
@@ -447,6 +461,140 @@ export function getTeamShortName(teamName) {
   return name.slice(0, 3);
 }
 
+export function getTeamFullName(codeOrName) {
+  if (!codeOrName) return 'Unknown Team';
+  const name = String(codeOrName).trim().toUpperCase();
+
+  const teamMap = {
+    RCB: 'Royal Challengers Bengaluru',
+    SRH: 'Sunrisers Hyderabad',
+    MI: 'Mumbai Indians',
+    KKR: 'Kolkata Knight Riders',
+    RR: 'Rajasthan Royals',
+    CSK: 'Chennai Super Kings',
+    GT: 'Gujarat Titans',
+    DC: 'Delhi Capitals',
+    PBKS: 'Punjab Kings',
+    LSG: 'Lucknow Super Giants',
+    IND: 'India',
+    PAK: 'Pakistan',
+    AUS: 'Australia',
+    ENG: 'England',
+    SA: 'South Africa',
+    NZ: 'New Zealand',
+    WI: 'West Indies',
+    SL: 'Sri Lanka',
+    BAN: 'Bangladesh',
+    AFG: 'Afghanistan',
+  };
+
+  if (teamMap[name]) return teamMap[name];
+
+  if (name.includes('RCB') || name.includes('ROYAL CHALLENGERS')) return 'Royal Challengers Bengaluru';
+  if (name.includes('SRH') || name.includes('SUNRISERS')) return 'Sunrisers Hyderabad';
+  if (name.includes('MI') || name.includes('MUMBAI')) return 'Mumbai Indians';
+  if (name.includes('KKR') || name.includes('KOLKATA')) return 'Kolkata Knight Riders';
+  if (name.includes('RR') || name.includes('RAJASTHAN')) return 'Rajasthan Royals';
+  if (name.includes('CSK') || name.includes('CHENNAI')) return 'Chennai Super Kings';
+  if (name.includes('GT') || name.includes('GUJARAT')) return 'Gujarat Titans';
+  if (name.includes('DC') || name.includes('DELHI')) return 'Delhi Capitals';
+  if (name.includes('PBKS') || name.includes('PUNJAB')) return 'Punjab Kings';
+  if (name.includes('LSG') || name.includes('LUCKNOW')) return 'Lucknow Super Giants';
+
+  return codeOrName;
+}
+
+let cachedIplScheduleData = null;
+let cachedIplScheduleTime = 0;
+
+export async function fetchIplScheduleFromApi() {
+  const now = Date.now();
+  if (cachedIplScheduleData && (now - cachedIplScheduleTime < 3 * 60 * 1000)) {
+    return cachedIplScheduleData;
+  }
+
+  try {
+    const res = await fetch('https://dsquaretech.com/v1/cricket/iplSchedule', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.status && Array.isArray(json.data) && json.data.length > 0) {
+        cachedIplScheduleData = json.data;
+        cachedIplScheduleTime = now;
+        return json.data;
+      }
+    }
+  } catch (err) {
+    console.warn('[CricketApi] Error fetching iplSchedule:', err.message);
+  }
+
+  return cachedIplScheduleData;
+}
+
+function transformDsquareMatchToFixture(m) {
+  if (!m) return null;
+
+  const t1Code = m.homeTeam || getTeamShortName(m.homeTeam);
+  const t2Code = m.awayTeam || getTeamShortName(m.awayTeam);
+  const t1Name = getTeamFullName(t1Code) || m.homeTeam || 'Team 1';
+  const t2Name = getTeamFullName(t2Code) || m.awayTeam || 'Team 2';
+
+  const isCompleted = m.matchWinner && m.matchWinner !== 'Pending';
+  const statusStr = isCompleted ? 'Completed' : 'Upcoming';
+  const statusNote = isCompleted
+    ? `${m.matchWinner} won`
+    : `${m.matchDate || ''} • ${m.matchTime || '7:30 PM'}`;
+
+  const fixtureId = `ipl_2026_m${m.matchNumber || m.matchDay || Math.random()}`;
+
+  return {
+    fixtureId,
+    id: fixtureId,
+    matchNo: m.matchNumber || m.matchDay || 1,
+    matchDay: m.matchDay,
+    series: 'IPL 2026',
+    title: `${t1Name} vs ${t2Name}`,
+    format: 'T20',
+    status: statusStr,
+    statusNote,
+    venue: m.stadium || 'M. Chinnaswamy Stadium, Bengaluru',
+    stadium: m.stadium || 'M. Chinnaswamy Stadium, Bengaluru',
+    kickoffTimestamp: 0,
+    matchDate: m.matchDate || 'TBD',
+    matchDayName: m.matchDayName || '',
+    date: m.matchDate ? `${m.matchDate}${m.matchDayName ? `, ${m.matchDayName}` : ''}` : 'TBD',
+    time: m.matchTime || '7:30 PM',
+    matchWinner: m.matchWinner || 'Pending',
+    team1: {
+      id: t1Code.toLowerCase(),
+      name: t1Name,
+      shortName: t1Code,
+      logo: m.homeTeamLogo || null,
+      score: '-',
+      overs: '-',
+    },
+    team2: {
+      id: t2Code.toLowerCase(),
+      name: t2Name,
+      shortName: t2Code,
+      logo: m.awayTeamLogo || null,
+      score: '-',
+      overs: '-',
+    },
+    team1Code: t1Code,
+    team1Logo: m.homeTeamLogo || null,
+    team2Code: t2Code,
+    team2Logo: m.awayTeamLogo || null,
+  };
+}
+
 let cachedIplPointTableData = null;
 let cachedIplPointTableTime = 0;
 
@@ -570,9 +718,42 @@ export async function getIplPointTable(year = '2024') {
 }
 
 /**
- * 9. GET REAL CRICKET SCHEDULE
+ * 9. GET REAL CRICKET SCHEDULE (DSquareTech API integration)
  */
 export async function getIplSchedule() {
+  const apiData = await fetchIplScheduleFromApi();
+
+  if (Array.isArray(apiData) && apiData.length > 0) {
+    const schedule = apiData.map((m) => {
+      const t1Code = m.homeTeam || getTeamShortName(m.homeTeam);
+      const t2Code = m.awayTeam || getTeamShortName(m.awayTeam);
+      const t1Name = getTeamFullName(t1Code);
+      const t2Name = getTeamFullName(t2Code);
+
+      return {
+        matchNo: m.matchNumber || m.matchDay || 1,
+        matchDay: m.matchDay,
+        matchWinner: m.matchWinner || 'Pending',
+        date: m.matchDate ? `${m.matchDate}${m.matchDayName ? `, ${m.matchDayName}` : ''}` : 'TBD',
+        matchDate: m.matchDate || 'TBD',
+        matchDayName: m.matchDayName || '',
+        time: m.matchTime || '7:30 PM',
+        team1: t1Name,
+        team1Code: t1Code,
+        team1Logo: m.homeTeamLogo || null,
+        team2: t2Name,
+        team2Code: t2Code,
+        team2Logo: m.awayTeamLogo || null,
+        venue: m.stadium || 'M. Chinnaswamy Stadium, Bengaluru',
+        stadium: m.stadium || 'M. Chinnaswamy Stadium, Bengaluru',
+        status: m.matchWinner && m.matchWinner !== 'Pending' ? 'Completed' : 'Upcoming',
+        statusNote: m.matchWinner && m.matchWinner !== 'Pending' ? `${m.matchWinner} Won` : `${m.matchDate || ''} • ${m.matchTime || '7:30 PM'}`,
+      };
+    });
+
+    return { schedule };
+  }
+
   const json = await fetchFromBbs('/v1/cricket/matches');
   let matches = [];
 
@@ -581,10 +762,10 @@ export async function getIplSchedule() {
       matchNo: idx + 1,
       date: m.kickoff_utc ? new Date(m.kickoff_utc).toLocaleDateString('en-IN') : `Match ${idx + 1}`,
       time: m.kickoff_utc ? new Date(m.kickoff_utc).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '7:30 PM',
-      team1: m.home?.name || 'RCB',
+      team1: getTeamFullName(m.home?.short_name || m.home?.name || 'RCB'),
       team1Code: m.home?.short_name || 'RCB',
       team1Logo: m.home?.logo_url || require('../../assets/team_logos/RCB.png'),
-      team2: m.away?.name || 'SRH',
+      team2: getTeamFullName(m.away?.short_name || m.away?.name || 'SRH'),
       team2Code: m.away?.short_name || 'SRH',
       team2Logo: m.away?.logo_url || require('../../assets/team_logos/SRH.png'),
       venue: m.league || 'M. Chinnaswamy Stadium, Bengaluru',

@@ -201,40 +201,31 @@ export default function ScheduleScreen({ onBack }) {
 
           <Text style={styles.headerTitle}>Live Score</Text>
 
-          {/* Top Right Circular AD Badge */}
-          <View style={styles.topRightAdBadge}>
-            <View style={styles.adBadgeGreenCircle}>
-              <View style={styles.adRedBallCircleHeader}>
-                <View style={styles.redBallInner} />
-              </View>
-              <View style={styles.adSmallPillGreen}>
-                <Text style={styles.adSmallPillText}>AD</Text>
-              </View>
-            </View>
+          {/* Top Right Sleek Live Badge */}
+          <View style={styles.topRightLiveBadge}>
+            <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+            <Text style={styles.topRightLiveText}>LIVE LINE</Text>
           </View>
         </View>
 
-        {/* 2. Top Sub-Header AD Card */}
+        {/* 2. Top Sub-Header Showcase Card */}
         <View style={styles.adBannerCard}>
           <View style={styles.adIconBox}>
             <View style={styles.adBallCircle}>
               <Ionicons name="baseball" size={18} color="#DC2626" />
-              <View style={styles.adTagPillGreen}>
-                <Text style={styles.adTagText}>AD</Text>
-              </View>
             </View>
           </View>
 
           <View style={styles.adTextBox}>
             <Text style={styles.adTitle} numberOfLines={1}>IPL Live Matches</Text>
             <Text style={styles.adSubtitle} numberOfLines={1}>
-              Watch live Cricket matches on your phone. Don't
+              Watch live Cricket matches & real-time telemetry
             </Text>
           </View>
 
-          <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-            <Text style={styles.installButtonText}>Install</Text>
-          </TouchableOpacity>
+          <View style={styles.installButton}>
+            <Text style={styles.installButtonText}>Explore</Text>
+          </View>
         </View>
 
         {/* 3. 3-Tab Segmented Nav Bar (Live | Recent | Upcoming*) matching Screenshot 3 */}
@@ -636,27 +627,24 @@ export default function ScheduleScreen({ onBack }) {
           )}
         </ScrollView>
 
-        {/* 5. Fixed Bottom Sticky AD Banner */}
+        {/* 5. Fixed Bottom Sticky Showcase Banner */}
         <View style={styles.bottomAdBanner}>
           <View style={styles.adIconBox}>
             <View style={styles.adBallCircle}>
               <Ionicons name="baseball" size={20} color="#DC2626" />
-              <View style={styles.adTagPillGreen}>
-                <Text style={styles.adTagText}>AD</Text>
-              </View>
             </View>
           </View>
 
           <View style={styles.adTextBox}>
             <Text style={styles.adTitle} numberOfLines={1}>IPL Live Matches</Text>
             <Text style={styles.adSubtitle} numberOfLines={1}>
-              Watch live Cricket matches on your phone. Don't
+              Watch live Cricket matches & real-time telemetry
             </Text>
           </View>
 
-          <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-            <Text style={styles.installButtonText}>Install</Text>
-          </TouchableOpacity>
+          <View style={styles.installButton}>
+            <Text style={styles.installButtonText}>View Live</Text>
+          </View>
         </View>
       </SafeAreaView>
     );
@@ -675,40 +663,31 @@ export default function ScheduleScreen({ onBack }) {
 
         <Text style={styles.headerTitle}>IPL Schedule</Text>
 
-        {/* Top Right Circular AD Badge */}
-        <View style={styles.topRightAdBadge}>
-          <View style={styles.adBadgeGreenCircle}>
-            <View style={styles.adRedBallCircleHeader}>
-              <View style={styles.redBallInner} />
-            </View>
-            <View style={styles.adSmallPillGreen}>
-              <Text style={styles.adSmallPillText}>AD</Text>
-            </View>
-          </View>
+        {/* Top Right Sleek Live Badge */}
+        <View style={styles.topRightLiveBadge}>
+          <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+          <Text style={styles.topRightLiveText}>LIVE LINE</Text>
         </View>
       </View>
 
-      {/* 2. Top Sub-Header AD Card */}
+      {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
           <View style={styles.adBallCircle}>
             <Ionicons name="baseball" size={18} color="#DC2626" />
-            <View style={styles.adTagPillGreen}>
-              <Text style={styles.adTagText}>AD</Text>
-            </View>
           </View>
         </View>
 
         <View style={styles.adTextBox}>
           <Text style={styles.adTitle} numberOfLines={1}>IPL Live Matches</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Watch live Cricket matches on your phone. Don't
+            Watch live Cricket matches & real-time telemetry
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>Explore</Text>
+        </View>
       </View>
 
       {/* 3. Schedule Cards List */}
@@ -788,27 +767,24 @@ export default function ScheduleScreen({ onBack }) {
         ))}
       </ScrollView>
 
-      {/* 4. Fixed Bottom Sticky AD Banner */}
+      {/* 4. Fixed Bottom Sticky Showcase Banner */}
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
           <View style={styles.adBallCircle}>
             <Ionicons name="baseball" size={20} color="#DC2626" />
-            <View style={styles.adTagPillGreen}>
-              <Text style={styles.adTagText}>AD</Text>
-            </View>
           </View>
         </View>
 
         <View style={styles.adTextBox}>
           <Text style={styles.adTitle} numberOfLines={1}>IPL Live Matches</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Watch live Cricket matches on your phone. Don't
+            Watch live Cricket matches & real-time telemetry
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>View Live</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -836,47 +812,21 @@ const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'center',
   },
-  topRightAdBadge: {
-    padding: 4,
-  },
-  adBadgeGreenCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#DCFCE7',
-    borderWidth: 1.5,
-    borderColor: '#16A34A',
+  topRightLiveBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  adRedBallCircleHeader: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: '#EF4444',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  redBallInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FCA5A5',
-  },
-  adSmallPillGreen: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    backgroundColor: '#16A34A',
-    paddingHorizontal: 3,
-    paddingVertical: 1,
-    borderRadius: 5,
-  },
-  adSmallPillText: {
-    fontSize: 7,
+  topRightLiveText: {
+    color: '#047857',
+    fontSize: 10,
     fontWeight: '900',
-    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 
   /* Top Sub Header AD Banner */

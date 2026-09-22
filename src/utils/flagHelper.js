@@ -181,7 +181,7 @@ export function getTeamLogoSource(imageUrl, teamName, countryCode) {
 
   // 4. Check International country flags dictionary
   if (codeKey && COUNTRY_FLAGS[codeKey]) {
-    return { uri: COUNTRY_FLAGS[codeKey] };
+    return { uri: COUNTRY_FLAGS[codeKey] };   
   }
   if (nameKey && COUNTRY_FLAGS[nameKey]) {
     return { uri: COUNTRY_FLAGS[nameKey] };

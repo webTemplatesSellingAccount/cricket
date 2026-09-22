@@ -342,48 +342,31 @@ export default function LiveCricketScoreScreen({
 
         <Text style={styles.headerTitle}>Live Cricket Score</Text>
 
-        {/* Top Right Circular AD Icon Badge */}
-        <TouchableOpacity
-          onPress={() => Alert.alert('Live Cricket', 'Welcome to Live Cricket Score!')}
-          style={styles.topRightAdBadge}
-          activeOpacity={0.8}
-        >
-          <View style={styles.adBadgeGreenCircle}>
-            <View style={styles.adRedBallCircleHeader}>
-              <View style={styles.redBallInner} />
-            </View>
-            <View style={styles.adSmallPillGreen}>
-              <Text style={styles.adSmallPillText}>AD</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        {/* Top Right Sleek Live Badge */}
+        <View style={styles.topRightLiveBadge}>
+          <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+          <Text style={styles.topRightLiveText}>LIVE LINE</Text>
+        </View>
       </View>
 
-      {/* 2. Top Sub-Header AD Card */}
+      {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
           <View style={styles.adPinCircle}>
             <Ionicons name="location" size={18} color="#0284C7" />
-            <View style={styles.adTagPill}>
-              <Text style={styles.adTagText}>AD</Text>
-            </View>
           </View>
         </View>
 
         <View style={styles.adTextBox}>
-          <Text style={styles.adTitle} numberOfLines={1}>IPL News</Text>
+          <Text style={styles.adTitle} numberOfLines={1}>IPL News & Updates</Text>
           <Text style={styles.adSubtitle} numberOfLines={1}>
-            Stay updated with the latest IPL news and
+            Stay updated with real-time IPL scores & series stats
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.installButton}
-          activeOpacity={0.85}
-          onPress={() => onNavigateToTab && onNavigateToTab('news')}
-        >
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>Explore</Text>
+        </View>
       </View>
 
       {/* 3. Main Scrollable Content */}
@@ -419,9 +402,6 @@ export default function LiveCricketScoreScreen({
           <View style={styles.adHeaderRow}>
             <View style={styles.adHeaderAvatar}>
               <Ionicons name="person" size={18} color="#FFFFFF" />
-              <View style={styles.adBadgePillGreen}>
-                <Text style={styles.adBadgeText}>AD</Text>
-              </View>
             </View>
             <View style={styles.adHeaderTexts}>
               <Text style={styles.featureAdTitle}>Cricket Match Stats</Text>
@@ -546,9 +526,6 @@ export default function LiveCricketScoreScreen({
           <View style={styles.adHeaderRow}>
             <View style={styles.adRedBallCircle}>
               <Ionicons name="baseball" size={18} color="#DC2626" />
-              <View style={styles.adBadgePillGreen}>
-                <Text style={styles.adBadgeText}>AD</Text>
-              </View>
             </View>
             <View style={styles.adHeaderTexts}>
               <Text style={styles.featureAdTitle}>IPL News</Text>
@@ -653,9 +630,9 @@ export default function LiveCricketScoreScreen({
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>View Live</Text>
+        </View>
       </View>
 
       {/* Venues Screen / Modal Matching Screenshots 2 & 4 */}
@@ -769,9 +746,6 @@ export default function LiveCricketScoreScreen({
             <View style={styles.adIconBox}>
               <View style={styles.adRedBallCircle}>
                 <Ionicons name="baseball" size={18} color="#DC2626" />
-                <View style={styles.adBadgePillGreen}>
-                  <Text style={styles.adBadgeText}>AD</Text>
-                </View>
               </View>
             </View>
 
@@ -782,9 +756,9 @@ export default function LiveCricketScoreScreen({
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-              <Text style={styles.installButtonText}>Install</Text>
-            </TouchableOpacity>
+            <View style={styles.installButton}>
+              <Text style={styles.installButtonText}>View Live</Text>
+            </View>
           </View>
 
           {/* Venues List or Empty State */}
@@ -882,9 +856,6 @@ export default function LiveCricketScoreScreen({
             <View style={styles.adIconBox}>
               <View style={styles.adBallBlueCircle}>
                 <Ionicons name="baseball" size={20} color="#0284C7" />
-                <View style={styles.adTagPillCyan}>
-                  <Text style={styles.adTagText}>AD</Text>
-                </View>
               </View>
             </View>
 
@@ -895,9 +866,9 @@ export default function LiveCricketScoreScreen({
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-              <Text style={styles.installButtonText}>Install</Text>
-            </TouchableOpacity>
+            <View style={styles.installButton}>
+              <Text style={styles.installButtonText}>View Live</Text>
+            </View>
           </View>
         </SafeAreaView>
       </Modal>
@@ -1734,47 +1705,22 @@ const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'center',
   },
-  topRightAdBadge: {
-    padding: 4,
-  },
-  adBadgeGreenCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#DCFCE7',
-    borderWidth: 1.5,
-    borderColor: '#16A34A',
+  /* Top Right Sleek Live Badge */
+  topRightLiveBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  adRedBallCircleHeader: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: '#EF4444',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  redBallInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FCA5A5',
-  },
-  adSmallPillGreen: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    backgroundColor: '#16A34A',
-    paddingHorizontal: 3,
-    paddingVertical: 1,
-    borderRadius: 5,
-  },
-  adSmallPillText: {
-    fontSize: 7,
+  topRightLiveText: {
+    color: '#047857',
+    fontSize: 10,
     fontWeight: '900',
-    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 
   /* Top Sub Header Banner */

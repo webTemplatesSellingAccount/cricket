@@ -24,7 +24,7 @@ export const CricketProvider = ({ children }) => {
 
   // Match status: 'live' | 'innings_break' | 'completed'
   const [matchStatus, setMatchStatus] = useState('live');
-  const [matchResult, setMatchResult] = useState('');
+  const [matchResult, setMatchResult] = useState(''); ``
   const [freeHit, setFreeHit] = useState(false);
 
   // Undo history stack

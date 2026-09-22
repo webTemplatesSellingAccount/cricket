@@ -117,28 +117,19 @@ export default function MatchesScreen({ onBack }) {
 
         <Text style={styles.headerTitle}>Cricket Match Stats</Text>
 
-        {/* Top Right Circular AD Badge Icon */}
-        <TouchableOpacity style={styles.topRightAdBadge} onPress={handleInstallPress} activeOpacity={0.8}>
-          <View style={styles.adBadgeGreenCircle}>
-            <View style={styles.adRedBallCircleHeader}>
-              <View style={styles.redBallInner} />
-            </View>
-            <View style={styles.adSmallPillGreen}>
-              <Text style={styles.adSmallPillText}>AD</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        {/* Top Right Sleek Live Badge */}
+        <View style={styles.topRightLiveBadge}>
+          <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+          <Text style={styles.topRightLiveText}>LIVE LINE</Text>
+        </View>
       </View>
 
-      {/* 2. Top Sub-Header AD Card */}
+      {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
-          <TouchableOpacity onPress={handleInstallPress} style={styles.adPlayCircle}>
+          <View style={styles.adPlayCircle}>
             <Ionicons name="baseball" size={18} color="#008000" />
-            <View style={styles.adBadgePillGreen}>
-              <Text style={styles.adBadgeText}>AD</Text>
-            </View>
-          </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.adTextBox}>
@@ -148,9 +139,9 @@ export default function MatchesScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85} onPress={handleInstallPress}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>Explore</Text>
+        </View>
       </View>
 
       {/* 3. Category Filter Tabs */}
@@ -393,15 +384,12 @@ export default function MatchesScreen({ onBack }) {
         </ScrollView>
       )}
 
-      {/* Bottom Ad Banner */}
+      {/* Bottom Showcase Banner */}
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
-          <TouchableOpacity onPress={handleInstallPress} style={styles.adPlayCircle}>
+          <View style={styles.adPlayCircle}>
             <Ionicons name="baseball" size={18} color="#DC2626" />
-            <View style={styles.adBadgePillGreen}>
-              <Text style={styles.adBadgeText}>AD</Text>
-            </View>
-          </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.adTextBox}>
@@ -411,9 +399,9 @@ export default function MatchesScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85} onPress={handleInstallPress}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>View Live</Text>
+        </View>
       </View>
 
       {/* Match Center Detailed Stats Modal */}
@@ -453,52 +441,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  /* Top Right Circular AD Badge */
-  topRightAdBadge: {
-    width: 38,
-    height: 38,
-    justifyContent: 'center',
+  /* Top Right Sleek Live Badge */
+  topRightLiveBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  adBadgeGreenCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#E6F4EA',
-    borderWidth: 1.5,
-    borderColor: '#34A853',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  adRedBallCircleHeader: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#EA4335',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  redBallInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFFFFF',
-    opacity: 0.8,
-  },
-  adSmallPillGreen: {
-    position: 'absolute',
-    top: -2,
-    right: -4,
-    backgroundColor: '#34A853',
-    borderRadius: 6,
-    paddingHorizontal: 3,
-    paddingVertical: 1,
-  },
-  adSmallPillText: {
-    fontSize: 7,
+  topRightLiveText: {
+    color: '#047857',
+    fontSize: 10,
     fontWeight: '900',
-    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 
   /* Sub-Header AD Card */

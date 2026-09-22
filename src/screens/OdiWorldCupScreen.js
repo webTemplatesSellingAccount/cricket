@@ -35,31 +35,18 @@ export default function OdiWorldCupScreen({ onBack }) {
 
         <Text style={styles.headerTitle}>ODI World Cup</Text>
 
-        {/* Top Right Circular AD Badge */}
-        <TouchableOpacity
-          onPress={() => Alert.alert('ODI World Cup', 'Welcome to ODI World Cup Hub!')}
-          style={styles.topRightAdBadge}
-          activeOpacity={0.8}
-        >
-          <View style={styles.adBadgeGreenCircle}>
-            <View style={styles.adRedBallCircleHeader}>
-              <View style={styles.redBallInner} />
-            </View>
-            <View style={styles.adSmallPillGreen}>
-              <Text style={styles.adSmallPillText}>AD</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        {/* Top Right Sleek Live Badge */}
+        <View style={styles.topRightLiveBadge}>
+          <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+          <Text style={styles.topRightLiveText}>LIVE LINE</Text>
+        </View>
       </View>
 
-      {/* 2. Top Sub-Header AD Card */}
+      {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
           <View style={styles.adTrophyCircle}>
             <Ionicons name="trophy" size={20} color="#D97706" />
-            <View style={styles.adBadgePillGreen}>
-              <Text style={styles.adBadgeText}>AD</Text>
-            </View>
           </View>
         </View>
 
@@ -70,9 +57,9 @@ export default function OdiWorldCupScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>Explore</Text>
+        </View>
       </View>
 
       {/* 3. Hero Championship Leaderboard Strip */}
@@ -307,14 +294,11 @@ export default function OdiWorldCupScreen({ onBack }) {
         )}
       </ScrollView>
 
-      {/* 6. Bottom Ad Banner */}
+      {/* 6. Bottom Showcase Banner */}
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
           <View style={styles.adTrophyCircle}>
             <Ionicons name="globe-outline" size={20} color="#0284C7" />
-            <View style={styles.adBadgePillGreen}>
-              <Text style={styles.adBadgeText}>AD</Text>
-            </View>
           </View>
         </View>
 
@@ -325,9 +309,9 @@ export default function OdiWorldCupScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.installButton} activeOpacity={0.85}>
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>View Live</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -360,38 +344,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  /* Top Right Circular AD Badge */
-  topRightAdBadge: {
-    width: 38,
-    height: 38,
-    justifyContent: 'center',
+  /* Top Right Sleek Live Badge */
+  topRightLiveBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  adBadgeGreenCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#E6F4EA',
-    borderWidth: 1.5,
-    borderColor: '#34A853',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  adRedBallCircleHeader: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#EA4335',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  redBallInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFFFFF',
-    opacity: 0.8,
+  topRightLiveText: {
+    color: '#047857',
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.5,
   },
   adSmallPillGreen: {
     position: 'absolute',

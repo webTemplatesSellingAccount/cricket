@@ -39,7 +39,7 @@ export default function AllRecordsScreen({ onBack }) {
       setSelectedCategory(null);
     } else if (onBack) {
       onBack();
-    }
+    } 
   };
 
   return (
@@ -56,39 +56,23 @@ export default function AllRecordsScreen({ onBack }) {
           {selectedCategory ? 'Record Details' : 'All Record List'}
         </Text>
 
-        {/* Top Right Circular AD Icon Badge */}
-        <TouchableOpacity
-          onPress={() => Alert.alert('IPL Records', 'Welcome to IPL Records!')}
-          style={styles.topRightAdBadge}
-          activeOpacity={0.8}
-        >
-          <View style={styles.adBadgeGreenCircle}>
-            <View style={styles.adRedBallCircleHeader}>
-              <View style={styles.redBallInner} />
-            </View>
-            <View style={styles.adSmallPillGreen}>
-              <Text style={styles.adSmallPillText}>AD</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        {/* Top Right Sleek Live Badge */}
+        <View style={styles.topRightLiveBadge}>
+          <Ionicons name="flash" size={13} color="#059669" style={{ marginRight: 3 }} />
+          <Text style={styles.topRightLiveText}>LIVE LINE</Text>
+        </View>
       </View>
 
-      {/* 2. Top Sub-Header AD Card */}
+      {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>
         <View style={styles.adIconBox}>
           {selectedCategory ? (
             <View style={styles.adNewsIconCircle}>
               <Ionicons name="newspaper-outline" size={20} color="#0284C7" />
-              <View style={styles.adTagPill}>
-                <Text style={styles.adTagText}>AD</Text>
-              </View>
             </View>
           ) : (
             <View style={styles.adHighlightsIconCircle}>
               <Ionicons name="play-circle-outline" size={20} color="#7C3AED" />
-              <View style={styles.adTagPill}>
-                <Text style={styles.adTagText}>AD</Text>
-              </View>
             </View>
           )}
         </View>
@@ -104,13 +88,9 @@ export default function AllRecordsScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.installButton}
-          activeOpacity={0.85}
-          onPress={() => Alert.alert('Sponsor', 'Download recommended app!')}
-        >
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>Explore</Text>
+        </View>
       </View>
 
       {/* 3. Main Content View */}
@@ -198,13 +178,9 @@ export default function AllRecordsScreen({ onBack }) {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.installButton}
-          activeOpacity={0.85}
-          onPress={() => Alert.alert('Sponsor', 'Download recommended app!')}
-        >
-          <Text style={styles.installButtonText}>Install</Text>
-        </TouchableOpacity>
+        <View style={styles.installButton}>
+          <Text style={styles.installButtonText}>View Live</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -237,273 +213,243 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  /* Top Right Circular AD Badge */
-  topRightAdBadge: {
-    width: 38,
-    height: 38,
-    justifyContent: 'center',
+  /* Top Right Sleek Live Badge */
+  topRightLiveBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#6EE7B7',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  adBadgeGreenCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#E6F4EA',
-    borderWidth: 1.5,
-    borderColor: '#34A853',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  adRedBallCircleHeader: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#EA4335',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  redBallInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFFFFF',
-    opacity: 0.8,
-  },
-  adSmallPillGreen: {
-    position: 'absolute',
-    top: -2,
-    right: -4,
-    backgroundColor: '#34A853',
-    borderRadius: 6,
-    paddingHorizontal: 3,
-    paddingVertical: 1,
-  },
-  adSmallPillText: {
-    fontSize: 7,
+  topRightLiveText: {
+    color: '#047857',
+    fontSize: 10,
     fontWeight: '900',
-    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 
   /* Top & Bottom Sub-Header AD Card */
   adBannerCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    marginHorizontal: 16,
-    marginTop: 10,
-    marginBottom: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#F8FAFC',
+  marginHorizontal: 16,
+  marginTop: 10,
+  marginBottom: 8,
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: '#E2E8F0',
+},
   bottomAdBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    marginHorizontal: 16,
-    marginVertical: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#F8FAFC',
+  marginHorizontal: 16,
+  marginVertical: 8,
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: '#E2E8F0',
+},
   adIconBox: {
-    marginRight: 10,
-  },
+  marginRight: 10,
+},
   adHighlightsIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F3E8FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  backgroundColor: '#F3E8FF',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+},
   adNewsIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#E0F2FE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  backgroundColor: '#E0F2FE',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+},
   adFooterIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#E0F2FE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  backgroundColor: '#E0F2FE',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+},
   adTagPill: {
-    position: 'absolute',
-    top: -2,
-    left: -2,
-    backgroundColor: '#7C3AED',
-    borderRadius: 6,
-    paddingHorizontal: 3,
-    paddingVertical: 1,
-  },
+  position: 'absolute',
+  top: -2,
+  left: -2,
+  backgroundColor: '#7C3AED',
+  borderRadius: 6,
+  paddingHorizontal: 3,
+  paddingVertical: 1,
+},
   adTagText: {
-    fontSize: 7,
-    fontWeight: '900',
-    color: '#FFFFFF',
-  },
+  fontSize: 7,
+  fontWeight: '900',
+  color: '#FFFFFF',
+},
   adTextBox: {
-    flex: 1,
-    marginRight: 8,
-  },
+  flex: 1,
+  marginRight: 8,
+},
   adTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
+  fontSize: 15,
+  fontWeight: '700',
+  color: '#0F172A',
+},
   adSubtitle: {
-    fontSize: 12,
-    color: '#64748B',
-    marginTop: 1,
-  },
+  fontSize: 12,
+  color: '#64748B',
+  marginTop: 1,
+},
   installButton: {
-    backgroundColor: '#008000',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
+  backgroundColor: '#008000',
+  paddingHorizontal: 20,
+  paddingVertical: 8,
+  borderRadius: 8,
+},
   installButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
-  },
+  color: '#FFFFFF',
+  fontSize: 14,
+  fontWeight: '700',
+},
 
   /* Folder Art Component Styles */
   folderArtBox: {
-    width: 44,
-    height: 38,
-    marginRight: 16,
-    position: 'relative',
-    justifyContent: 'flex-end',
-  },
+  width: 44,
+  height: 38,
+  marginRight: 16,
+  position: 'relative',
+  justifyContent: 'flex-end',
+},
   folderTabBack: {
-    position: 'absolute',
-    top: 2,
-    left: 4,
-    width: 20,
-    height: 8,
-    backgroundColor: '#D97706',
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
+  position: 'absolute',
+  top: 2,
+  left: 4,
+  width: 20,
+  height: 8,
+  backgroundColor: '#D97706',
+  borderTopLeftRadius: 4,
+  borderTopRightRadius: 4,
+},
   folderSheetPaper: {
-    position: 'absolute',
-    top: 4,
-    left: 8,
-    width: 26,
-    height: 20,
-    backgroundColor: '#E2E8F0',
-    borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
-  },
+  position: 'absolute',
+  top: 4,
+  left: 8,
+  width: 26,
+  height: 20,
+  backgroundColor: '#E2E8F0',
+  borderRadius: 2,
+  borderWidth: 1,
+  borderColor: '#CBD5E1',
+},
   folderBodyFront: {
-    width: 44,
-    height: 28,
-    backgroundColor: '#F59E0B',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#D97706',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
-  },
+  width: 44,
+  height: 28,
+  backgroundColor: '#F59E0B',
+  borderRadius: 6,
+  borderWidth: 1,
+  borderColor: '#D97706',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.15,
+  shadowRadius: 2,
+  elevation: 2,
+},
 
   /* Scroll Content */
   scrollContainer: {
-    flex: 1,
-  },
+  flex: 1,
+},
   scrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 6,
-    paddingBottom: 16,
-  },
+  paddingHorizontal: 16,
+  paddingTop: 6,
+  paddingBottom: 16,
+},
 
   /* Category List Item Card */
   categoryCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#ECFDF3',
-    borderWidth: 1.2,
-    borderColor: '#16A34A',
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  backgroundColor: '#ECFDF3',
+  borderWidth: 1.2,
+  borderColor: '#16A34A',
+  borderRadius: 16,
+  paddingVertical: 14,
+  paddingHorizontal: 16,
+  marginBottom: 12,
+},
   categoryLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  flex: 1,
+},
   categoryTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#000000',
-    flex: 1,
-  },
+  fontSize: 18,
+  fontWeight: '800',
+  color: '#000000',
+  flex: 1,
+},
   greenChevronBtn: {
-    width: 44,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: '#056E2B',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  width: 44,
+  height: 32,
+  borderRadius: 10,
+  backgroundColor: '#056E2B',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 
   /* Record Details View */
   detailsContainer: {
-    flex: 1,
-  },
+  flex: 1,
+},
   tableHeaderBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#056E2B',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginTop: 4,
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#056E2B',
+  paddingVertical: 12,
+  paddingHorizontal: 20,
+  marginTop: 4,
+},
   tableHeaderText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
+  fontSize: 16,
+  fontWeight: '800',
+  color: '#FFFFFF',
+},
   detailsScrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 16,
-  },
+  paddingHorizontal: 16,
+  paddingTop: 12,
+  paddingBottom: 16,
+},
   detailRowCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ECFDF3',
-    borderWidth: 1.2,
-    borderColor: '#16A34A',
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 10,
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#ECFDF3',
+  borderWidth: 1.2,
+  borderColor: '#16A34A',
+  borderRadius: 16,
+  paddingVertical: 14,
+  paddingHorizontal: 16,
+  marginBottom: 10,
+},
   detailRowText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#000000',
-  },
+  fontSize: 16,
+  fontWeight: '700',
+  color: '#000000',
+},
 });
