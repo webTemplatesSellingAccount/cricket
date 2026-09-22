@@ -408,7 +408,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
           </View>
         </View>
 
-        {/* Banner 2: Grey Card - IPL Highlights (Watch Highlights) */}
+        {/* Banner 2: Grey Card - Cricket Match Stats */}
         <View style={styles.featureAdContainer}>
           <View style={styles.adHeaderRow}>
             <View style={styles.adHeaderAvatar}>
@@ -418,9 +418,9 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
               </View>
             </View>
             <View style={styles.adHeaderTexts}>
-              <Text style={styles.featureAdTitle}>IPL Highlights</Text>
+              <Text style={styles.featureAdTitle}>Cricket Match Stats</Text>
               <Text style={styles.featureAdSubtitle} numberOfLines={1}>
-                Catch up on today's match highlights in minutes!
+                Live scores, ball-by-ball commentary & run rates!
               </Text>
             </View>
           </View>
@@ -438,7 +438,7 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
             style={styles.greenActionBtn}
             activeOpacity={0.85}
           >
-            <Text style={styles.greenActionBtnText}>Watch Highlights</Text>
+            <Text style={styles.greenActionBtnText}>View Match Stats</Text>
           </TouchableOpacity>
         </View>
 
@@ -459,16 +459,16 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
             </View>
           </TouchableOpacity>
 
-          {/* Grid Item 2: Video Highlights */}
+          {/* Grid Item 2: Cricket Match Stats */}
           <TouchableOpacity
-            onPress={() => onNavigateToTab && onNavigateToTab('news')}
+            onPress={() => onNavigateToMatches && onNavigateToMatches()}
             style={styles.gridCard}
             activeOpacity={0.85}
           >
-            <Text style={styles.gridTitle}>Video Highlights</Text>
-            <Text style={styles.gridSubtitle}>Watch match highlights & key moments</Text>
+            <Text style={styles.gridTitle}>Match Stats</Text>
+            <Text style={styles.gridSubtitle}>Live scores, run rates & match stats</Text>
             <View style={styles.gridArtWrapper}>
-              <Ionicons name="play-circle" size={36} color="#008000" />
+              <MaterialCommunityIcons name="cricket" size={36} color="#008000" />
             </View>
           </TouchableOpacity>
 
@@ -770,9 +770,9 @@ export default function LiveCricketScoreScreen({ onBack, onNavigateToSchedule, o
             </View>
 
             <View style={styles.adTextBox}>
-              <Text style={styles.adTitle} numberOfLines={1}>IPL Highlights</Text>
+              <Text style={styles.adTitle} numberOfLines={1}>Live Match Stats</Text>
               <Text style={styles.adSubtitle} numberOfLines={1}>
-                Catch up on today's match highlights in minutes!
+                Ball-by-ball scores, run rates & match telemetry!
               </Text>
             </View>
 
