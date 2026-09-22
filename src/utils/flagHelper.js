@@ -46,48 +46,53 @@ export const IPL_TEAM_LOGOS = {
   'KINGS XI PUNJAB': 'https://dbtulsi.tech/CricketData/data/CountryFlags/PBKS.png',
 };
 
-// International Country Flags from FlagCDN (reliable, fast, high quality PNG)
+// International Country Flags & Official Team Logos (High Quality 160px Original PNGs)
 export const COUNTRY_FLAGS = {
-  IND: 'https://flagcdn.com/w80/in.png',
-  INDIA: 'https://flagcdn.com/w80/in.png',
-  AUS: 'https://flagcdn.com/w80/au.png',
-  AUSTRALIA: 'https://flagcdn.com/w80/au.png',
-  ENG: 'https://flagcdn.com/w80/gb-eng.png',
-  ENGLAND: 'https://flagcdn.com/w80/gb-eng.png',
-  PAK: 'https://flagcdn.com/w80/pk.png',
-  PAKISTAN: 'https://flagcdn.com/w80/pk.png',
-  NZ: 'https://flagcdn.com/w80/nz.png',
-  'NEW ZEALAND': 'https://flagcdn.com/w80/nz.png',
-  SA: 'https://flagcdn.com/w80/za.png',
-  'SOUTH AFRICA': 'https://flagcdn.com/w80/za.png',
-  WI: 'https://flagcdn.com/w80/jm.png',
-  'WEST INDIES': 'https://flagcdn.com/w80/jm.png',
-  BAN: 'https://flagcdn.com/w80/bd.png',
-  BANGLADESH: 'https://flagcdn.com/w80/bd.png',
-  AFG: 'https://flagcdn.com/w80/af.png',
-  AFGHANISTAN: 'https://flagcdn.com/w80/af.png',
-  SL: 'https://flagcdn.com/w80/lk.png',
-  'SRI LANKA': 'https://flagcdn.com/w80/lk.png',
-  IRE: 'https://flagcdn.com/w80/ie.png',
-  IRELAND: 'https://flagcdn.com/w80/ie.png',
-  ZIM: 'https://flagcdn.com/w80/zw.png',
-  ZIMBABWE: 'https://flagcdn.com/w80/zw.png',
-  NED: 'https://flagcdn.com/w80/nl.png',
-  NETHERLANDS: 'https://flagcdn.com/w80/nl.png',
-  SCO: 'https://flagcdn.com/w80/gb-sct.png',
-  SCOTLAND: 'https://flagcdn.com/w80/gb-sct.png',
-  USA: 'https://flagcdn.com/w80/us.png',
-  'UNITED STATES': 'https://flagcdn.com/w80/us.png',
-  NAM: 'https://flagcdn.com/w80/na.png',
-  NAMIBIA: 'https://flagcdn.com/w80/na.png',
-  NEP: 'https://flagcdn.com/w80/np.png',
-  NEPAL: 'https://flagcdn.com/w80/np.png',
-  OMA: 'https://flagcdn.com/w80/om.png',
-  OMAN: 'https://flagcdn.com/w80/om.png',
-  PNG: 'https://flagcdn.com/w80/pg.png',
-  UAE: 'https://flagcdn.com/w80/ae.png',
-  CAN: 'https://flagcdn.com/w80/ca.png',
-  CANADA: 'https://flagcdn.com/w80/ca.png',
+  IND: 'https://flagcdn.com/w160/in.png',
+  INDIA: 'https://flagcdn.com/w160/in.png',
+  AUS: 'https://flagcdn.com/w160/au.png',
+  AUSTRALIA: 'https://flagcdn.com/w160/au.png',
+  ENG: 'https://flagcdn.com/w160/gb-eng.png',
+  ENGLAND: 'https://flagcdn.com/w160/gb-eng.png',
+  PAK: 'https://flagcdn.com/w160/pk.png',
+  PAKISTAN: 'https://flagcdn.com/w160/pk.png',
+  NZ: 'https://flagcdn.com/w160/nz.png',
+  'NEW ZEALAND': 'https://flagcdn.com/w160/nz.png',
+  SA: 'https://flagcdn.com/w160/za.png',
+  'SOUTH AFRICA': 'https://flagcdn.com/w160/za.png',
+  WI: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/West_Indies_Cricket_Board_Flag.svg/320px-West_Indies_Cricket_Board_Flag.svg.png',
+  'WEST INDIES': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/West_Indies_Cricket_Board_Flag.svg/320px-West_Indies_Cricket_Board_Flag.svg.png',
+  BAN: 'https://flagcdn.com/w160/bd.png',
+  BANGLADESH: 'https://flagcdn.com/w160/bd.png',
+  AFG: 'https://flagcdn.com/w160/af.png',
+  AFGHANISTAN: 'https://flagcdn.com/w160/af.png',
+  SL: 'https://flagcdn.com/w160/lk.png',
+  'SRI LANKA': 'https://flagcdn.com/w160/lk.png',
+  SRILANKA: 'https://flagcdn.com/w160/lk.png',
+  IRE: 'https://flagcdn.com/w160/ie.png',
+  IRELAND: 'https://flagcdn.com/w160/ie.png',
+  ZIM: 'https://flagcdn.com/w160/zw.png',
+  ZIMBABWE: 'https://flagcdn.com/w160/zw.png',
+  NED: 'https://flagcdn.com/w160/nl.png',
+  NETHERLANDS: 'https://flagcdn.com/w160/nl.png',
+  SCO: 'https://flagcdn.com/w160/gb-sct.png',
+  SCOTLAND: 'https://flagcdn.com/w160/gb-sct.png',
+  USA: 'https://flagcdn.com/w160/us.png',
+  'UNITED STATES': 'https://flagcdn.com/w160/us.png',
+  NAM: 'https://flagcdn.com/w160/na.png',
+  NAMIBIA: 'https://flagcdn.com/w160/na.png',
+  NEP: 'https://flagcdn.com/w160/np.png',
+  NEPAL: 'https://flagcdn.com/w160/np.png',
+  OMA: 'https://flagcdn.com/w160/om.png',
+  OMAN: 'https://flagcdn.com/w160/om.png',
+  PNG: 'https://flagcdn.com/w160/pg.png',
+  UAE: 'https://flagcdn.com/w160/ae.png',
+  CAN: 'https://flagcdn.com/w160/ca.png',
+  CANADA: 'https://flagcdn.com/w160/ca.png',
+  ITA: 'https://flagcdn.com/w160/it.png',
+  ITALY: 'https://flagcdn.com/w160/it.png',
+  KEN: 'https://flagcdn.com/w160/ke.png',
+  KENYA: 'https://flagcdn.com/w160/ke.png',
 };
 
 // Fallback Emoji flags
@@ -112,6 +117,31 @@ export const COUNTRY_EMOJIS = {
   AFGHANISTAN: '🇦🇫',
   SL: '🇱🇰',
   'SRI LANKA': '🇱🇰',
+  SRILANKA: '🇱🇰',
+  IRE: '🇮🇪',
+  IRELAND: '🇮🇪',
+  ZIM: '🇿🇼',
+  ZIMBABWE: '🇿🇼',
+  NED: '🇳🇱',
+  NETHERLANDS: '🇳🇱',
+  SCO: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  SCOTLAND: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  USA: '🇺🇸',
+  'UNITED STATES': '🇺🇸',
+  NAM: '🇳🇦',
+  NAMIBIA: '🇳🇦',
+  NEP: '🇳🇵',
+  NEPAL: '🇳🇵',
+  OMA: '🇴🇲',
+  OMAN: '🇴🇲',
+  PNG: '🇵🇬',
+  UAE: '🇦🇪',
+  CAN: '🇨🇦',
+  CANADA: '🇨🇦',
+  KEN: '🇰🇪',
+  KENYA: '🇰🇪',
+  ITA: '🇮🇹',
+  ITALY: '🇮🇹',
 };
 
 /**
@@ -183,7 +213,7 @@ export function getTeamLogoUrl(imageUrl, teamName, countryCode) {
 
 /**
  * TeamFlag Component
- * Renders Image if URL or local asset exists, else renders stylized fallback badge with initials or emoji
+ * Renders circular rounded flag container for all country flags & IPL logos.
  */
 export function TeamFlag({
   logo,
@@ -195,9 +225,11 @@ export function TeamFlag({
   const [imageError, setImageError] = useState(false);
   const resolvedSource = getTeamLogoSource(logo, teamName, countryCode);
 
+  const codeKey = (countryCode || '').trim().toUpperCase();
+  const nameKey = (teamName || '').trim().toUpperCase();
   const cleanName = (teamName || countryCode || 'CR').trim();
   const initials = (countryCode || cleanName.slice(0, 3)).toUpperCase();
-  const emoji = COUNTRY_EMOJIS[(countryCode || '').toUpperCase()] || COUNTRY_EMOJIS[cleanName.toUpperCase()];
+  const emoji = COUNTRY_EMOJIS[codeKey] || COUNTRY_EMOJIS[nameKey];
 
   if (resolvedSource && !imageError) {
     return (
@@ -208,7 +240,9 @@ export function TeamFlag({
             height: size,
             borderRadius: size / 2,
             overflow: 'hidden',
-            backgroundColor: '#FFFFFF15',
+            backgroundColor: '#FFFFFF',
+            borderWidth: 1,
+            borderColor: '#E2E8F0',
             alignItems: 'center',
             justifyContent: 'center',
           },
@@ -225,7 +259,7 @@ export function TeamFlag({
     );
   }
 
-  // Fallback to emoji or initials badge
+  // Fallback to emoji or initials inside a rounded badge
   return (
     <View
       style={[
@@ -233,9 +267,9 @@ export function TeamFlag({
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: '#00927025',
+          backgroundColor: '#F8FAFC',
           borderWidth: 1,
-          borderColor: '#00927060',
+          borderColor: '#CBD5E1',
           alignItems: 'center',
           justifyContent: 'center',
         },
@@ -243,9 +277,9 @@ export function TeamFlag({
       ]}
     >
       {emoji ? (
-        <Text style={{ fontSize: size * 0.55 }}>{emoji}</Text>
+        <Text style={{ fontSize: size * 0.58 }}>{emoji}</Text>
       ) : (
-        <Text style={{ color: '#009270', fontWeight: '900', fontSize: size * 0.36 }}>
+        <Text style={{ color: '#008000', fontWeight: '900', fontSize: size * 0.36 }}>
           {initials}
         </Text>
       )}

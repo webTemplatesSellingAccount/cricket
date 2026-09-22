@@ -199,11 +199,11 @@ const PlayoffCertificateArt = () => (
 );
 
 export default function LiveCricketScoreScreen({
-  onBack,
-  onNavigateToSchedule,
-  onNavigateToMatches,
-  onNavigateToTable,
-  onNavigateToTab,
+  onBack = () => {},
+  onNavigateToSchedule = () => {},
+  onNavigateToMatches = () => {},
+  onNavigateToTable = () => {},
+  onNavigateToTab = () => {},
 }) {
   const [currentSubScreen, setCurrentSubScreen] = useState(null); // 'records' | 'playoffs'
   const [venuesModalVisible, setVenuesModalVisible] = useState(false);
@@ -467,7 +467,7 @@ export default function LiveCricketScoreScreen({
 
           {/* Grid Item 2: Cricket Match Stats */}
           <TouchableOpacity
-            onPress={() => onNavigateToMatches && onNavigateToMatches()}
+            onPress={() => (onNavigateToMatches ? onNavigateToMatches() : onNavigateToTab && onNavigateToTab('matches'))}
             style={styles.gridCard}
             activeOpacity={0.85}
           >

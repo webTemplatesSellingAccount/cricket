@@ -67,7 +67,9 @@ export default function PointsTableScreen({ onBack }) {
         const formatted = data.map((item) => ({
           rank: item.rank,
           team: item.team,
-          shortName: item.code,
+          shortName: item.code || item.team,
+          code: item.code,
+          logo: item.logo || null,
           played: item.p,
           won: item.w,
           lost: item.l,
@@ -84,7 +86,9 @@ export default function PointsTableScreen({ onBack }) {
         const formatted = data.map((item) => ({
           rank: item.rank,
           team: item.team,
-          shortName: item.code,
+          shortName: item.code || item.team,
+          code: item.code,
+          logo: item.logo || null,
           played: item.p,
           won: item.w,
           lost: item.l,

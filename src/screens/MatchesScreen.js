@@ -177,7 +177,7 @@ export default function MatchesScreen({ onBack }) {
                   {cat.label}
                 </Text>
               </TouchableOpacity>
-            );
+            ); a
           })}
         </ScrollView>
       </View>

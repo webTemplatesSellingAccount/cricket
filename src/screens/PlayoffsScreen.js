@@ -27,6 +27,7 @@ export default function PlayoffsScreen({ onBack }) {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedTournament, setSelectedTournament] = useState('t20_wc'); // 't20_wc' | 'odi_wc' | 'wtc'
   const [playoffList, setPlayoffList] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const loadPlayoffData = useCallback(async (tourney) => {
     setLoading(true);
