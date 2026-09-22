@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 
@@ -16,21 +16,18 @@ export default function Header({ onOpenQuiz }) {
     >
       {/* Left: App Logo & Cricket Live Line Branding */}
       <View className="flex-row items-center">
-        <View
+        <Image
+          source={require('../../assets/splash_logo.jpg')}
           style={{
-            width: 34,
-            height: 34,
+            width: 36,
+            height: 36,
             borderRadius: 10,
-            backgroundColor: 'rgba(255, 255, 255, 0.18)',
             borderWidth: 1,
-            borderColor: 'rgba(255, 255, 255, 0.28)',
-            alignItems: 'center',
-            justifyContent: 'center',
+            borderColor: 'rgba(255, 255, 255, 0.4)',
             marginRight: 9,
           }}
-        >
-          <Ionicons name="flash" size={19} color="#6EE7B7" />
-        </View>
+          resizeMode="cover"
+        />
 
         <View>
           <View className="flex-row items-center">
