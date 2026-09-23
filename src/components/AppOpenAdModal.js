@@ -28,6 +28,7 @@ export default function AppOpenAdModal({
     let appOpenAdInstance = null;
     let unsubscribeLoaded = null;
     let unsubscribeClosed = null;
+    let unsubscribeError = null;
 
     if (isAdMobAvailable && AppOpenAd && AdEventType) {
       try {
@@ -46,6 +47,11 @@ export default function AppOpenAdModal({
 
         unsubscribeClosed = appOpenAdInstance.addAdEventListener(AdEventType.CLOSED, () => {
           console.log('AdMob App Open Ad closed by user');
+          if (onClose) onClose();
+        });
+
+        unsubscribeError = appOpenAdInstance.addAdEventListener(AdEventType.ERROR, (error) => {
+          console.warn('AdMob App Open Ad failed to load:', error);
           if (onClose) onClose();
         });
 
@@ -69,10 +75,13 @@ export default function AppOpenAdModal({
       clearInterval(timer);
       if (unsubscribeLoaded) unsubscribeLoaded();
       if (unsubscribeClosed) unsubscribeClosed();
+      if (unsubscribeError) unsubscribeError();
     };
   }, [visible, resolvedAdId]);
 
   if (!visible) return null;
+
+  return null;
 
   return (
     <Modal visible={visible} animationType="fade" transparent={false} onRequestClose={onClose}>

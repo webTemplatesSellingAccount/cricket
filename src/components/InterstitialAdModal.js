@@ -28,6 +28,7 @@ export default function InterstitialAdModal({
     let interstitialInstance = null;
     let unsubscribeLoaded = null;
     let unsubscribeClosed = null;
+    let unsubscribeError = null;
 
     if (isAdMobAvailable && InterstitialAd && AdEventType) {
       try {
@@ -49,6 +50,11 @@ export default function InterstitialAdModal({
           if (onClose) onClose();
         });
 
+        unsubscribeError = interstitialInstance.addAdEventListener(AdEventType.ERROR, (error) => {
+          console.warn('AdMob Interstitial failed to load:', error);
+          if (onClose) onClose();
+        });
+
         interstitialInstance.load();
       } catch (err) {
         console.log('Interstitial creation warning:', err);
@@ -63,10 +69,13 @@ export default function InterstitialAdModal({
       clearTimeout(timer);
       if (unsubscribeLoaded) unsubscribeLoaded();
       if (unsubscribeClosed) unsubscribeClosed();
+      if (unsubscribeError) unsubscribeError();
     };
   }, [visible, resolvedAdId]);
 
   if (!visible) return null;
+
+  return null;
 
   return (
     <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>

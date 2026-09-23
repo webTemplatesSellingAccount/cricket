@@ -275,11 +275,9 @@ export default function CommonAdView({
   const screenConfig = getScreenAdConfig(screen);
 
   // Mapped Firebase data
-  const isAdsEnabled = (
-    !globalConfig ||
+  const isAdsEnabled = globalConfig && (
     globalConfig.adsstatus === true || globalConfig.adsstatus === 'true' ||
-    globalConfig.isAdsShow === 1 || globalConfig.isAdsShow === '1' || globalConfig.isAdsShow === true ||
-    (globalConfig.adsstatus !== false && globalConfig.isAdsShow !== 0)
+    globalConfig.isAdsShow === 1 || globalConfig.isAdsShow === '1'
   );
 
   const adType = (forceType || (screenConfig && screenConfig.ads_type) || (globalConfig && globalConfig.ad_type) || 'BANNER').toString().toUpperCase();
@@ -287,10 +285,7 @@ export default function CommonAdView({
 
   // Resolve Test Ad Unit ID
   const testBannerId = (TestIds && TestIds.BANNER) ? TestIds.BANNER : 'ca-app-pub-3940256099942544/6300978111';
-  const testNativeId = 'ca-app-pub-3940256099942544/2247696110';
-  const resolvedAdUnitId = (adType === 'SMALLNATIVE' || adType === 'BIGNATIVE')
-    ? ((globalConfig && globalConfig.nativeadid) || testNativeId)
-    : ((globalConfig && globalConfig.banneradid) || testBannerId);
+  const resolvedAdUnitId = testBannerId;
 
   useEffect(() => {
     setIsLoading(true);
@@ -322,102 +317,27 @@ export default function CommonAdView({
     });
   };
 
-  const shimmerAnim = new Animated.Value(0.3);
-  Animated.loop(
-    Animated.sequence([
-      Animated.timing(shimmerAnim, { toValue: 0.85, duration: 700, useNativeDriver: true }),
-      Animated.timing(shimmerAnim, { toValue: 0.3, duration: 700, useNativeDriver: true }),
-    ])
-  ).start();
-
-  // If react-native-google-mobile-ads BannerAd component is available and no fatal rendering error occurs
-  const renderNativeBannerAd = () => {
-    if (isAdMobAvailable && BannerAd && !adError) {
-      try {
-        return (
-          <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-            <BannerAd
-              unitId={resolvedAdUnitId}
-              size={adSizeEnum}
-              requestOptions={{
-                requestNonPersonalizedAdsOnly: true,
-              }}
-              onAdLoaded={() => {
-                console.log(`AdMob Banner loaded successfully for screen ${screen}`);
-                setIsLoading(false);
-              }}
-              onAdFailedToLoad={(err) => {
-                console.log(`AdMob Banner failed to load for ${screen}:`, err);
-                setAdError(true);
-                setIsLoading(false);
-              }}
-            />
-          </View>
-        );
-      } catch (err) {
-        console.log('BannerAd render exception:', err);
-      }
-    }
+  if (!isAdMobAvailable || !BannerAd) {
+    console.log('AdMob banner unavailable: use a development/custom Android build, not Expo Go.');
     return null;
-  };
-
-  const nativeBanner = renderNativeBannerAd();
-  if (nativeBanner && !adError) {
-    return (
-      <View style={{ width: '100%', alignItems: 'center', marginVertical: 6 }}>
-        {nativeBanner}
-      </View>
-    );
   }
 
-  // Fallback / standard Google AdMob Test Ad template matching requested type
   return (
     <View style={{ width: '100%', alignItems: 'center', marginVertical: 6 }}>
-      {adType === 'SMALLNATIVE' ? (
-        <SmallNativeAdContentView screenName={screen} onAdClick={handleAdClick} adId={resolvedAdUnitId} />
-      ) : adType === 'BIGNATIVE' ? (
-        <BigNativeAdContentView screenName={screen} onAdClick={handleAdClick} adId={resolvedAdUnitId} />
-      ) : (
-        <View style={{ width: computedAdSize.width, height: computedAdSize.height, alignItems: 'center' }}>
-          {isLoading && (
-            <View
-              style={{
-                position: 'absolute',
-                width: computedAdSize.width,
-                height: computedAdSize.height,
-                borderRadius: 8,
-                backgroundColor: isDarkMode ? '#1E293B' : '#E2E8F0',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderWidth: 1,
-                borderColor: theme.cardBorder,
-              }}
-            >
-              <Animated.View
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: 8,
-                  backgroundColor: isDarkMode ? '#334155' : '#CBD5E1',
-                  opacity: shimmerAnim,
-                }}
-              />
-              <Text style={{ color: isDarkMode ? '#94A3B8' : '#64748B', fontSize: 12, fontWeight: '700' }}>
-                Loading AdMob Test Ad…
-              </Text>
-            </View>
-          )}
-
-          <BannerViewContainer
-            adSize={computedAdSize}
-            isLoading={isLoading}
-            screenName={screen}
-            onAdClick={handleAdClick}
-            adId={resolvedAdUnitId}
-          />
-        </View>
-      )}
+      <BannerAd
+        unitId={resolvedAdUnitId}
+        size={adSizeEnum}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        onAdLoaded={() => {
+          console.log(`AdMob test banner loaded successfully for ${screen}`);
+          setIsLoading(false);
+        }}
+        onAdFailedToLoad={(err) => {
+          console.warn(`AdMob test banner failed for ${screen}:`, err);
+          setAdError(true);
+          setIsLoading(false);
+        }}
+      />
     </View>
   );
 }
