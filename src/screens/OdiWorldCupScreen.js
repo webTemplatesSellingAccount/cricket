@@ -16,6 +16,7 @@ import {
   ODI_WC_EDITIONS,
 } from '../data/odiWorldCupFullData';
 import { TeamFlag } from '../utils/flagHelper';
+import AdContainer from '../components/AdContainer';
 
 export default function OdiWorldCupScreen({ onBack }) {
   const [activeTab, setActiveTab] = useState('finals'); // 'finals' | 'groups' | 'knockouts'
@@ -40,6 +41,8 @@ export default function OdiWorldCupScreen({ onBack }) {
           <Text style={styles.topRightLiveText}>LIVE LINE</Text>
         </View>
       </View>
+
+      <AdContainer screen="odiWorldCup" style={{ marginHorizontal: 12 }} />
 
       {/* 3. Hero Championship Leaderboard Strip */}
       <View style={styles.heroStripContainer}>
@@ -274,6 +277,7 @@ export default function OdiWorldCupScreen({ onBack }) {
       </ScrollView>
 
       {/* 6. Bottom Showcase Banner */}
+      <AdContainer screen="odiWorldCup" style={{ marginHorizontal: 12 }} />
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
           <View style={styles.adTrophyCircle}>

@@ -15,6 +15,11 @@ import {
   BannerAdSize,
   TestIds,
   isAdMobAvailable,
+  NativeAd,
+  NativeAdView,
+  NativeMediaView,
+  NativeAsset,
+  NativeAssetType,
 } from '../services/admobService';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -23,15 +28,13 @@ const { width: screenWidth } = Dimensions.get('window');
  * Helper function to calculate Ad Size based on type, size value, and collapsible state
  */
 export function getAdSize(type, size, isCollapsible) {
-  if (isCollapsible) {
-    return { width: '100%', height: 50, name: 'BANNER' };
-  }
-
-  const upperType = (type || 'BANNER').toString().toUpperCase();
+  const upperType = (type || 'BANNER').toString().toUpperCase().replace(/[- ]/g, '_');
 
   switch (upperType) {
     case 'BANNER':
-      return { width: '100%', height: 50, name: 'BANNER' };
+      return { width: '100%', height: undefined, name: isCollapsible ? 'ANCHORED_ADAPTIVE_BANNER' : 'BANNER' };
+    case 'INLINE_ADAPTIVE':
+      return { width: '100%', height: undefined, name: 'INLINE_ADAPTIVE' };
     case 'LARGE_BANNER':
       return { width: '100%', height: 100, name: 'LARGE_BANNER' };
     case 'MEDIUM_RECTANGLE':
@@ -48,17 +51,21 @@ export function getBannerAdSizeEnum(type, isCollapsible) {
   if (!BannerAdSize) return 'BANNER';
   if (isCollapsible) return BannerAdSize.ANCHORED_ADAPTIVE_BANNER || BannerAdSize.BANNER;
 
-  const upper = (type || 'BANNER').toString().toUpperCase();
+  const upper = (type || 'BANNER').toString().toUpperCase().replace(/[- ]/g, '_');
   switch (upper) {
     case 'BANNER':
       return BannerAdSize.BANNER || 'BANNER';
+    case 'ANCHORED_ADAPTIVE':
+    case 'ANCHORED_ADAPTIVE_BANNER':
+      return BannerAdSize.ANCHORED_ADAPTIVE_BANNER || BannerAdSize.BANNER;
     case 'LARGE_BANNER':
       return BannerAdSize.LARGE_BANNER || 'LARGE_BANNER';
     case 'MEDIUM_RECTANGLE':
     case 'BIGNATIVE':
       return BannerAdSize.MEDIUM_RECTANGLE || 'MEDIUM_RECTANGLE';
     case 'SMALLNATIVE':
-      return BannerAdSize.ANCHORED_ADAPTIVE_BANNER || BannerAdSize.BANNER;
+    case 'SMALL_NATIVE':
+      return BannerAdSize.BANNER || 'BANNER';
     default:
       return BannerAdSize.INLINE_ADAPTIVE_BANNER || BannerAdSize.BANNER;
   }
@@ -261,6 +268,7 @@ export default function CommonAdView({
   isCollapsible = false,
   forceType,
   forceSize,
+  style,
 }) {
   const adsContext = useAds();
   const globalConfig = adsContext.globalConfig;
@@ -278,14 +286,21 @@ export default function CommonAdView({
   const isAdsEnabled = globalConfig && (
     globalConfig.adsstatus === true || globalConfig.adsstatus === 'true' ||
     globalConfig.isAdsShow === 1 || globalConfig.isAdsShow === '1'
-  );
+  ) && screenConfig.enabled !== false;
 
-  const adType = (forceType || (screenConfig && screenConfig.ads_type) || (globalConfig && globalConfig.ad_type) || 'BANNER').toString().toUpperCase();
+  const configuredType = forceType || (screenConfig && screenConfig.ads_type) || (globalConfig && globalConfig.ad_type) || 'banner';
+  const adType = configuredType.toString().toUpperCase().replace(/[- ]/g, '_');
+  const bannerType = (screenConfig && screenConfig.banner_type) || 'inline_adaptive';
+  const nativeType = (screenConfig && (screenConfig.native_type || screenConfig.native_size)) || 'small_native';
   const adSizeValue = forceSize || (screenConfig && screenConfig.inline_size) || 140;
 
   // Resolve Test Ad Unit ID
   const testBannerId = (TestIds && TestIds.BANNER) ? TestIds.BANNER : 'ca-app-pub-3940256099942544/6300978111';
-  const resolvedAdUnitId = testBannerId;
+  const configuredBannerId = globalConfig && globalConfig.banneradid;
+  const configuredNativeId = globalConfig && globalConfig.nativeadid;
+  const resolvedAdUnitId = adType === 'NATIVE'
+    ? (configuredNativeId || (TestIds && TestIds.NATIVE) || 'ca-app-pub-3940256099942544/2247696110')
+    : (configuredBannerId || testBannerId);
 
   useEffect(() => {
     setIsLoading(true);
@@ -307,8 +322,9 @@ export default function CommonAdView({
     return null;
   }
 
-  const computedAdSize = getAdSize(adType, adSizeValue, isCollapsible);
-  const adSizeEnum = getBannerAdSizeEnum(adType, isCollapsible);
+  const bannerSizeType = bannerType.toString().toUpperCase().replace(/[- ]/g, '_');
+  const computedAdSize = getAdSize(bannerSizeType, adSizeValue, isCollapsible);
+  const adSizeEnum = getBannerAdSizeEnum(bannerSizeType, isCollapsible);
 
   const handleAdClick = () => {
     recordUserClick(() => {
@@ -317,27 +333,83 @@ export default function CommonAdView({
     });
   };
 
-  if (!isAdMobAvailable || !BannerAd) {
+  if (!isAdMobAvailable || (adType === 'NATIVE' ? !NativeAd || !NativeAdView : !BannerAd)) {
     console.log('AdMob banner unavailable: use a development/custom Android build, not Expo Go.');
     return null;
   }
 
-  return (
-    <View style={{ width: '100%', alignItems: 'center', marginVertical: 6 }}>
+  return adType === 'NATIVE' ? (
+    <NativeAdPlacement
+      adUnitId={resolvedAdUnitId}
+      variant={nativeType}
+      screen={screen}
+      onLoaded={() => setIsLoading(false)}
+      onFailed={() => setAdError(true)}
+      style={style}
+    />
+  ) : (
+    <View style={[{ width: '100%', alignItems: 'center', marginVertical: 6 }, style]}>
       <BannerAd
         unitId={resolvedAdUnitId}
         size={adSizeEnum}
         requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-        onAdLoaded={() => {
-          console.log(`AdMob test banner loaded successfully for ${screen}`);
-          setIsLoading(false);
-        }}
+        onAdLoaded={() => setIsLoading(false)}
         onAdFailedToLoad={(err) => {
-          console.warn(`AdMob test banner failed for ${screen}:`, err);
+          console.warn(`AdMob banner failed for ${screen}:`, err);
           setAdError(true);
           setIsLoading(false);
         }}
       />
     </View>
+  );
+}
+
+function NativeAdPlacement({ adUnitId, variant, screen, onLoaded, onFailed, style }) {
+  const [nativeAd, setNativeAd] = useState(null);
+  const normalizedVariant = variant.toString().toLowerCase().replace(/[- ]/g, '_');
+  const isBig = normalizedVariant === 'big_native' || normalizedVariant === 'bignative' || normalizedVariant === 'big';
+  const height = isBig ? 300 : 140;
+
+  useEffect(() => {
+    let mounted = true;
+    let loadedAd;
+    NativeAd.createForAdRequest(adUnitId, { requestNonPersonalizedAdsOnly: true })
+      .then((ad) => {
+        loadedAd = ad;
+        if (mounted) {
+          setNativeAd(ad);
+          onLoaded();
+        } else {
+          ad.destroy();
+        }
+      })
+      .catch((error) => {
+        console.warn(`AdMob native ad failed for ${screen}:`, error);
+        onFailed();
+      });
+
+    return () => {
+      mounted = false;
+      if (loadedAd) loadedAd.destroy();
+    };
+  }, [adUnitId, screen]);
+
+  if (!nativeAd) return null;
+
+  return (
+    <NativeAdView nativeAd={nativeAd} style={[{ width: '100%', height, marginVertical: 6 }, style]}>
+      <View style={{ flex: 1, padding: 10, backgroundColor: '#FFFFFF', borderRadius: 10 }}>
+        <NativeAsset assetType={NativeAssetType.HEADLINE}>
+          <Text numberOfLines={1} style={{ fontWeight: '800', fontSize: 14, color: '#111827' }}>{nativeAd.headline}</Text>
+        </NativeAsset>
+        {isBig && NativeMediaView ? <NativeMediaView style={{ flex: 1, marginVertical: 6 }} resizeMode="cover" /> : null}
+        <NativeAsset assetType={NativeAssetType.BODY}>
+          <Text numberOfLines={isBig ? 3 : 1} style={{ color: '#4B5563', fontSize: 11, marginTop: 4 }}>{nativeAd.body}</Text>
+        </NativeAsset>
+        <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
+          <Text style={{ color: '#047857', fontWeight: '800', fontSize: 12, marginTop: 5 }}>{nativeAd.callToAction || 'Learn more'}</Text>
+        </NativeAsset>
+      </View>
+    </NativeAdView>
   );
 }

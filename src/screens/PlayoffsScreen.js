@@ -20,6 +20,7 @@ import {
   ODI_WORLD_CUP_PLAYOFFS,
   TEST_WTC_PLAYOFFS,
 } from '../data/worldCupData';
+import AdContainer from '../components/AdContainer';
 
 export default function PlayoffsScreen({ onBack }) {
   const { theme } = useTheme();
@@ -83,6 +84,8 @@ export default function PlayoffsScreen({ onBack }) {
           <Text style={styles.topRightLiveText}>LIVE LINE</Text>
         </View>
       </View>
+
+      <AdContainer screen="playoffs" style={{ marginHorizontal: 12 }} />
 
       {/* 2. Tournament Selector (T20 World Cup | ODI World Cup | Test (WTC)) */}
       <View style={styles.tournamentSegmentRow}>
@@ -219,6 +222,7 @@ export default function PlayoffsScreen({ onBack }) {
       )}
 
       {/* Bottom Showcase Banner */}
+      <AdContainer screen="playoffs" style={{ marginHorizontal: 12 }} />
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
           <View style={styles.adRedBallCircle}>

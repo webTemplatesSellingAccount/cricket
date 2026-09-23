@@ -17,6 +17,7 @@ import {
   WTC_VENUES,
 } from '../data/wtcFullData';
 import { TeamFlag } from '../utils/flagHelper';
+import AdContainer from '../components/AdContainer';
 
 export default function WorldTestChampionshipScreen({ onBack }) {
   const [activeTab, setActiveTab] = useState('finals'); // 'finals' | 'cycles' | 'teams' | 'venues'
@@ -39,6 +40,8 @@ export default function WorldTestChampionshipScreen({ onBack }) {
           <Text style={styles.topRightLiveText}>LIVE LINE</Text>
         </View>
       </View>
+
+      <AdContainer screen="wtc" style={{ marginHorizontal: 12 }} />
 
       {/* 2. Top Sub-Header Showcase Card */}
       <View style={styles.adBannerCard}>
@@ -259,6 +262,7 @@ export default function WorldTestChampionshipScreen({ onBack }) {
       </ScrollView>
 
       {/* 6. Bottom Showcase Banner */}
+      <AdContainer screen="wtc" style={{ marginHorizontal: 12 }} />
       <View style={styles.bottomAdBanner}>
         <View style={styles.adIconBox}>
           <View style={styles.adTrophyCircle}>

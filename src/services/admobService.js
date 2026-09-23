@@ -7,6 +7,11 @@ let TestIds = null;
 let InterstitialAd = null;
 let AppOpenAd = null;
 let AdEventType = null;
+let NativeAd = null;
+let NativeAdView = null;
+let NativeMediaView = null;
+let NativeAsset = null;
+let NativeAssetType = null;
 let isAdMobAvailable = false;
 
 try {
@@ -24,6 +29,11 @@ try {
     InterstitialAd = gma.InterstitialAd;
     AppOpenAd = gma.AppOpenAd;
     AdEventType = gma.AdEventType;
+    NativeAd = gma.NativeAd;
+    NativeAdView = gma.NativeAdView;
+    NativeMediaView = gma.NativeMediaView;
+    NativeAsset = gma.NativeAsset;
+    NativeAssetType = gma.NativeAssetType;
     if (gma.BannerAd || gma.default) {
       isAdMobAvailable = true;
     }
@@ -52,6 +62,11 @@ export {
   InterstitialAd,
   AppOpenAd,
   AdEventType,
+  NativeAd,
+  NativeAdView,
+  NativeMediaView,
+  NativeAsset,
+  NativeAssetType,
   isAdMobAvailable,
   SAFE_TEST_IDS,
 };

@@ -8,6 +8,7 @@ export default function AdContainer({ screen, isCollapsible, forceHeight, forceT
       isCollapsible={isCollapsible}
       forceType={forceType}
       forceSize={forceHeight}
+      style={style}
     />
   );
 }

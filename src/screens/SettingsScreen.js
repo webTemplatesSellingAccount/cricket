@@ -645,6 +645,7 @@ export default function SettingsScreen({ onPreviewSplash }) {
                 screen: selectedAdScreen,
                 ads_type: 'banner',
                 banner_type: 'inline_adaptive',
+                native_type: 'small_native',
                 inline_size: 340,
               };
 
@@ -669,6 +670,50 @@ export default function SettingsScreen({ onPreviewSplash }) {
                           className="px-2.5 py-1 rounded-lg border mr-1"
                         >
                           <Text style={{ color: scrConfig.ads_type === type ? '#FFF' : theme.text, fontSize: 10, fontWeight: '800' }}>
+                            {type}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Inline Size / Height selector */}
+                  <View className="flex-row items-center justify-between mb-2">
+                    <Text style={{ color: theme.text }} className="text-xs font-bold">banner_type:</Text>
+                    <View className="flex-row space-x-1">
+                      {['inline_adaptive', 'banner', 'medium_rectangle'].map((type) => (
+                        <TouchableOpacity
+                          key={type}
+                          onPress={() => updateScreenConfig(selectedAdScreen, { banner_type: type })}
+                          style={{
+                            backgroundColor: scrConfig.banner_type === type ? '#3B82F6' : theme.card,
+                            borderColor: scrConfig.banner_type === type ? '#3B82F6' : theme.cardBorder,
+                          }}
+                          className="px-2 py-1 rounded-lg border mr-1"
+                        >
+                          <Text style={{ color: scrConfig.banner_type === type ? '#FFF' : theme.text, fontSize: 9, fontWeight: '800' }}>
+                            {type}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Native variant selector */}
+                  <View className="flex-row items-center justify-between mb-2">
+                    <Text style={{ color: theme.text }} className="text-xs font-bold">native_type:</Text>
+                    <View className="flex-row space-x-1">
+                      {['small_native', 'big_native'].map((type) => (
+                        <TouchableOpacity
+                          key={type}
+                          onPress={() => updateScreenConfig(selectedAdScreen, { native_type: type })}
+                          style={{
+                            backgroundColor: scrConfig.native_type === type ? '#10B981' : theme.card,
+                            borderColor: scrConfig.native_type === type ? '#10B981' : theme.cardBorder,
+                          }}
+                          className="px-2.5 py-1 rounded-lg border mr-1"
+                        >
+                          <Text style={{ color: scrConfig.native_type === type ? '#FFF' : theme.text, fontSize: 10, fontWeight: '800' }}>
                             {type}
                           </Text>
                         </TouchableOpacity>

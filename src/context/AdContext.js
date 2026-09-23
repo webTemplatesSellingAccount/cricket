@@ -54,7 +54,8 @@ export function AdProvider({ children }) {
         setScreenConfigs(sConfigs);
 
         // Show App Open Ad on application startup if appopen is enabled in Firebase
-        if (gConfig && gConfig.adsstatus && gConfig.appopen) {
+        const adsEnabled = gConfig && (gConfig.adsstatus === true || gConfig.adsstatus === 'true' || gConfig.isAdsShow === 1 || gConfig.isAdsShow === '1');
+        if (adsEnabled && gConfig.appopen) {
           setTimeout(() => {
             setAppOpenVisible(true);
           }, 600);
@@ -79,6 +80,7 @@ export function AdProvider({ children }) {
       screen: screenName,
       ads_type: 'banner',
       banner_type: 'inline_adaptive',
+      native_type: 'small_native',
       inline_size: 140,
       enabled: true,
     };
@@ -109,6 +111,7 @@ export function AdProvider({ children }) {
         screen: screenName,
         ads_type: 'banner',
         banner_type: 'inline_adaptive',
+        native_type: 'small_native',
         inline_size: 140,
         enabled: true,
         ...partialScreenConfig,
@@ -132,7 +135,7 @@ export function AdProvider({ children }) {
    * Directly show App Open Ad modal
    */
   const showAppOpenAd = () => {
-    if (globalConfig && globalConfig.adsstatus) {
+    if (globalConfig && (globalConfig.adsstatus === true || globalConfig.adsstatus === 'true' || globalConfig.isAdsShow === 1 || globalConfig.isAdsShow === '1')) {
       setAppOpenVisible(true);
     }
   };
@@ -141,7 +144,7 @@ export function AdProvider({ children }) {
    * Directly show Interstitial Ad modal
    */
   const showInterstitialAd = (onCloseCallback) => {
-    if (!globalConfig || !globalConfig.adsstatus) {
+    if (!globalConfig || !(globalConfig.adsstatus === true || globalConfig.adsstatus === 'true' || globalConfig.isAdsShow === 1 || globalConfig.isAdsShow === '1')) {
       if (onCloseCallback) onCloseCallback();
       return;
     }
@@ -153,7 +156,7 @@ export function AdProvider({ children }) {
    * Trigger user click counter. If counter hits Firebase interstitial_click threshold, present Interstitial Ad!
    */
   const recordUserClick = (onComplete) => {
-    if (!globalConfig || !globalConfig.adsstatus) {
+    if (!globalConfig || !(globalConfig.adsstatus === true || globalConfig.adsstatus === 'true' || globalConfig.isAdsShow === 1 || globalConfig.isAdsShow === '1')) {
       if (onComplete) onComplete();
       return;
     }
@@ -182,8 +185,8 @@ export function AdProvider({ children }) {
     }
   };
 
-  const appOpenAdId = (globalConfig && globalConfig.appopenadid) || DEFAULT_GLOBAL_ADS_CONFIG.appopenadid;
-  const intertrialAdId = (globalConfig && globalConfig.intertrialadid) || DEFAULT_GLOBAL_ADS_CONFIG.intertrialadid;
+  const appOpenAdId = DEFAULT_GLOBAL_ADS_CONFIG.appopenadid;
+  const intertrialAdId = DEFAULT_GLOBAL_ADS_CONFIG.intertrialadid;
 
   return (
     <AdContext.Provider
